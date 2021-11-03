@@ -46,7 +46,7 @@
 			}
 		},
 		onLoad() {
-
+			if(this.vuex_last_user) this.phoneNumber = this.vuex_last_user
 		},
 		methods: {
 			login(){

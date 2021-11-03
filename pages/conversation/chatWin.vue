@@ -295,11 +295,11 @@
 					console.log(params);
 					const res = JSON.parse(params.sucMsg);
 					console.log(res);
-					_this.myList.forEach(myMsg => {
+					this.myList.forEach(myMsg => {
 						if (myMsg.clientMsgID === res.clientMsgID) {
-							const tmpArr = Object.assign([], _this.msgList)
+							const tmpArr = Object.assign([], this.msgList)
 							const reversIndex = tmpArr.findIndex(t => t.clientMsgID == myMsg.clientMsgID)
-							_this.msgList[reversIndex].status = 2
+							this.msgList[reversIndex].status = 2
 						}
 					})
 				});
@@ -356,17 +356,23 @@
 					uni.chooseVideo({
 						sourceType: ["album"],
 						success: (res) => {
-							const thumbPath = getAndroidVideoThumb(res.tempFilePath)
+							let snapShotPath
+							if(uni.getSystemInfoSync().platform==='ios'){
+								snapShotPath = plus.io.convertLocalFileSystemURL("_www/static/video_cover.png")
+							}else{
+								const thumbPath = getAndroidVideoThumb(res.tempFilePath)
+								const rPath = plus.io.convertLocalFileSystemURL(thumbPath)
+								snapShotPath = plus.io.convertLocalFileSystemURL(rPath)
+							}
+							
 							const suffixIndex = res.tempFilePath.lastIndexOf(".") + 1
 							const suffix = res.tempFilePath.slice(suffixIndex)
-
 							const fullPath = plus.io.convertLocalFileSystemURL(res.tempFilePath)
-							const snapshotFullPath = plus.io.convertLocalFileSystemURL(thumbPath)
+							
 							let newVideoMessage = _this.$openSdk.createVideoMessageFromFullPath(fullPath,
 								suffix, res.duration,
-								snapshotFullPath);
-
-
+								snapShotPath);
+								
 							const clientMsgID = _this.$openSdk.sendMessage(
 								newVideoMessage,
 								_this.recvID,
@@ -606,6 +612,12 @@
 					this.replyStatus = true;
 				})
 			},
+			forwardListen(){
+				uni.$on('forwardMsg',msgContent => {
+					this.myList.push(newVideoMessage2)
+					this.msgList.push(newVideoMessage2)
+				})
+			},
 			setDraft() {
 				if (this.conversationID) {
 					this.$openSdk.setConversationDraft(this.conversationID, this.inputValue, (data) => {
@@ -652,6 +664,7 @@
 			this.delMsgListen()
 			this.reSendListen()
 			this.replayListen()
+			this.forwardListen()
 			this.getHistoryMessageList(null);
 			this.newMsgListener();
 			this.sendMessageListener()

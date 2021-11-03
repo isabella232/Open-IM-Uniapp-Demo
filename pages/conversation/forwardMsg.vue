@@ -45,6 +45,7 @@
 					"",
 					false
 				);
+				uni.$emit("forwardMsg", JSON.parse(this.forwardMsg))
 				this.showModal = false
 				this.$u.toast('转发成功')
 				uni.navigateBack()

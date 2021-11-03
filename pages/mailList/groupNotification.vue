@@ -6,7 +6,7 @@
 				<u-avatar :src="item.fromUserFaceURL"/>
 				<view class="info-area">
 					<text class="nick">{{item.fromUserNickName}}</text>
-					<text class="info u-line-3">{{`Apply to join ${item.groupName} Invitation from group member`}}</text>
+					<text class="info u-line-3">{{`申请加入群聊 ${item.groupID}`}}</text>
 				</view>
 				<view v-if="item.flag===0" class="btns-area">
 					<u-button @click="addConfirm(item)" :hair-line="false" type="primary" size="mini">同意</u-button>
@@ -52,6 +52,9 @@
 				})
 			},
 		},
+		mounted() {
+			console.log(this.vuex_group_application_list);
+		}
 	}
 </script>
 

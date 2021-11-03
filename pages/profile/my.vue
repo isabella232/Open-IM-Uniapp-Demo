@@ -97,6 +97,7 @@
 				this.show = false;
 			},
 			logoutConfirm() {
+				this.$u.vuex('vuex_token','')
 				this.$openSdk.logout((data) => {
 					console.log(data);
 					if (data.msg === "") {
