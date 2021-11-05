@@ -20,7 +20,7 @@
 </template>
 
 <script>
-	import { appServerSetPwd,importRelationShip } from "../../utils/appServerApi.js"
+	import { appServerSetPwd } from "../../utils/appServerApi.js"
 	import md5 from 'md5'
 	export default {
 		data() {
@@ -50,7 +50,6 @@
 							this.$u.vuex('vuex_last_user',uid)
 							this.$u.vuex('vuex_token',token)
 							const reqData = [uid]
-							// await importRelationShip(this.num)
 							this.nextLoading = false
 							uni.navigateTo({
 								url:"./setInfo"

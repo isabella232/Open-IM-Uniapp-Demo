@@ -37,9 +37,9 @@
 				<view class="action-item action-item-del" @click="deleteConversation(item.conversationID)">
 					<text>移除</text>
 				</view>
-				<view v-show="item.unreadCount !== 0" class="action-item action-item-mark"
+				<view :style="{display:(item.unreadCount>0?'flex':'none')}" class="action-item action-item-mark"
 					@click="markAsRead(item)">
-					<text>Mark read</text>
+					<text>标记已读</text>
 				</view>
 			</template>
 		</uni-swipe-action-item>

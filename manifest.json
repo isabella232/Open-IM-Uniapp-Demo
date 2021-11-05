@@ -3,7 +3,7 @@
     "appid" : "__UNI__C117447",
     "description" : "",
     "versionName" : "1.0.0",
-    "versionCode" : "100",
+    "versionCode" : 101,
     "transformPx" : false,
     "app-plus" : {
         "statusbar" : {

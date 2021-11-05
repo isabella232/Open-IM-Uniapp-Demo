@@ -50,12 +50,20 @@
 					this.$u.toast("验证码已发送")
 					this.registerLoading = false
 					uni.navigateTo({
-						url:"./vercode?no="+this.phoneNumber
+						url:"./vercode?no="+this.phoneNumber+"&ver=1"
 					})
 				}).catch(err=>{
 					console.log(err);
-					this.$u.toast("发送验证码失败")
-					this.registerLoading = false
+					if(err.errCode===10007){
+						this.$u.toast("服务端未配置短信服务！")
+						this.registerLoading = false
+						uni.navigateTo({
+							url:"./vercode?no="+this.phoneNumber+"&ver=2"
+						})
+					}else{
+						this.$u.toast("发送验证码失败")
+						this.registerLoading = false
+					}
 				})
 			},
 			back(){

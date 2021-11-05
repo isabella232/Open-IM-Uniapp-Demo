@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App'
-import { openSdk,globalEvent } from 'utils/openSdk'
+import { openSdk,globalEvent } from './utils/OpenIMSDK.js'
 import uView from "uview-ui";
 import store from '@/store';
 

@@ -25,6 +25,7 @@
 </template>
 
 <script>
+	import { importRelationShip } from "../../utils/appServerApi.js"
 	import uploadFile from '../../uploadFile/index.js'
 	export default {
 		data() {
@@ -58,12 +59,12 @@
 					name: this.name,
 					icon: this.icon
 				}
-				console.log(userInfo);
 				this.enterLoaing = true
-				this.$openSdk.setSelfInfo(userInfo, data => {
-					console.log(data);
+				this.$openSdk.setSelfInfo(userInfo,async data => {
+					//Comment the next line at your own server runtime
+					await importRelationShip(this.vuex_last_user)
 					const reqData = [this.vuex_last_user]
-					this.$openSdk.getUsersInfo(reqData, async data => {
+					this.$openSdk.getUsersInfo(reqData, data => {
 						let userInfoRes = JSON.parse(data.msg)
 						this.$u.vuex('vuex_user_info', userInfoRes[0])
 						this.enterLoaing = false

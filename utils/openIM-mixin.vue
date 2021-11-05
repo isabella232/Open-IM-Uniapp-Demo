@@ -212,7 +212,7 @@
 				})
 			},
 		},
-		onLoad() {
+		beforeMount() {
 			this.setOpenIMSDKListener();
 			this.getGroupList();
 			this.getMailList();

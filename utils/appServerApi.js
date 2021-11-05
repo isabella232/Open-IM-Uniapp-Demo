@@ -5,7 +5,7 @@ const IMPORTGROUPID = "082cad15fd27a2b6b875370e053ccd79"
 export const appServerLogin = (loginInfo) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:42233/auth/login",
+			url: "http://1.14.194.38:42233/auth/login",
 			method: "POST",
 			data: JSON.stringify(loginInfo),
 			success(res) {
@@ -25,7 +25,7 @@ export const appServerLogin = (loginInfo) => {
 export const appServerSendMsg = (phoneNumber) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:42233/auth/code",
+			url: "http://1.14.194.38:42233/auth/code",
 			method: 'POST',
 			data: JSON.stringify({phoneNumber}),
 			success(res) {
@@ -45,7 +45,7 @@ export const appServerSendMsg = (phoneNumber) => {
 export const appServerVerifyCode = (phoneNumber,verificationCode) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:42233/auth/verify",
+			url: "http://1.14.194.38:42233/auth/verify",
 			method: 'POST',
 			data: JSON.stringify({phoneNumber,verificationCode}),
 			success(res) {
@@ -65,7 +65,7 @@ export const appServerVerifyCode = (phoneNumber,verificationCode) => {
 export const appServerSetPwd = (phoneNumber,password,verificationCode) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:42233/auth/password",
+			url: "http://1.14.194.38:42233/auth/password",
 			method: 'POST',
 			data: JSON.stringify({phoneNumber,password,verificationCode}),
 			success(res) {
@@ -85,7 +85,7 @@ export const appServerSetPwd = (phoneNumber,password,verificationCode) => {
 export const importFriend = (uid, token) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:10000/friend/import_friend",
+			url: "http://1.14.194.38:10000/friend/import_friend",
 			method: "POST",
 			header: {
 				"token":token
@@ -108,7 +108,7 @@ export const importFriend = (uid, token) => {
 export const importGroup = (uid, token) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
-			url: "http://47.112.160.66:10000/group/invite_user_to_group",
+			url: "http://1.14.194.38:10000/group/invite_user_to_group",
 			method: "POST",
 			header: {
 				token
@@ -140,7 +140,7 @@ export const importRelationShip = (currentUid) => {
 	return new Promise((reslove,reject)=>{
 		appServerLogin(adminInfo).then(async res => {
 			const adminToken = res.data.token
-			// await importFriend(currentUid,adminToken)
+			await importFriend(currentUid,adminToken)
 			await importGroup(currentUid,adminToken)
 			reslove()
 		}).catch(err => reject(err))
