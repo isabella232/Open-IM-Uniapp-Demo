@@ -62,7 +62,7 @@
 				this.enterLoaing = true
 				this.$openSdk.setSelfInfo(userInfo,async data => {
 					//Comment the next line at your own server runtime
-					await importRelationShip(this.vuex_last_user)
+					// await importRelationShip(this.vuex_last_user)
 					const reqData = [this.vuex_last_user]
 					this.$openSdk.getUsersInfo(reqData, data => {
 						let userInfoRes = JSON.parse(data.msg)

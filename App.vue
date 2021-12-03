@@ -31,12 +31,15 @@
 				const platformID = uni.getSystemInfoSync().platform == 'ios'?1:2
 				const obj = {
 					platform: platformID, //平台类型
-					ipApi: "http://1.14.194.38:10000", //api域名地址
-					ipWs: "ws://1.14.194.38:17778", //websocket地址
+					ipApi: "http://47.112.160.66:10000", //api域名地址
+					ipWs: "ws://47.112.160.66:17778", //websocket地址
 					dbDir, //SDK数据存放目录
 				};
 				this.flag = this.$openSdk.initSDK(obj);
-				if(this.flag&&this.vuex_last_user&&this.vuex_token) this.login()
+				if(this.flag&&this.vuex_last_user&&this.vuex_token){
+					this.initOpenIMSDKListener()
+					this.login()
+				} 
 			},
 			
 			login(){
@@ -75,7 +78,6 @@
 			this.hideState = true
 		},
 		onLaunch: function() {
-			this.initOpenIMSDKListener();
 			this.fileInfo();
 		},
 	};

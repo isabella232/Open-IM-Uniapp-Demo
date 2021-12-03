@@ -62,6 +62,7 @@
 					platform:uni.getSystemInfoSync().platform == 'ios' ? 1 : 2
 				}
 				appServerLogin(loginInfo).then(res=>{
+					this.initOpenIMSDKListener()
 					this.sdkLogin(res.uid,res.token)
 				}).catch(err=>{
 					this.loginLoading = false
@@ -69,7 +70,8 @@
 				})
 			},
 			sdkLogin(uid,token){
-					this.$openSdk.login(uid, token, async val => {
+					this.$openSdk.login(uid, token, val => {
+						console.log(val);
 						if (val.err==undefined) {
 							this.$u.vuex('vuex_last_user',uid)
 							this.$u.vuex('vuex_token',token)
@@ -95,7 +97,18 @@
 				uni.navigateTo({
 					url:'./register'
 				})
-			}
+			},
+			//初始化监听
+			initOpenIMSDKListener() {
+				// 会话监听
+				this.$openSdk.setConversationListener();
+				// 消息状态监听
+				this.$openSdk.addAdvancedMsgListener();
+				// 群组监听
+				this.$openSdk.setGroupListener()
+				// 好友监听
+				this.$openSdk.setFriendListener();
+			},
 		}
 	}
 </script>
