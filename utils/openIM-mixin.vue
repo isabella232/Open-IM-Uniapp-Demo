@@ -1,12 +1,12 @@
 <script>
 	export default {
-		data(){
+		data() {
 			return {
 				groupApplication: 0,
 				application: 0
 			}
 		},
-		methods:{
+		methods: {
 			//设置监听
 			setOpenIMSDKListener() {
 				//黑名单相关
@@ -25,7 +25,7 @@
 						this.getBlackList()
 					}
 				);
-			
+
 				//群组相关
 				this.$globalEvent.addEventListener("onGroupInfoChanged", (params) => {
 					console.log('onGroupInfoChanged-------------------');
@@ -60,25 +60,17 @@
 				uni.$on('quitGroup', () => {
 					this.getGroupList()
 				})
-			
+
 				//会话相关
 				this.$globalEvent.addEventListener("onNewConversation", (params) => {
-					let res = JSON.parse(params.msg);
-					res.forEach((r) => (r.latestMsg = JSON.parse(r.latestMsg)));
-					this.$u.vuex('vuex_conversation_list', res.concat(this.vuex_conversation_list));
+					let news = JSON.parse(params.msg);
+					this.getSplitCve(0, 20);
+					// this.getSortCve(news,"add")
 				});
 				this.$globalEvent.addEventListener("onConversationChanged", (params) => {
-					let res = JSON.parse(params.msg);
-					console.log("onConversationChanged:::::::");
-					// console.log(res);
-					if (res) {
-						res.forEach((r) => {
-							if (r.latestMsg !== "") {
-								r.latestMsg = JSON.parse(r.latestMsg)
-							}
-						});
-						this.$u.vuex('vuex_conversation_list', res)
-					}
+					let changes = JSON.parse(params.msg);
+					this.getSplitCve(0, 20);
+					// this.getSortCve(changes,"change")
 				});
 				this.$globalEvent.addEventListener(
 					"onTotalUnreadMessageCountChanged",
@@ -95,7 +87,7 @@
 				this.$globalEvent.addEventListener("onSyncServerFinish", (params) => {
 					console.log(params.msg);
 				});
-			
+
 				//好友相关
 				this.$globalEvent.addEventListener(
 					"onFriendApplicationListAdded",
@@ -129,6 +121,47 @@
 						this.getFriendApplicationList()
 					}
 				);
+			},
+			getSplitCve(offset, count) {
+				this.$openSdk.getConversationListSplit(offset, count, data => {
+					const cves = JSON.parse(data.msg)
+					if (cves.length > 0) {
+						cves.map((r) => r.latestMsg = JSON.parse(r.latestMsg));
+						this.$u.vuex('vuex_conversation_list', cves)
+					}
+				})
+			},
+			getSortCve(changes, type) {
+				let tmpCves = this.vuex_conversation_list
+				if (type === "change") {
+					const chids = changes.map(ch => ch.conversationID)
+					tmpCves = tmpCves.filter(tc => !chids.includes(tc.conversationID))
+				}
+				changes.map((r) => r.latestMsg = JSON.parse(r.latestMsg));
+				tmpCves = [...changes, ...tmpCves];
+				this.cveSort(tmpCves);
+				this.$u.vuex('vuex_conversation_list', tmpCves)
+			},
+			cveSort(cveList) {
+				cveList.sort((a, b) => {
+					if ((a.isPinned == 1 && b.isPinned == 1) || (a.isPinned != 1 && b.isPinned != 1)) {
+						const aCompare = a.draftTimestamp > a.latestMsgSendTime ? a.draftTimestamp : a
+							.latestMsgSendTime;
+						const bCompare = b.draftTimestamp > b.latestMsgSendTime ? b.draftTimestamp : b
+							.latestMsgSendTime;
+						if (aCompare > bCompare) {
+							return -1;
+						} else if (aCompare < bCompare) {
+							return 1;
+						} else {
+							return 0;
+						}
+					} else if (a.isPinned == 1 && b.isPinned != 1) {
+						return -1;
+					} else {
+						return 1;
+					}
+				});
 			},
 			getGroupList() {
 				this.$openSdk.getJoinedGroupList(data => {
@@ -202,7 +235,7 @@
 			getMailList() {
 				this.$openSdk.getFriendList((data) => {
 					const originalList = JSON.parse(data.msg)
-					console.log(originalList);
+					// console.log(originalList);
 					this.$u.vuex('vuex_original_mail_list', originalList)
 					const friendList = [{
 						letter: "#",

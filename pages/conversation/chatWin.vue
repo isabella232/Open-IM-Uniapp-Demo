@@ -20,19 +20,20 @@
 				@click="clickScroll" :scroll-into-view="listItem" :style="{height:scrollHeight+'px'}" class="chat-list"
 				scroll-y>
 				<template v-for="msg in msgList">
-					<view :id="msg.positionId" v-if="!(contentTypeFilter(msg.contentType))&&msg.contentType!=112" class="agree-msg">
-						<text v-if="msg.contentType==111">{{msg.sendID==vuex_user_info.uid?"你撤回了一条消息":msg.senderNickName+" 撤回了一条消息"}}</text>
+					<view :id="msg.positionId" v-if="!(contentTypeFilter(msg.contentType))&&msg.contentType!=112"
+						class="agree-msg">
+						<text
+							v-if="msg.contentType==111">{{msg.sendID==vuex_user_info.uid?"你撤回了一条消息":msg.senderNickName+" 撤回了一条消息"}}</text>
 						<text v-else>{{JSON.parse(msg.content).defaultTips}}</text>
 						<!-- <text>you revoke a message you revoke a message you revoke a message you revoke a message you revoke a message</text> -->
 					</view>
-					<OtherMsg
-						v-if="msg.sendID!==vuex_user_info.uid&&!msg.isDelete&&contentTypeFilter(msg.contentType)"
+					<OtherMsg v-if="msg.sendID!==vuex_user_info.uid&&!msg.isDelete&&contentTypeFilter(msg.contentType)"
 						:msg="msg" :key="msg.positionId" :id="msg.positionId" @atOne="atOne" />
 					<MyMsg v-if="msg.sendID==vuex_user_info.uid&&!msg.isDelete&&contentTypeFilter(msg.contentType)"
 						:msg="msg" :key="msg.positionId" :id="msg.positionId" />
 				</template>
 			</scroll-view>
-			
+
 			<view class="bottom-bar">
 				<view :style="{visibility:replyStatus?'visible':'hidden'}" class="reply-msg">
 					<text>{{replyMsg}}</text>
@@ -45,8 +46,10 @@
 					<u-button class="bottom-btn" size="mini" @click="sendTextMsg">发送</u-button>
 				</view>
 			</view>
-			
-			<ActionsBar v-show="operationState" @clickShot="clickShot" @clickAlbum="clickAlbum" @clickVoice="clickVoice" @clickVideo="clickVideo" @clickFile="clickFile" @clickIDcard="clickIDcard" @clickLocation="clickLocation" />
+
+			<ActionsBar v-show="operationState" @clickShot="clickShot" @clickAlbum="clickAlbum" @clickVoice="clickVoice"
+				@clickVideo="clickVideo" @clickFile="clickFile" @clickIDcard="clickIDcard"
+				@clickLocation="clickLocation" />
 		</view>
 		<u-mask :mask-click-able="false" :show="showMask">
 			<view class="mask-warp">
@@ -126,12 +129,12 @@
 				atStatus: false,
 				lastState: false,
 				tip: "",
-				typingTimer:null,
-				inputTimer:null,
-				showSelectFile:false,
-				replyStatus:false,
-				replyMsg:"",
-				screenHeight:0
+				typingTimer: null,
+				inputTimer: null,
+				showSelectFile: false,
+				replyStatus: false,
+				replyMsg: "",
+				screenHeight: 0
 			}
 		},
 		computed: {
@@ -146,7 +149,7 @@
 			ActionsBar
 		},
 		methods: {
-			getFilePath(e){
+			getFilePath(e) {
 				console.log(e);
 				console.log(plus.io.convertAbsoluteFileSystem(e[0].url));
 			},
@@ -187,20 +190,20 @@
 			clickAlbum() {
 				this.actionShow = true
 			},
-			clickVoice(){
+			clickVoice() {
 				this.$u.toast("developing")
 			},
-			clickVideo(){
+			clickVideo() {
 				this.$u.toast("developing")
 			},
-			clickFile(){
+			clickFile() {
 				this.$u.toast("developing")
 				// this.showSelectFile = true
 			},
-			clickIDcard(){
+			clickIDcard() {
 				this.$u.toast("developing")
 			},
-			clickLocation(){
+			clickLocation() {
 				this.$u.toast("developing")
 			},
 			getHistoryMessageList(start) {
@@ -214,43 +217,31 @@
 					const tmpArr = JSON.parse(data.msg)
 					console.log(tmpArr);
 					// const msgTypeList = [101, 102, 103, 104,201]
-					if(tmpArr.length==0){
+					if (tmpArr.length == 0) {
 						setTimeout(() => {
 							this.refresherState = false
 							this.refreshing = false
 							this.lastState = true
-						},0)
+						}, 0)
 						return false
 					}
-					if(this.vuex_conversation.userID!=""){
+					if (this.vuex_conversation.userID != "") {
 						let cids = []
-						tmpArr.map(m=>{
-							if(m.sendID!=this.vuex_user_info.uid) cids.push(m.clientMsgID)
+						tmpArr.map(m => {
+							if (m.sendID != this.vuex_user_info.uid) cids.push(m.clientMsgID)
 						})
-						console.log(cids);
-						if(cids.length>0){
-							this.$openSdk.markC2CMessageAsRead(this.vuex_conversation.userID, cids, (data) => {
-								// console.log(data);
-								if(data.err==undefined){
-									cids.map(cid=>{
-										tmpArr.map(t=>{
-											if(t.clientMsgID==cid) t.isRead = true
-										})
-									})
-									
-								}
-							})
-						}
+						markC2CRead(this.vuex_conversation.userID, uids)
 					}
 
-					tmpArr.forEach(msg =>{
+					tmpArr.forEach(msg => {
 						msg.positionId = "msg" + randomString(19)
-						if(msg.sendID!=this.vuex_user_info.uid&&msg.sessionType==1){
-							msg.senderFaceUrl = this.vuex_conversation.icon || this.vuex_conversation.faceUrl
+						if (msg.sendID != this.vuex_user_info.uid && msg.sessionType == 1) {
+							msg.senderFaceUrl = this.vuex_conversation.icon || this.vuex_conversation
+								.faceUrl
 						}
 					})
-					
-					this.msgList = [...tmpArr, ...this.msgList]
+
+					this.msgList = [...tmpArr, ...this.msgList];
 					setTimeout(() => {
 						this.refresherState = false
 						this.refreshing = false
@@ -259,32 +250,30 @@
 			},
 			newMsgListener() {
 				this.$globalEvent.addEventListener("onRecvNewMessage", (params) => {
-					console.log(params);
 					let res = JSON.parse(params.msg)
 					console.log(res);
 					if (res.contentType === 113) {
 						this.getTypingStatus()
 					} else {
-						console.log(res.recvID);
-						console.log(this.groupID);
-						console.log(this.vuex_user_info);
-						if (res.recvID === this.vuex_user_info.uid || res.recvID === this.groupID){
+						if (res.recvID === this.vuex_user_info.uid || res.recvID === this.groupID) {
 							this.msgList.push(res);
-							this.markC2CRead(this.vuex_conversation.userID, [res.clientMsgID],(params)=>console.log(params))
+							if (res.recvID === res.recvID === this.vuex_user_info.uid) {
+								res.recvID === this.vuex_user_info.uid
+							}
 						}
 					}
 				});
-				this.$globalEvent.addEventListener("onRecvC2CReadReceipt",(params)=>{
+				this.$globalEvent.addEventListener("onRecvC2CReadReceipt", (params) => {
 					console.log(params);
 					let res = JSON.parse(params.msg)
 					const cids = res[0].msgIDList
-					this.msgList.map(msg=>{
-						cids.map(cid=>{
-							if(msg.clientMsgID==cid) msg.isRead = true;
+					this.msgList.map(msg => {
+						cids.map(cid => {
+							if (msg.clientMsgID == cid) msg.isRead = true;
 						})
 					})
 				});
-				this.$globalEvent.addEventListener("onRecvMessageRevoked",(params)=>{
+				this.$globalEvent.addEventListener("onRecvMessageRevoked", (params) => {
 					console.log(params);
 					const delIndex = this.msgList.findIndex(m => m.clientMsgID == params.msg)
 					this.msgList.splice(delIndex, 1)
@@ -330,7 +319,7 @@
 			getScreen() {
 				this.scrollHeight = this.screenHeight - 111;
 			},
-			getEle(){
+			getEle() {
 				// console.log(plus.navigator.getStatusbarHeight());
 				uni.createSelectorQuery().select(".reply-msg").boundingClientRect((val) => {
 					// this.bottomBarHeight = val.height
@@ -357,22 +346,22 @@
 						sourceType: ["album"],
 						success: (res) => {
 							let snapShotPath
-							if(uni.getSystemInfoSync().platform==='ios'){
+							if (uni.getSystemInfoSync().platform === 'ios') {
 								snapShotPath = plus.io.convertLocalFileSystemURL("_www/static/video_cover.png")
-							}else{
+							} else {
 								const thumbPath = getAndroidVideoThumb(res.tempFilePath)
 								const rPath = plus.io.convertLocalFileSystemURL(thumbPath)
 								snapShotPath = plus.io.convertLocalFileSystemURL(rPath)
 							}
-							
+
 							const suffixIndex = res.tempFilePath.lastIndexOf(".") + 1
 							const suffix = res.tempFilePath.slice(suffixIndex)
 							const fullPath = plus.io.convertLocalFileSystemURL(res.tempFilePath)
-							
+
 							let newVideoMessage = _this.$openSdk.createVideoMessageFromFullPath(fullPath,
 								suffix, res.duration,
 								snapShotPath);
-								
+
 							const clientMsgID = _this.$openSdk.sendMessage(
 								newVideoMessage,
 								_this.recvID,
@@ -449,16 +438,17 @@
 							if (this.inputValue.indexOf('@' + user.name) > -1) atList.push(user.id)
 						})
 						console.log(atList);
-						newTextMessage = this.$openSdk.createTextAtMessage(this.inputValue,atList)
+						newTextMessage = this.$openSdk.createTextAtMessage(this.inputValue, atList)
 					} else {
-						if(this.replyStatus){
-							newTextMessage = this.$openSdk.createQuoteMessage(this.inputValue,JSON.stringify(this.replyMsg))
-						}else{
+						if (this.replyStatus) {
+							newTextMessage = this.$openSdk.createQuoteMessage(this.inputValue, JSON.stringify(this
+								.replyMsg))
+						} else {
 							newTextMessage = this.$openSdk.createTextMessage(
 								this.inputValue
 							);
 						}
-						
+
 					}
 					// console.log(newTextMessage);
 					const clientMsgID = this.$openSdk.sendMessage(
@@ -542,31 +532,33 @@
 				}
 			},
 			marAsRead() {
-				if (this.recvID) {
-					this.$openSdk.markSingleMessageHasRead(this.recvID, data => {
-						console.log(data);
-					})
-				} else {
-					this.$openSdk.markGroupMessageHasRead(this.groupID, data => {
-						console.log(data);
-					})
+				if (this.vuex_conversation.unreadCount === undefined || this.vuex_conversation.unreadCount > 0) {
+					if (this.recvID) {
+						this.$openSdk.markSingleMessageHasRead(this.recvID, data => {
+							console.log(data);
+						})
+					} else {
+						this.$openSdk.markGroupMessageHasRead(this.groupID, data => {
+							console.log(data);
+						})
+					}
 				}
 			},
-			markC2CRead(receiverID,msgIDList) {
-				if(receiverID === "") return
+			markC2CRead(receiverID, msgIDList) {
+				if (receiverID === "") return
 				this.$openSdk.markC2CMessageAsRead(receiverID, msgIDList, (data) => {
 					console.log(data);
 				})
 			},
-			setTypingStatus(receiverID,msgTip) {
+			setTypingStatus(receiverID, msgTip) {
 				this.$openSdk.typingStatusUpdate(receiverID, msgTip)
 			},
 			getTypingStatus() {
 				this.tip = 'typing...'
-				if(this.typingTimer!=null) clearTimeout(this.typingTimer)
+				if (this.typingTimer != null) clearTimeout(this.typingTimer)
 				this.typingTimer = setTimeout(() => {
 					this.tip = ''
-				},3000)
+				}, 3000)
 			},
 			delMsgListen() {
 				uni.$on("deleteMsg", ({
@@ -577,10 +569,10 @@
 					this.msgList.splice(delIndex, 1)
 					if (isRevoke) {
 						const revokeItem = {
-							contentType:111,
-							sendID:this.vuex_user_info.uid,
-							positionId:"msg" + randomString(19)
-							}
+							contentType: 111,
+							sendID: this.vuex_user_info.uid,
+							positionId: "msg" + randomString(19)
+						}
 						this.msgList.push(revokeItem)
 						this.$u.toast("revoke msg")
 					} else {
@@ -606,14 +598,14 @@
 					// this.msgList.findIndex(msg=>msg.)
 				})
 			},
-			replayListen(){
-				uni.$on('replyMsg',msgContent => {
+			replayListen() {
+				uni.$on('replyMsg', msgContent => {
 					this.replyMsg = msgContent.content
 					this.replyStatus = true;
 				})
 			},
-			forwardListen(){
-				uni.$on('forwardMsg',msgContent => {
+			forwardListen() {
+				uni.$on('forwardMsg', msgContent => {
 					this.myList.push(newVideoMessage2)
 					this.msgList.push(newVideoMessage2)
 				})
@@ -627,11 +619,11 @@
 			},
 			getMemberList() {
 				if (this.groupID == "") return false
-					this.$openSdk.getGroupMemberList(this.groupID, 0, 0, (data) => {
-						if(data.err==undefined){
-							this.groupMemberList = JSON.parse(data.msg).data
-						}
-					})
+				this.$openSdk.getGroupMemberList(this.groupID, 0, 0, (data) => {
+					if (data.err == undefined) {
+						this.groupMemberList = JSON.parse(data.msg).data
+					}
+				})
 			},
 		},
 		watch: {
@@ -645,12 +637,12 @@
 				},
 				deep: true
 			},
-			inputValue(newVal,oldVal){
-				if(this.inputTimer==null){
-					this.inputTimer = setTimeout(()=>{
-						this.setTypingStatus(this.vuex_conversation.userID,"yes")
+			inputValue(newVal, oldVal) {
+				if (this.inputTimer == null) {
+					this.inputTimer = setTimeout(() => {
+						this.setTypingStatus(this.vuex_conversation.userID, "yes")
 						this.inputTimer = null
-					},1500)
+					}, 1500)
 				}
 			}
 		},
@@ -685,9 +677,10 @@
 </script>
 
 <style lang="scss">
-	page{
+	page {
 		overflow-y: hidden;
 	}
+
 	/deep/.u-slot-content {
 		justify-content: center;
 	}
@@ -715,9 +708,9 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		
-		
-		.reply-msg{
+
+
+		.reply-msg {
 			padding-left: 24rpx;
 			height: 20px;
 			background-color: #e8f2ff;
@@ -813,7 +806,7 @@
 					margin: 0;
 				}
 			}
-			
+
 			.press-btn {
 				margin-top: 5vh;
 				text-align: center;
