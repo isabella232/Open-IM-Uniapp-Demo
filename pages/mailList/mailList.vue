@@ -83,7 +83,7 @@
 			getFriendApplicationList() {
 				this.$openSdk.getFriendApplicationList((data) => {
 					this.applicationList = JSON.parse(data.msg)
-					this.$u.vuex('vuex_group_application_list', this.applicationList)
+					this.$u.vuex('vuex_friend_application_list', this.applicationList)
 					const tmpArr = this.applicationList.filter(a => a.flag === 0)
 					this.application = tmpArr.length
 					this.$u.vuex('vuex_friend_application_num', this.application)
