@@ -230,7 +230,7 @@
 						tmpArr.map(m => {
 							if (m.sendID != this.vuex_user_info.uid) cids.push(m.clientMsgID)
 						})
-						markC2CRead(this.vuex_conversation.userID, uids)
+						this.markC2CRead(this.vuex_conversation.userID, cids)
 					}
 
 					tmpArr.forEach(msg => {
