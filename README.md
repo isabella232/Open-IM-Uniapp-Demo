@@ -1,5 +1,8 @@
 # OpenIM Demo for uni-app(android&ios app)
 
+> **Notice: This repository is only support OpenIM Server v1.x. If you are using OpenIM Server v2.x,please wait a moment,we are developing...**<br/>
+> Of course,you can experience other demo at first,such as [Electron](https://github.com/OpenIMSDK/OpenMetaOffice-Electron) and [Flutter](https://github.com/OpenIMSDK/OpenMetaOffice-Flutter)
+
 ## About us
 
 Open im includes instant messaging and real-time audio and video server and client SDK, which realizes important features such as high performance, lightweight and easy expansion. By integrating open im components and privatizing the deployment server, developers can quickly integrate instant messaging and real-time audio and video interaction into their own applications free of charge, and ensure the security and privacy of business data.[Click here](https://www.rentsoft.cn/) to visit our official website to learn more about Open IM.
