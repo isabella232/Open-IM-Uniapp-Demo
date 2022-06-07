@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OpenIMModule : DCUniModule <Open_im_sdkIMSDKListener, Open_im_sdkOnAdvancedMsgListener, Open_im_sdkOnFriendshipListener, Open_im_sdkOnConversationListener, Open_im_sdkOnGroupListener>
+@interface OpenIMModule : DCUniModule <Open_im_sdk_callbackOnConnListener,Open_im_sdk_callbackOnUserListener, Open_im_sdk_callbackOnAdvancedMsgListener, Open_im_sdk_callbackOnFriendshipListener, Open_im_sdk_callbackOnConversationListener, Open_im_sdk_callbackOnGroupListener>
 
 - (void)pushEvent:(NSString *) eventName msg:(nullable id) msg;
 

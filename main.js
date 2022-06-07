@@ -1,24 +1,19 @@
-import Vue from 'vue'
-import App from './App'
-import { openSdk,globalEvent } from './utils/OpenIMSDK.js'
-import uView from "uview-ui";
-import store from '@/store';
-
-let vuexStore = require('@/store/$u.mixin.js');
-Vue.mixin(vuexStore);
-
+import Vue from "vue";
+import App from "./App";
+import uView from "@/uni_modules/uview-ui";
+import store from "./src/store";
+import im from "./config/im";
+import api from "./service";
+import { toast } from "./common/toast";
 Vue.use(uView);
-
-Vue.prototype.$store = store
-Vue.prototype.$openSdk = openSdk
-Vue.prototype.$globalEvent = globalEvent
-
-Vue.config.productionTip = false
-
-App.mpType = 'app'
-
+Vue.config.productionTip = false;
+Vue.prototype.$store = store;
+Vue.prototype.$im = im;
+Vue.prototype.$api = api;
+Vue.prototype.$toast = toast;
+App.mpType = "app";
 const app = new Vue({
-	store,
-    ...App
-})
-app.$mount()
+  ...App,
+  store,
+});
+app.$mount();

@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CallbackProxy : NSObject <Open_im_sdkBase>
+@interface CallbackProxy : NSObject <Open_im_sdk_callbackBase>
 
 - (id)initWithCallback:(UniModuleKeepAliveCallback)callback;
 

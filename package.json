@@ -1,25 +1,6 @@
 {
-  "name": "Open-IM-Uniapp-Demo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
   "dependencies": {
-    "md5": "^2.3.0",
-    "uview-ui": "^1.8.4"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OpenIMSDK/Open-IM-Uniapp-Demo.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/OpenIMSDK/Open-IM-Uniapp-Demo/issues"
-  },
-  "homepage": "https://github.com/OpenIMSDK/Open-IM-Uniapp-Demo#readme"
+    "js-md5": "^0.7.3",
+    "open-im-sdk": "^2.0.3"
+  }
 }
