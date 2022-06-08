@@ -113,6 +113,7 @@ function loginSuccess() {
     if (data) {
       data = JSON.parse(data);
       store.commit("user/set_userInfo", data);
+      // console.log(data);
     }
   });
   uni.switchTab({

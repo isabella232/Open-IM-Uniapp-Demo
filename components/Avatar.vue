@@ -13,7 +13,14 @@
       :height="size"
       @error="errorMessage"
     >
-      <view class="Avatar-image-error" slot="error">
+      <view
+        class="Avatar-image-error"
+        slot="error"
+        :style="{
+          'line-height': size,
+          height: size,
+        }"
+      >
         {{ shortName }}
       </view>
     </u-image>
@@ -48,7 +55,7 @@ export default {
     shortName() {
       const enNameReg = /[A-Za-z0-9]$/g; //是否英文名
       if (enNameReg.test(this.name)) {
-        return this.name.substr(0, 3);
+        return this.name.substr(0, 2);
       } else {
         return this.name.substr(-2);
       }
@@ -65,6 +72,9 @@ export default {
   &-image {
     /deep/ .u-image__error {
       background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     &-error {
       overflow: hidden;

@@ -7,3 +7,8 @@ export function checkResponseData(res) {
     return res.data;
   }
 }
+// function logout() {
+//   this.operationID = "";
+//   this.userID = "";
+//   this.cus_token = "";
+// }

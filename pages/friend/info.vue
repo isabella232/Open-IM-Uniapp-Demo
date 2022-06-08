@@ -11,11 +11,11 @@
       </view>
     </view>
     <view class="bottom">
-      <view class="bottom-item">
+      <view class="bottom-item" @click="toRemark">
         <text class="text">备注</text>
         <u-icon class="icon" size="22" name="arrow-right" color="#999"></u-icon>
       </view>
-      <view class="bottom-item">
+      <view class="bottom-item" @click="toUserId">
         <text class="text">ID号</text>
         <u-icon class="icon" size="22" name="arrow-right" color="#999"></u-icon>
       </view>
@@ -29,7 +29,7 @@
         <image class="image" src="@/static/images/friend/phone.png" />
         <text class="text text1">司聊电话</text>
       </view>
-      <view class="operation-item">
+      <view class="operation-item" @click="toSend">
         <image class="image" src="@/static/images/friend/add.png" />
         <text class="text text2">添加好友</text>
       </view>
@@ -44,22 +44,21 @@ export default {
   components: { Avatar },
   data() {
     return {
-      id: "",
+      userID: "",
       friendInfo: {
         publicInfo: {
           userID: "",
           nickname: "",
           faceURL: "",
-          gender: "",
+          gender: 1,
         },
-        friendInfo: null,
         blackInfo: null,
       },
     };
   },
   methods: {
     getUsersInfo() {
-      this.$im.getUsersInfo(this.operationID, [this.id], (res) => {
+      this.$im.getUsersInfo(this.operationID, [this.userID], (res) => {
         if (res.errCode !== 0) {
           this.$toast(res.errMsg);
         } else {
@@ -71,12 +70,27 @@ export default {
     },
     toConversation() {
       uni.navigateTo({
-        url: "/pages/conversation/index?sessionType=1&sourceID=" + this.id,
+        url: "/pages/conversation/index?sessionType=1&sourceID=" + this.userID,
+      });
+    },
+    toSend() {
+      uni.navigateTo({
+        url: "./send?userID=" + this.friendInfo.publicInfo.userID,
+      });
+    },
+    toRemark() {
+      uni.navigateTo({
+        url: "./remark?userID=" + this.friendInfo.publicInfo.userID,
+      });
+    },
+    toUserId() {
+      uni.navigateTo({
+        url: "./userId?userID=" + this.friendInfo.publicInfo.userID,
       });
     },
   },
   onLoad(param) {
-    this.id = param.id;
+    this.userID = param.id || "18381415165";
     this.getUsersInfo();
   },
   computed: {
@@ -147,9 +161,11 @@ export default {
       }
       .text {
         font-size: 28rpx;
+        margin-top: 12rpx;
       }
       .text1 {
-        color: #b8b8b8;
+        color: #1d6bed;
+        // color: #b8b8b8;
       }
       .text2 {
         color: #1d6bed;

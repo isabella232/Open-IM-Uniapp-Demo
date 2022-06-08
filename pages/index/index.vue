@@ -6,7 +6,9 @@
         <Avatar :src="userInfo.faceURL" :name="userInfo.nickname" />
       </view>
       <view class="userInfo-center">
-        <view class="company">{{ userInfo.attachedInfo }}</view>
+        <view class="company" v-show="userInfo.attachedInfo">{{
+          userInfo.attachedInfo
+        }}</view>
         <view class="name">
           <view class="nickname">{{ userInfo.nickname }}</view>
           <view class="userStatus">手机在线</view>
@@ -28,14 +30,17 @@
         v-model="searchContent"
         :showAction="false"
         placeholder="搜索"
-      ></u-search>
+        disabled
+        @click="routerGo('./search')"
+      />
     </view>
     <view class="container">
       <uni-swipe-action>
         <uni-swipe-action-item
-          :right-options="actionOptions"
+          :right-options="filterActionOptions(item)"
           v-for="(item, index) in messageList"
           :key="index"
+          @click="(v) => swipeActionClick(v, item)"
         >
           <MessageCard :card="item">
             <editor
@@ -50,7 +55,7 @@
     </view>
     <view v-show="addPop.show" class="addContent" @click="addPop.show = false">
       <view class="addContent-pop" :style="addPop.style">
-        <view class="addContent-pop-item">
+        <view class="addContent-pop-item" @click="scanCode">
           <image class="image" src="@/static/images/message/scan.png"></image>
           <text class="text">扫一扫</text>
         </view>
@@ -64,7 +69,7 @@
           ></image>
           <text class="text">添加好友</text>
         </view>
-        <view class="addContent-pop-item">
+        <view class="addContent-pop-item" @click="routerGo('/pages/group/add')">
           <image
             class="image"
             src="@/static/images/message/addGroup.png"
@@ -86,6 +91,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { toast } from "@/common/toast";
+import { scan } from "@/utils/scan";
 import MessageCard from "@/components/MessageCard";
 import Avatar from "@/components/Avatar.vue";
 export default {
@@ -101,6 +107,12 @@ export default {
           },
         },
         {
+          text: "取消置顶",
+          style: {
+            backgroundColor: "#ccc",
+          },
+        },
+        {
           text: "移除",
           style: {
             backgroundColor: "#FFAB41",
@@ -110,7 +122,7 @@ export default {
       addPop: { show: false, style: {} },
     };
   },
-  onLoad() {
+  onShow() {
     // #ifdef APP-PLUS
     this.init();
     // #endif
@@ -126,6 +138,7 @@ export default {
         } else {
           const data = JSON.parse(res.data);
           this.$store.commit("message/setMessageList", data);
+          // console.log(data);
         }
       });
     },
@@ -142,6 +155,9 @@ export default {
           this.addPop.show = true;
         })
         .exec();
+    },
+    scanCode() {
+      scan();
     },
     routerGo(url) {
       if (url) {
@@ -166,6 +182,38 @@ export default {
           editorContext.setContents({ html: content });
         })
         .exec();
+    },
+    filterActionOptions(item) {
+      const { isPinned } = item;
+      const list = [...this.actionOptions];
+      if (isPinned) {
+        list.splice(0, 1);
+      } else {
+        list.splice(1, 1);
+      }
+      return list;
+    },
+    swipeActionClick({ index }, item) {
+      const { conversationID, isPinned } = item;
+      if (index === 0) {
+        this.$im.pinConversation(
+          this.operationID,
+          conversationID,
+          !isPinned,
+          (res) => {
+            if (res.errCode === 0) {
+              this.init();
+            }
+          }
+        );
+      } else if (index === 1) {
+        this.$im.deleteConversation(this.operationID, conversationID, (res) => {
+          console.log(res);
+          if (res.errCode === 0) {
+            this.init();
+          }
+        });
+      }
     },
   },
   computed: {
@@ -229,6 +277,7 @@ $pdLeft: 44rpx;
           padding-left: 20rpx;
           position: relative;
           white-space: nowrap;
+          margin-top: 8rpx;
           &::before {
             content: "";
             background-color: #10cc64;
@@ -263,15 +312,20 @@ $pdLeft: 44rpx;
     margin-top: 32rpx;
     .indexEditor {
       height: 24px;
+      line-height: 24px;
       min-height: 24px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
       font-size: 26rpx;
       color: #666666;
-      /deep/ img {
-        width: 20px;
-        height: 20px;
+      /deep/ .ql-editor {
+        p {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        img {
+          width: 20px;
+          height: 20px;
+        }
       }
     }
   }

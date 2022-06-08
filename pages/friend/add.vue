@@ -6,11 +6,11 @@
         placeholder="通过手机号/ID号搜索添加"
         disabled
         :showAction="false"
-        @click="routerGo"
+        @click="routerGo('./search')"
       ></u-search>
     </view>
     <view class="content">
-      <view class="item">
+      <view class="item" @click="routerGo('./qrcode')">
         <image class="image" src="@/static/images/friend/qrcode.png"></image>
         <view class="center">
           <view class="title">我的二维码</view>
@@ -18,7 +18,7 @@
         </view>
         <u-icon class="icon" size="22" name="arrow-right" color="#999"></u-icon>
       </view>
-      <view class="item">
+      <view class="item" @click="scanCode">
         <image class="image" src="@/static/images/friend/scan.png"></image>
         <view class="center">
           <view class="title">扫一扫</view>
@@ -31,15 +31,19 @@
 </template>
 
 <script>
+import { scan } from "@/utils/scan";
 export default {
   data() {
     return { searchContent: "" };
   },
   methods: {
-    routerGo() {
+    routerGo(url) {
       uni.navigateTo({
-        url: "./search",
+        url,
       });
+    },
+    scanCode() {
+      scan("1");
     },
   },
 };

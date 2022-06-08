@@ -1,13 +1,24 @@
 <template>
-  <view class="MessageCard" @click="toConversation">
+  <view
+    :class="['MessageCard', card.isPinned ? 'MessageCard-isPinned' : '']"
+    @click="toConversation"
+  >
     <Avatar
-      v-if="card.faceURL"
+      v-if="card.conversationType === 1"
       class="faceURL"
       :src="card.faceURL"
       :name="card.showName"
     />
     <u-image
-      v-else-if="card.conversationType === 2"
+      v-else-if="card.conversationType === 2 && card.faceURL"
+      class="faceURL"
+      :src="card.faceURL"
+      width="48px"
+      height="48px"
+      radius="6"
+    />
+    <u-image
+      v-else
       class="faceURL"
       src="@/static/images/message/group-icon.png"
       width="48px"
@@ -19,14 +30,23 @@
         <text class="name">{{ card.showName }}</text>
         <text class="date">{{ card.latestMsgSendTime | formatTime }}</text>
       </view>
-      <slot v-if="contentType === 101" name="msg" />
-      <view v-else class="msg" @click.stop="test">{{ msg }}</view>
+      <view class="msgContent">
+        <slot v-if="contentType === 101" name="msg" />
+        <view v-else class="msg">{{ msg }}</view>
+        <text v-show="unreadCount" class="unReadCount">
+          {{ unreadCount }}
+        </text>
+      </view>
     </view>
   </view>
 </template>
 
 <script>
 import { parseTime } from "@/utils/index";
+import {
+  formatMessageCardMessage,
+  getMessageCardContentType,
+} from "@/utils/formatMessage";
 import Avatar from "@/components/Avatar.vue";
 export default {
   components: { Avatar },
@@ -56,57 +76,12 @@ export default {
     };
   },
   methods: {
-    test() {
-      console.log(this.card);
-      // const latestMsg = JSON.parse(this.card.latestMsg);
-      // console.log(latestMsg);
-      // const content = JSON.parse(latestMsg.content);
-      // console.log(content);
-      // const jsonDetail = JSON.parse(content.jsonDetail);
-      // console.log(jsonDetail);
-    },
     getImageUrl() {
       const { conversationType, faceURL } = this.card;
       if (conversationType === 2) {
         return "@/static/images/message/group-icon.png";
       }
       return faceURL;
-    },
-    getNickname(nickname = "", conversationType = 1) {
-      if (conversationType === 1) {
-        return "";
-      }
-      return nickname ? nickname + " :" : "";
-    },
-    getContent(c) {
-      let content = c;
-      let jsonDetail = null;
-      switch (this.contentType) {
-        case 101: //文字
-          return content;
-        case 102:
-          return "[图片]";
-        case 103:
-          return "[语音]";
-        case 104:
-          return "[视频]";
-        case 105:
-          return "[文件]";
-        case 110:
-          return "[自定义消息]";
-        case 1204:
-          return `你们已经是好友啦，开始聊天吧~`;
-        case 1501:
-          content = JSON.parse(content);
-          jsonDetail = JSON.parse(content.jsonDetail);
-          return `${jsonDetail.opUser.nickname}创建了群聊`;
-        case 1511:
-          content = JSON.parse(content);
-          jsonDetail = JSON.parse(content.jsonDetail);
-          return `${jsonDetail.opUser.nickname}解散了群组`;
-        default:
-          return content;
-      }
     },
     toConversation() {
       const sourceID =
@@ -118,18 +93,15 @@ export default {
   },
   computed: {
     msg() {
-      let latestMsg = this.card.latestMsg;
-      if (!latestMsg) return "";
-      latestMsg = JSON.parse(this.card.latestMsg);
-      const content = this.getContent(latestMsg.content);
-      return `${this.getNickname(latestMsg.senderNickname)}${content}`;
+      return formatMessageCardMessage(this.card);
     },
     contentType() {
-      let latestMsg = this.card.latestMsg;
-      if (!latestMsg) return 110;
-      latestMsg = JSON.parse(this.card.latestMsg);
-      return latestMsg.contentType;
+      return getMessageCardContentType(this.card);
     },
+    unreadCount(){
+      const count=Number(this.card.unreadCount)||0
+      return count>99?'99+':count
+    }
   },
   filters: {
     formatTime(time) {
@@ -142,7 +114,7 @@ export default {
       if (now - time < gg) {
         //5分钟内
         return "刚刚";
-      } else if (now - time <= today0) {
+      } else if (time >= today0) {
         //今天
         return parseTime(time, "{h}:{i}");
       } else if (now - time > oneDayTime && now - time < oneDayTime * 2) {
@@ -157,10 +129,13 @@ export default {
 <style lang="scss" scoped>
 $pdLeft: 44rpx;
 .MessageCard {
-  padding: 0 $pdLeft;
-  margin-bottom: 36rpx;
+  padding: 18rpx $pdLeft;
   display: flex;
   flex-wrap: nowrap;
+  border-bottom: 2rpx solid #fff;
+  &-isPinned {
+    background-color: #f7f7f7;
+  }
   .faceURL {
     margin-right: 24rpx;
   }
@@ -188,12 +163,30 @@ $pdLeft: 44rpx;
         color: #999999;
       }
     }
-    .msg {
-      font-size: 26rpx;
-      color: #666666;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .msgContent {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      .msg {
+        font-size: 26rpx;
+        color: #666666;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+      }
+      .unReadCount {
+        flex-shrink: 0;
+        border-radius: 50%;
+        background-color: #f44038;
+        width: 50rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+        text-align: center;
+        font-size: 24rpx;
+        color: #ffffff;
+        margin-left: 8rpx;
+      }
     }
   }
 }

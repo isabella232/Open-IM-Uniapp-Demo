@@ -15,8 +15,17 @@
       "style": {
         "navigationStyle": "custom",
         "usingSwanComponents": {
-					"editor": "dynamicLib://editorLib/editor"
-				}
+          "editor": "dynamicLib://editorLib/editor"
+        }
+      }
+    },
+    {
+      "path": "pages/index/search",
+      "style": {
+        "navigationStyle": "custom",
+        "usingSwanComponents": {
+          "editor": "dynamicLib://editorLib/editor"
+        }
       }
     },
     {
@@ -58,7 +67,49 @@
     {
       "path": "pages/friend/send",
       "style": {
-        "navigationBarTitleText": "好友验证"
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/friend/qrcode",
+      "style": {
+        "navigationBarTitleText": "二维码"
+      }
+    },
+    {
+      "path": "pages/friend/remark",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/friend/userId",
+      "style": {
+        "navigationBarTitleText": "ID号"
+      }
+    },
+    {
+      "path": "pages/group/add",
+      "style": {
+        "navigationBarTitleText": "添加群聊"
+      }
+    },
+    {
+      "path": "pages/group/search",
+      "style": {
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/group/info",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    },
+    {
+      "path": "pages/group/send",
+      "style": {
+        "navigationBarTitleText": "验证信息"
       }
     },
     {
@@ -66,8 +117,8 @@
       "style": {
         "navigationStyle": "custom",
         "usingSwanComponents": {
-					"editor": "dynamicLib://editorLib/editor"
-				}
+          "editor": "dynamicLib://editorLib/editor"
+        }
       }
     }
   ],

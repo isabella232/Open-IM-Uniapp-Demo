@@ -7,5 +7,6 @@ export function app_login(data) {
     secret: commonConfig.secret,
     platform: store.getters.platform,
   };
+  // console.log(d);
   return post("/auth/user_token", d);
 }

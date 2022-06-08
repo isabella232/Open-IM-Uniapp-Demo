@@ -1,14 +1,14 @@
 <template>
   <view class="conversation">
-    <u-navbar class="navbar" :safeAreaInsetTop="true" @leftClick="leftClick">
+    <u-navbar class="navbar" :safeAreaInsetTop="true" autoBack>
       <view class="navbar-center" slot="center">
         <view class="name">
           <view class="nickname">{{ conversationData.showName }}</view>
-          <view class="userStatus">手机在线</view>
+          <view class="userStatus" v-show="isSingleChat">手机在线</view>
         </view>
       </view>
       <view class="navbar-right" slot="right">
-        <view class="right-item">
+        <view class="right-item" v-show="isSingleChat">
           <image class="image" src="@/static/images/conversation/phone.png" />
         </view>
         <view class="right-item">
@@ -26,9 +26,12 @@
         v-for="(item, index) in messageList"
         :key="index"
         :card="item"
+        :isSingleChat="isSingleChat"
+        :isGroupChat="isGroupChat"
         class="messageContent-item"
       >
         <editor
+          v-if="item.contentType === 101"
           slot="msg"
           read-only
           :class="['cEditor-' + index, 'cEditor']"
@@ -144,6 +147,7 @@ export default {
     return {
       sessionType: "",
       sourceID: "",
+      clientMsgID: "",
       getMessageOptions: {
         userID: "", //拉取单个用户之间的聊天消息
         groupID: "", //拉取群的聊天消息
@@ -202,12 +206,24 @@ export default {
             this.$toast(res.errMsg);
           } else {
             const data = JSON.parse(res.data);
-            this.messageList = data;
+            if (this.messageList.length) {
+              data.map((i) => {
+                const index = this.messageList.findIndex(
+                  (j) => i.clientMsgID === j.clientMsgID
+                );
+                if (index === -1) {
+                  this.messageList.push(i);
+                }
+              });
+            } else {
+              this.messageList = data;
+            }
             this.resetScrollTo();
           }
         }
       );
     },
+    initData() {},
     editorReady() {
       uni
         .createSelectorQuery()
@@ -235,14 +251,12 @@ export default {
       this.showEmoji = false;
       this.showOther = false;
       this.isFocus = true;
-      this.resetScrollTo();
     },
     editorBlur() {
       this.keyboardData.height = 0;
       this.isFocus = false;
     },
     editorInput(e) {
-      console.log(e.detail);
       this.sendData.html = e.detail.html;
       this.sendData.text = e.detail.text;
       const query = uni.createSelectorQuery().in(this);
@@ -252,7 +266,6 @@ export default {
           this.keyboardData.inputHeight = res.height + "px";
         })
         .exec();
-      this.resetScrollTo();
     },
     insertImage(src) {
       const interval = setInterval(() => {
@@ -318,6 +331,7 @@ export default {
         }
       );
       this.editorCtx.clear();
+      this.resetScrollTo();
     },
     cEditorReady(className, item) {
       uni
@@ -336,7 +350,7 @@ export default {
         setTimeout(() => {
           uni
             .createSelectorQuery()
-            .select(".messageContent")
+            .select(".conversation")
             .boundingClientRect((res) => {
               uni.pageScrollTo({
                 scrollTop: res.height,
@@ -344,16 +358,14 @@ export default {
               });
             })
             .exec();
-        }, 0);
+        }, 1000);
       });
-    },
-    leftClick() {
-      uni.navigateBack();
     },
   },
   onLoad(param) {
     this.sessionType = param.sessionType;
     this.sourceID = param.sourceID;
+    this.clientMsgID = param.clientMsgID;
     this.getMessageOptions.userID =
       this.sessionType === "1" ? param.sourceID : ""; //单聊
     this.getMessageOptions.groupID =
@@ -362,8 +374,10 @@ export default {
     uni.onKeyboardHeightChange(this.keyboardHeightChange);
     this.init();
     // #endif
+    // #ifdef H5
+    this.initData();
+    // #endif
   },
-  onReady() {},
   onUnload() {
     // #ifdef APP-PLUS
     uni.offKeyboardHeightChange(this.keyboardHeightChange);
@@ -385,9 +399,16 @@ export default {
       const emojiHeight = this.showEmoji ? 222 : 0;
       return inputHeight + emojiHeight + "px";
     },
+    isSingleChat() {
+      return this.sessionType === "1";
+    },
+    isGroupChat() {
+      return this.sessionType === "2";
+    },
   },
   watch: {
-    successTimes() {
+    successTimes(n) {
+      console.log(n);
       this.init();
     },
     newMessageTimes() {
@@ -463,12 +484,13 @@ export default {
     }
   }
   .messageContent {
-    padding-top: 44px;
+    padding-top: 54px;
     &-item {
       .cEditor {
-        height: 46rpx;
+        height: auto;
         min-height: 46rpx;
         line-height: 46rpx;
+        word-break: break-all;
         /deep/ img {
           width: 20px;
           height: 20px;

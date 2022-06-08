@@ -58,7 +58,9 @@ const mutations = {
     state.newMessageTimes++;
   },
 };
-const actions = {};
+const actions = {
+  // login(state, userInfo) {},
+};
 export default {
   namespaced: true,
   state,

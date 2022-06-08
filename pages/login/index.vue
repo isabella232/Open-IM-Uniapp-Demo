@@ -136,9 +136,7 @@ export default {
   onLoad() {
     this.init();
   },
-  onReady() {
-    this.startLogin();
-  },
+  onReady() {},
   methods: {
     init() {},
     loginTypeChange(index) {

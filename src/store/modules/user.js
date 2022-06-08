@@ -8,11 +8,11 @@ const state = {
     userID: "",
     nickname: "",
     faceURL: "",
-    gender: "",
+    gender: 1,
     phoneNumber: "",
-    birth: "",
+    birth: 0,
     email: "",
-    createTime: "",
+    createTime: 0,
     ex: "",
     attachedInfo: "",
   },
@@ -35,13 +35,14 @@ const mutations = {
   },
 };
 const actions = {
-  login({ commit }, userInfo) {
+  login({commit}, userInfo) {
     return new Promise((resolve, reject) => {
       app_login(userInfo)
         .then((res) => {
+          // console.log(res);
           if (res.errCode === 0) {
-            commit("set_token", res.data.token);
-            commit("set_userID", res.data.userID);
+            commit("set_token",res.data.token)
+            commit("set_userID",res.data.userID)
             resolve();
           } else {
             reject({ message: res.errMsg });
