@@ -5,7 +5,7 @@ const state = {
       fromNickname: "hihihi",
       fromFaceURL: "ic_avatar_05",
       fromGender: 0,
-      toUserID: "3493949860",
+      toUserID: "3798435312",
       toNickname: "OpenIM-sk",
       toFaceURL:
         "https://storage-online.rentsoft.cn/openim/1655861026796104324-1488665021329751810image_cropper_1655861022512.jpg",
@@ -13,7 +13,7 @@ const state = {
       handleResult: 1,
       reqMsg: "我是hihihi",
       createTime: 1656515436,
-      handlerUserID: "3493949860",
+      handlerUserID: "3798435312",
       handleMsg: "",
       handleTime: 1656515436,
       ex: "",
@@ -424,15 +424,15 @@ const state = {
 };
 const mutations = {
   set_friendNoticeList(state, list) {
-    // console.log("friendNoticeList", list);
+    console.log("friendNoticeList", list);
     state.friendNoticeList = list;
   },
   set_selfFriendNoticeList(state, list) {
-    // console.log("selfFriendNoticeList", list);
+    console.log("selfFriendNoticeList", list);
     state.selfFriendNoticeList = list;
   },
   set_groupNoticeList(state, list) {
-    // console.log("groupNoticeList", list);
+    console.log("groupNoticeList", list);
     state.groupNoticeList = list;
   },
   set_selfGroupNoticeList(state, list) {

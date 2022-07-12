@@ -30,7 +30,7 @@
         :key="item.friendInfo.userID"
         class="faceURL"
         :src="item.friendInfo.faceURL"
-        :name="item.friendInfo.remark||item.friendInfo.nickname"
+        :name="item.friendInfo.remark || item.friendInfo.nickname"
         size="39px"
         @click="friendItemClick(item)"
       />
@@ -77,7 +77,7 @@
             size="42px"
           />
           <view class="nickname" @click="friendItemClick(item)">
-            {{item.friendInfo.remark|| item.friendInfo.nickname }}
+            {{ item.friendInfo.remark || item.friendInfo.nickname }}
           </view>
         </view>
       </u-checkbox-group>
@@ -161,11 +161,13 @@
             <Avatar
               class="faceURL"
               :src="item.friendInfo.faceURL"
-              :name="item.friendInfo.remark||item.friendInfo.nickname"
+              :name="item.friendInfo.remark || item.friendInfo.nickname"
               size="42px"
             />
             <view class="nickname">
-              <text class="text">{{ item.friendInfo.remark||item.friendInfo.nickname }}</text>
+              <text class="text">{{
+                item.friendInfo.remark || item.friendInfo.nickname
+              }}</text>
               <u-button
                 class="button"
                 type="primary"
@@ -223,7 +225,7 @@
             :key="item.friendInfo.userID"
             class="faceURL"
             :src="item.friendInfo.faceURL"
-            :name="item.friendInfo.remark||item.friendInfo.nickname"
+            :name="item.friendInfo.remark || item.friendInfo.nickname"
             size="34px"
           />
           <Avatar
@@ -866,8 +868,9 @@ export default {
     keyWordFriendList() {
       return this.friendList.filter((i) => {
         return (
-          i.friendInfo.phoneNumber.includes(this.keyword) ||
-          i.friendInfo.nickname.includes(this.keyword)
+          (i.friendInfo.phoneNumber.includes(this.keyword) ||
+            i.friendInfo.nickname.includes(this.keyword)) &&
+          !i.blackInfo
         );
       });
     },

@@ -12,7 +12,7 @@
           @change="searchContentChange"
           @search="searchConfirm"
           @custom="back"
-        ></u-search>
+        />
         <view
           class="search-content"
           @click="searchConfirm"
@@ -33,12 +33,11 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      searchContent: "",
+      searchContent: "3144406613",
       isEmpty: false,
     };
   },
-  onLoad() {
-  },
+  onLoad() {},
   methods: {
     searchContentChange() {
       this.isEmpty = false;
@@ -55,7 +54,7 @@ export default {
             this.isEmpty = true;
           } else {
             uni.navigateTo({
-              url: "./info?id=" + this.searchContent,
+              url: "./info?id=" + this.searchContent + "&pageStatus=search",
             });
           }
         }
@@ -63,7 +62,7 @@ export default {
       // #endif
       // #ifdef H5
       uni.navigateTo({
-        url: "./info?id=" + this.searchContent,
+        url: "./info?id=" + this.searchContent + "&pageStatus=search",
       });
       // #endif
     },

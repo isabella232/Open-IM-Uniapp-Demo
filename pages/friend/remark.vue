@@ -4,7 +4,7 @@
       <view slot="right">
         <u-button
           type="primary"
-          text="发送"
+          text="保存"
           size="mini"
           @click="confirm"
         ></u-button>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -64,24 +65,21 @@ export default {
   },
   methods: {
     init() {
-      this.$im.getUsersInfo(
-        this.$store.getters.operationID,
-        [this.userID],
-        (res) => {
-          if (res.errCode !== 0) {
-            this.$toast(res.errMsg);
-          } else {
-            let list = JSON.parse(res.data);
-            let item = list[0];
-            this.friendInfo = item;
-            this.sendForm.remark = this.friendInfo.friendInfo.remark;
-          }
+      this.$im.getUsersInfo(this.operationID, [this.userID], (res) => {
+        if (res.errCode !== 0) {
+          this.$toast(res.errMsg);
+        } else {
+          let list = JSON.parse(res.data);
+          let item = list[0];
+          this.friendInfo = item;
+          this.sendForm.remark = this.friendInfo.friendInfo.remark;
         }
-      );
+      });
     },
     confirm() {
+      console.log(this.sendForm.remark);
       this.$im.setFriendRemark(
-        this.$store.getters.operationID,
+        this.operationID,
         {
           toUserID: this.userID, // 用户ID
           remark: this.sendForm.remark, // 备注
@@ -100,6 +98,9 @@ export default {
   onLoad(param) {
     this.userID = param.userID;
     this.init();
+  },
+  computed: {
+    ...mapGetters(["operationID"]),
   },
 };
 </script>

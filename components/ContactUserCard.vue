@@ -15,7 +15,7 @@
       <view
         v-show="card.handleResult === 0 && type === 0"
         class="application"
-        @click.stop="acceptFriendApplication"
+        @click.stop="acceptFriend"
       >
         接受
       </view>
@@ -36,6 +36,7 @@
 
 <script>
 import Avatar from "@/components/Avatar.vue";
+import { mapGetters } from "vuex";
 export default {
   components: { Avatar },
   props: {
@@ -49,7 +50,8 @@ export default {
     return {};
   },
   methods: {
-    acceptFriendApplication() {
+    acceptFriend() {
+      console.log(this.fromUserID);
       this.$im.acceptFriendApplication(
         this.operationID,
         {
@@ -58,7 +60,7 @@ export default {
         },
         (res) => {
           console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             this.$toast("操作成功");
             this.$emit("refresh");
           } else {
@@ -85,16 +87,10 @@ export default {
           url: "./applicationInfo",
         });
       }
-      //测试
-      // if (this.type === 0) {
-      //   this.$store.commit("contacts/set_friendNoticeItem", this.card);
-      //   uni.navigateTo({
-      //     url: "./applicationInfo",
-      //   });
-      // }
     },
   },
   computed: {
+    ...mapGetters(["operationID"]),
     fromFaceURL() {
       if (this.type === 1) {
         return this.card.toFaceURL;

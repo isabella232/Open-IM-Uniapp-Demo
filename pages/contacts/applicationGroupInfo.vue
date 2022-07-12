@@ -126,6 +126,12 @@ export default {
         }
       );
     },
+    init2() {
+      //#ifdef APP-PLUS
+      this.$store.dispatch("contacts/get_groupNoticeList", this.$im);
+      this.$store.dispatch("contacts/get_selfGroupNoticeList", this.$im);
+      //#endif
+    },
     acceptGroupApplication() {
       this.$im.acceptGroupApplication(
         this.operationID,
@@ -134,8 +140,9 @@ export default {
         this.refuse.content, // 回复消息
         (res) => {
           console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             this.$toast("已同意");
+            this.init2()
             setTimeout(() => {
               uni.navigateBack();
             }, 1000);
@@ -153,8 +160,9 @@ export default {
         this.refuse.content,
         (res) => {
           console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             this.$toast("已拒绝");
+            this.init2()
             setTimeout(() => {
               uni.navigateBack();
             }, 1000);

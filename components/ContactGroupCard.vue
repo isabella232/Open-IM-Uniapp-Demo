@@ -37,6 +37,7 @@
 
 <script>
 import Avatar from "@/components/Avatar.vue";
+import { mapGetters } from "vuex";
 export default {
   components: { Avatar },
   props: {
@@ -58,7 +59,7 @@ export default {
         "", // 回复消息
         (res) => {
           console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
             this.$toast("操作成功");
             this.$emit("refresh");
           } else {
@@ -89,6 +90,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(["operationID"]),
     fromFaceURL() {
       if (this.type === 1) {
         return this.card.userFaceURL;

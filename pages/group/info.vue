@@ -41,7 +41,7 @@
           />
         </view>
         <image
-          v-show="isInGroup"
+          v-show="isInGroupAndNormalPage"
           class="center-content-item"
           src="@/static/images/conversation/group/add.png"
           @click="toMemberList('add')"
@@ -55,7 +55,11 @@
       </view>
     </view>
     <view class="info-group">
-      <view class="info-group-item" v-show="isInGroup" @click="toEdit()">
+      <view
+        class="info-group-item"
+        v-show="isInGroupAndNormalPage"
+        @click="toEdit()"
+      >
         <view class="left">群聊名称</view>
         <view class="right">
           <text class="des">
@@ -66,7 +70,7 @@
       </view>
       <view
         class="info-group-item"
-        v-show="isInGroup"
+        v-show="isInGroupAndNormalPage"
         @click="routerGo('./notification')"
       >
         <view class="left">群公告</view>
@@ -84,14 +88,18 @@
           <u-icon class="icon" name="arrow-right" size="14" color="#999" />
         </view>
       </view>
-      <view class="info-group-item" v-show="isInGroup" @click="toEdit(userID)">
+      <view
+        class="info-group-item"
+        v-show="isInGroupAndNormalPage"
+        @click="toEdit(userID)"
+      >
         <view class="left">我在群里的昵称</view>
         <view class="right">
           <u-icon class="icon" name="arrow-right" size="14" color="#999" />
         </view>
       </view>
     </view>
-    <view class="info-group">
+    <view class="info-group" v-show="isInGroupAndNormalPage">
       <view class="info-group-item" @click="routerGo('./qrcode')">
         <view class="left">群二维码</view>
         <view class="right">
@@ -111,7 +119,7 @@
         </view>
       </view>
     </view>
-    <view class="info-group" v-show="isInGroup">
+    <view class="info-group" v-show="isInGroupAndNormalPage">
       <view class="info-group-item" @click="toSearch">
         <view class="left">查看聊天记录</view>
         <view class="right">
@@ -119,7 +127,7 @@
         </view>
       </view>
     </view>
-    <view class="info-group" v-show="isInGroup">
+    <view class="info-group" v-show="isInGroupAndNormalPage">
       <view class="info-group-item">
         <view class="left">消息免打扰</view>
         <view class="right">
@@ -156,7 +164,7 @@
         </view>
       </view>
     </view>
-    <view class="info-group" v-show="isInGroup">
+    <view class="info-group" v-show="isInGroupAndNormalPage">
       <view class="info-group-item">
         <view class="left">投诉</view>
         <view class="right">
@@ -165,7 +173,7 @@
       </view>
     </view>
     <view
-      v-show="isInGroup && !isGroupOwner"
+      v-show="isInGroupAndNormalPage && !isGroupOwner"
       class="operation operation-quit"
       @click="modalOperation('quit')"
     >
@@ -177,6 +185,13 @@
       @click="modalOperation('dismiss')"
     >
       解散该群
+    </view>
+    <view
+      v-show="isInGroup && !isNormalPage && !isDismiss"
+      class="operation operation-send"
+      @click="toConversation"
+    >
+      进入群聊
     </view>
     <view
       v-show="!isInGroup && !isDismiss"
@@ -306,6 +321,7 @@ export default {
           },
         ],
       },
+      pageStatus: "normal",
     };
   },
   methods: {
@@ -324,7 +340,7 @@ export default {
       });
     },
     getOneConversation() {
-      if (this.isInGroup) {
+      if (this.isInGroupAndNormalPage) {
         this.$im.getOneConversation(
           this.operationID,
           2,
@@ -486,6 +502,11 @@ export default {
         });
       }
     },
+    toConversation() {
+      uni.navigateTo({
+        url: "/pages/conversation/index?sessionType=2&sourceID=" + this.groupID,
+      });
+    },
     routerGo(url) {
       this.$store.commit("group/set_groupInfo", this.groupInfo);
       uni.navigateTo({
@@ -493,7 +514,7 @@ export default {
       });
     },
     checkPermissionRouterGo(url) {
-      if (this.isInGroup) {
+      if (this.isInGroupAndNormalPage) {
         this.routerGo(url);
       }
     },
@@ -606,7 +627,9 @@ export default {
     },
   },
   onLoad(param) {
+    console.log(param);
     this.groupID = param.id;
+    this.pageStatus = param.pageStatus || "normal"; //pageStatus:normal,search
     // #ifdef APP-PLUS
     this.init();
     // #endif
@@ -620,10 +643,16 @@ export default {
       "uploadFileRes",
       "updateGroupInfoTimes",
     ]),
+    isNormalPage() {
+      return this.pageStatus === "normal";
+    },
     isInGroup() {
       return !this.conversationData.isNotInGroup && this.groupMemberList.length
         ? true
         : false;
+    },
+    isInGroupAndNormalPage() {
+      return this.isInGroup && this.isNormalPage ? true : false;
     },
     currentMemberLevel() {
       let level = 0;
@@ -636,13 +665,16 @@ export default {
     },
     isGroupOwner() {
       //是否群主
-      return this.isInGroup && this.groupInfo.ownerUserID === this.userID
+      return this.isInGroupAndNormalPage &&
+        this.groupInfo.ownerUserID === this.userID
         ? true
         : false;
     },
     isManager() {
       //是否管理员
-      return this.isInGroup && this.currentMemberLevel === 3 ? true : false;
+      return this.isInGroupAndNormalPage && this.currentMemberLevel === 3
+        ? true
+        : false;
     },
     currentConversationRecvMessageOpt() {
       switch (this.messageOptData.statusValue) {

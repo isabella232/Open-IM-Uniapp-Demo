@@ -204,7 +204,6 @@ export default {
         this.userID,
         mutedSeconds,
         (res) => {
-          console.log(res);
           if (res.errCode !== 0) {
             this.datePicker.isMute = false;
             this.$toast(res.errMsg);
@@ -225,7 +224,6 @@ export default {
         } else {
           let list = JSON.parse(res.data);
           let item = list[0];
-          console.log(item);
           this.userInfo = item;
           this.blackStatus = this.isBlack;
         }
@@ -294,7 +292,6 @@ export default {
           this.operationID,
           this.userInfo.publicInfo.userID,
           (res) => {
-            console.log(res);
             this.blackPopShow = false;
             if (res.errCode !== 0) {
               this.$toast(res.errMsg);
@@ -307,7 +304,6 @@ export default {
           this.operationID,
           this.userInfo.publicInfo.userID,
           (res) => {
-            console.log(res);
             this.blackPopShow = false;
             if (res.errCode !== 0) {
               this.$toast(res.errMsg);

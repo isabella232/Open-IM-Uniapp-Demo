@@ -22,7 +22,7 @@
         <u-icon class="icon" size="22" name="arrow-right" color="#999" />
       </view>
     </view>
-    <view class="accept" @click="acceptFriendApplication"> 通过好友申请 </view>
+    <view class="accept" @click="acceptFriendApplication">通过好友申请</view>
     <view class="refuse" @click="refuse.show = true">拒绝好友申请</view>
     <view class="others">
       <text @click="blackPop.show = true">
@@ -109,6 +109,7 @@ export default {
       blackPop: {
         show: false,
       },
+      disable: false,
     };
   },
   methods: {
@@ -124,7 +125,14 @@ export default {
         }
       );
     },
+    init2() {
+      //#ifdef APP-PLUS
+      this.$store.dispatch("contacts/get_friendNoticeList", this.$im);
+      this.$store.dispatch("contacts/get_selfFriendNoticeList", this.$im);
+      //#endif
+    },
     acceptFriendApplication() {
+      if (this.disable) return;
       this.$im.acceptFriendApplication(
         this.operationID,
         {
@@ -132,9 +140,10 @@ export default {
           handleMsg: "", // 回复消息
         },
         (res) => {
-          console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
+            this.disable = true;
             this.$toast("已同意");
+            this.init2();
             setTimeout(() => {
               uni.navigateBack();
             }, 1000);
@@ -145,6 +154,7 @@ export default {
       );
     },
     refuseFriendApplication() {
+      if (this.disable) return;
       this.$im.refuseFriendApplication(
         this.operationID,
         {
@@ -152,9 +162,10 @@ export default {
           handleMsg: this.refuse.content, // 回复消息
         },
         (res) => {
-          console.log(res);
-          if (res.errorCode === 0) {
+          if (res.errCode === 0) {
+            this.disable = true;
             this.$toast("已拒绝");
+            this.init2();
             setTimeout(() => {
               uni.navigateBack();
             }, 1000);

@@ -87,6 +87,9 @@
           <view class="sendContent-content-top-disabled" v-show="isMute">
             <text class="text">禁言中</text>
           </view>
+          <view class="sendContent-content-top-disabled" v-show="isBlackUser">
+            <text class="text">对方已被拉入黑名单</text>
+          </view>
           <image
             v-show="!isSound"
             @click.stop="showSoundBtn"
@@ -2337,6 +2340,7 @@ export default {
           if (res.errCode === 0) {
             let list = JSON.parse(res.data);
             let item = list[0] || null;
+            console.log(item);
             this.friendInfo = item;
           }
         }
@@ -3254,8 +3258,12 @@ export default {
       "revokeMessageTimes",
       "revokeMessageList",
       "clearHistoryMessageTimes",
+      "frinendChangeTimes",
       "frinendInfoChangeTimes",
     ]),
+    getUsersInfoTimes() {
+      return this.frinendChangeTimes + this.frinendInfoChangeTimes;
+    },
     hasContent() {
       return (
         this.sendData.text !== this.defaultText ||
@@ -3293,7 +3301,9 @@ export default {
     },
     isMute() {
       return (
-        this.groupCurrentUserInfo && this.groupCurrentUserInfo.muteEndTime !== 0
+        this.isGroupChat &&
+        this.groupCurrentUserInfo &&
+        this.groupCurrentUserInfo.muteEndTime !== 0
       );
     },
     scrollStyle() {
@@ -3313,6 +3323,9 @@ export default {
         scrollHeight -= fileHeight;
       }
       return { height: scrollHeight + "px" };
+    },
+    isBlackUser() {
+      return this.isSingleChat && this.friendInfo && this.friendInfo.blackInfo;
     },
     conversationData_showName() {
       if (
@@ -3390,7 +3403,7 @@ export default {
     clearHistoryMessageTimes() {
       this.messageList = [];
     },
-    frinendInfoChangeTimes() {
+    getUsersInfoTimes() {
       if (!this.isGroupChat) {
         this.getUsersInfo();
       }

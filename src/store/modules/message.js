@@ -564,8 +564,8 @@ const mutations = {
     });
   },
   set_singleMessageStatusList(state, data) {
-    const { message, status } = data;
-    console.log("sendMessageSuccess", message);
+    const { message, status,errCode } = data;
+    console.log("sendMessageStatus", status, message);
     //status:   0：发送中,1：发送成功,-1:发送失败
     const clientMsgID = message.clientMsgID;
     const index = state.sendMessageStatusList.findIndex(
@@ -574,6 +574,7 @@ const mutations = {
     if (index >= 0 && status === -1) {
       const item = state.sendMessageStatusList[index];
       item.status = status;
+      item.errCode = errCode;
       state.sendMessageStatusList.splice(index, 1, item);
     } else if (index >= 0 && status === 1) {
       if (message.videoElem && message.videoElem.snapshotPath) {

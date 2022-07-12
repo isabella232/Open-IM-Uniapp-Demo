@@ -287,21 +287,6 @@ export default {
         (response) => {
           if (response.errCode === 0) {
             let groupMembersInfo = JSON.parse(response.data);
-            // let groupMembersInfo = [
-            //   {
-            //     groupID: "59ee812e81a02c7446851c6a95626c3b",
-            //     userID: "2539466345",
-            //     nickname: "1223",
-            //     faceURL: "ic_avatar_02",
-            //     roleLevel: 1,
-            //     joinTime: 1655135855,
-            //     joinSource: 0,
-            //     muteEndTime: 0,
-            //     operatorUserID: "17726420827",
-            //     ex: "",
-            //     attachedInfo: "",
-            //   },
-            // ];
             groupMembersInfo = groupMembersInfo.sort(
               (a, b) => b.nickname.length - a.nickname.length
             ); //先匹配nickname长的
@@ -374,12 +359,10 @@ export default {
     },
     toInfo() {
       if (!this.isSelf && !this.checkboxShow) {
+        const id = this.card.sendID || "";
+        const groupID = this.card.groupID || "";
         uni.navigateTo({
-          url:
-            "/pages/friend/info?id=" +
-              this.card.sendID +
-              "&groupID=" +
-              this.card.groupID || "",
+          url: "/pages/friend/info?id=" + id + "&groupID=" + groupID,
         });
       }
     },
@@ -410,7 +393,7 @@ export default {
       }
     },
     createAtMessage() {
-      if (this.isSelf) return;
+      if (this.isSelf || this.isBlackUser) return;
       this.$emit("createAtMessage", this.card.sendID, this.card.senderNickname);
     },
     messageItemClick() {
@@ -534,6 +517,10 @@ export default {
       });
     },
     reSendMessage() {
+      if (this.isBlackUser) {
+        this.$toast("对方已将你加入黑名单");
+        return;
+      }
       // #ifdef APP-PLUS
       const { messageItem, type } = this.currentMessageStatusItem;
       switch (type) {
@@ -592,7 +579,21 @@ export default {
       if (this.isSelf && this.currentMessageStatusItem) {
         status = this.currentMessageStatusItem.status;
       }
+      if (this.haveSendMessageStatus === 3) {
+        status = -1;
+      }
       return status;
+    },
+    haveSendMessageStatus() {
+      return this.card.status;
+    },
+    isBlackUser() {
+      return (
+        (this.currentMessageStatusItem &&
+          this.currentMessageStatusItem.errCode &&
+          this.currentMessageStatusItem.errCode === 600) ||
+        this.haveSendMessageStatus === 3
+      );
     },
     contentType() {
       return getConversationCardContentType(this.card);

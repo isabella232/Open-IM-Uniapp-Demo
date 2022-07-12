@@ -43,7 +43,7 @@ function checkGroup(id, sessionType) {
       list.length
     ) {
       uni.navigateTo({
-        url: "/pages/group/info?id=" + id,
+        url: "/pages/group/info?id=" + id + "&pageStatus=search",
       });
     } else if (sessionType === "0") {
       toast("未查找到该用户或群组");

@@ -90,10 +90,11 @@ function addListener() {
     });
   });
   event.addEventListener("sendMessageFailed", (res) => {
-    // console.log("sendMessageFailed", res);
+    console.log("sendMessageFailed", res);
     store.commit("message/set_singleMessageStatusList", {
       message: JSON.parse(res.message),
       status: -1,
+      errCode: res.errCode,
     });
   });
   // message listener
