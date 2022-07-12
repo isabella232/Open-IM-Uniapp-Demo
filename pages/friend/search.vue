@@ -8,7 +8,7 @@
           v-model="searchContent"
           placeholder="通过手机号/ID号搜索添加"
           actionText="取消"
-          :actionStyle="{color:'#1B72EC'}"
+          :actionStyle="{ color: '#1B72EC' }"
           @change="searchContentChange"
           @search="searchConfirm"
           @custom="back"
@@ -34,7 +34,12 @@ export default {
   data() {
     return { searchContent: "", isEmpty: false };
   },
-  onLoad() {},
+  onLoad() {
+    if (process.env.NODE_ENV === "development") {
+      // this.searchContent = "1877196314";
+      this.searchContent = "18886138904";
+    }
+  },
   methods: {
     searchContentChange() {
       this.isEmpty = false;
@@ -42,7 +47,8 @@ export default {
     searchConfirm() {
       // #ifdef APP-PLUS
       this.$im.getUsersInfo(this.operationID, [this.searchContent], (res) => {
-        if (res.errCode !== 0) {
+        const list = JSON.parse(res.data) || [];
+        if (res.errCode !== 0 || !list.length) {
           this.isEmpty = true;
         } else {
           uni.navigateTo({

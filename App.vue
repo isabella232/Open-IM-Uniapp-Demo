@@ -1,6 +1,8 @@
 <script>
 export default {
-  onLaunch() {},
+  onLaunch() {
+    uni.clearStorageSync();
+  },
   onShow() {},
   onHide() {},
 };

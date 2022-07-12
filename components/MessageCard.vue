@@ -28,14 +28,19 @@
     <view class="content">
       <view class="header">
         <text class="name">{{ card.showName }}</text>
-        <text class="date">{{ card.latestMsgSendTime | formatTime }}</text>
+        <text class="date">{{ formatTime(card.latestMsgSendTime) }}</text>
       </view>
       <view class="msgContent">
-        <slot v-if="contentType === 101" name="msg" />
-        <view v-else class="msg">{{ msg }}</view>
-        <text v-show="unreadCount" class="unReadCount">
+        <MessageItem class="MessageItem" :list="messageList" fontSize="26rpx" color="#666" />
+        <!-- <view class="msg">{{ msg }}</view> -->
+        <text v-show="showTotal && unreadCount" class="unReadCount">
           {{ unreadCount }}
         </text>
+        <image
+          v-show="!showTotal"
+          class="recvMsgOpt"
+          src="@/static/images/message/recvMsgOpt.png"
+        />
       </view>
     </view>
   </view>
@@ -46,10 +51,12 @@ import { parseTime } from "@/utils/index";
 import {
   formatMessageCardMessage,
   getMessageCardContentType,
+  getEmojiContent,
 } from "@/utils/formatMessage";
 import Avatar from "@/components/Avatar.vue";
+import MessageItem from "@/components/MessageItem.vue";
 export default {
-  components: { Avatar },
+  components: { Avatar, MessageItem },
   props: {
     card: {
       type: Object,
@@ -59,20 +66,6 @@ export default {
   data() {
     return {
       showAction: true,
-      actionOptions: [
-        {
-          text: "置顶",
-          style: {
-            backgroundColor: "#1B72EC",
-          },
-        },
-        {
-          text: "移除",
-          style: {
-            backgroundColor: "#FFAB41",
-          },
-        },
-      ],
     };
   },
   methods: {
@@ -90,20 +83,6 @@ export default {
         url: `/pages/conversation/index?sessionType=${this.card.conversationType}&sourceID=${sourceID}`,
       });
     },
-  },
-  computed: {
-    msg() {
-      return formatMessageCardMessage(this.card);
-    },
-    contentType() {
-      return getMessageCardContentType(this.card);
-    },
-    unreadCount(){
-      const count=Number(this.card.unreadCount)||0
-      return count>99?'99+':count
-    }
-  },
-  filters: {
     formatTime(time) {
       const gg = 5 * 60 * 1000;
       const oneDayTime = 24 * 60 * 60 * 1000;
@@ -121,6 +100,32 @@ export default {
         return "昨天";
       }
       return parseTime(time, "{y}/{m}/{d}");
+    },
+  },
+  computed: {
+    msg() {
+      return formatMessageCardMessage(this.card);
+    },
+    messageList() {
+      const content = this.msg || "";
+      const item = {
+        type: "text",
+        content,
+        startIndex: 0,
+        endIndex: content.length - 1,
+      };
+      let list = getEmojiContent([item]);
+      return list;
+    },
+    contentType() {
+      return getMessageCardContentType(this.card);
+    },
+    unreadCount() {
+      const count = Number(this.card.unreadCount) || 0;
+      return count > 99 ? "99" : count;
+    },
+    showTotal() {
+      return this.card && this.card.recvMsgOpt !== 0 ? false : true;
     },
   },
 };
@@ -143,13 +148,12 @@ $pdLeft: 44rpx;
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     overflow: hidden;
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10rpx;
       .name {
         font-size: 32rpx;
         font-weight: 500;
@@ -175,17 +179,28 @@ $pdLeft: 44rpx;
         white-space: nowrap;
         flex: 1;
       }
+      .MessageItem {
+        height: 36rpx;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
       .unReadCount {
         flex-shrink: 0;
         border-radius: 50%;
         background-color: #f44038;
-        width: 50rpx;
-        height: 50rpx;
-        line-height: 50rpx;
+        width: 40rpx;
+        height: 40rpx;
+        line-height: 40rpx;
         text-align: center;
         font-size: 24rpx;
         color: #ffffff;
         margin-left: 8rpx;
+      }
+      .recvMsgOpt {
+        width: 40rpx;
+        height: 40rpx;
       }
     }
   }

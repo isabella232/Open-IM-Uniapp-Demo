@@ -3,14 +3,14 @@
     <view class="search">
       <u-search
         shape="square"
-        placeholder="通过群ID号搜索添加"
+        placeholder="通过群ID号搜索"
         disabled
         :showAction="false"
         @click="routerGo"
       ></u-search>
     </view>
     <view class="content">
-      <view class="item">
+      <view class="item" @click="scanCode">
         <image class="image" src="@/static/images/friend/scan.png"></image>
         <view class="center">
           <view class="title">扫一扫</view>
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { scan } from "@/utils/scan";
 export default {
   data() {
     return { searchContent: "" };
@@ -32,6 +33,9 @@ export default {
       uni.navigateTo({
         url: "./search",
       });
+    },
+    scanCode() {
+      scan("2");
     },
   },
 };

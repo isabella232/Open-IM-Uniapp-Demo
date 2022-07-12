@@ -246,17 +246,17 @@
 				var that = this;
 				
 				//#ifndef MP
-				uni.showModal({
-					title: '校正二维码',
-					content: '二维码是否异常',
-					confirmText: '确定',
-					confirmColor: '#33CCCC',
-					success(res) {
-						if (res.confirm) {
-							that.rectify_code();
-						}
-					}
-				})
+				// uni.showModal({
+				// 	title: '校正二维码',
+				// 	content: '二维码是否异常',
+				// 	confirmText: '确定',
+				// 	confirmColor: '#33CCCC',
+				// 	success(res) {
+				// 		if (res.confirm) {
+				// 			that.rectify_code();
+				// 		}
+				// 	}
+				// })
 				// #endif
 				
 				//#ifdef MP-WEIXIN

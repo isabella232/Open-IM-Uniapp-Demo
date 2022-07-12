@@ -6,9 +6,9 @@
         <u-search
           shape="square"
           v-model="searchContent"
-          placeholder="通过手机号/ID号搜索添加"
+          placeholder="通过群ID搜索"
           actionText="取消"
-          :actionStyle="{color:'#1B72EC'}"
+          :actionStyle="{ color: '#1B72EC' }"
           @change="searchContentChange"
           @search="searchConfirm"
           @custom="back"
@@ -22,7 +22,7 @@
           <text class="text">搜索:</text>
           <text class="userName">{{ searchContent }}</text>
         </view>
-        <view class="search-empty" v-show="isEmpty"> 无法找到该用户 </view>
+        <view class="search-empty" v-show="isEmpty"> 无法找到该群组 </view>
       </view>
     </view>
   </view>
@@ -32,22 +32,32 @@
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return { searchContent: "", isEmpty: false };
+    return {
+      searchContent: "",
+      isEmpty: false,
+    };
   },
-  onLoad() {},
+  onLoad() {
+  },
   methods: {
     searchContentChange() {
       this.isEmpty = false;
     },
     searchConfirm() {
+      if (!this.searchContent) return;
       // #ifdef APP-PLUS
-      this.$im.getUsersInfo(this.operationID, [this.searchContent], (res) => {
+      this.$im.getGroupsInfo(this.operationID, [this.searchContent], (res) => {
         if (res.errCode !== 0) {
           this.isEmpty = true;
         } else {
-          uni.navigateTo({
-            url: "./info?id=" + this.searchContent,
-          });
+          const list = JSON.parse(res.data);
+          if (list.length <= 0) {
+            this.isEmpty = true;
+          } else {
+            uni.navigateTo({
+              url: "./info?id=" + this.searchContent,
+            });
+          }
         }
       });
       // #endif
@@ -78,18 +88,27 @@ export default {
   .search {
     &-content {
       display: flex;
+      flex-direction: row;
       flex-wrap: nowrap;
       align-items: center;
       font-size: 28r4px;
       color: #333333;
       margin-top: 32rpx;
       .image {
+        flex-shrink: 0;
         width: 44rpx;
         height: 44rpx;
         margin-right: 16rpx;
       }
       .text {
+        flex-shrink: 0;
         margin-right: 16rpx;
+      }
+      .userName {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     &-empty {

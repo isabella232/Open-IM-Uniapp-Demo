@@ -3,16 +3,17 @@
     <view class="content">
       <view class="label">ID号</view>
       <view class="input">
-        <u--input
+        <u-input
           placeholder=" "
           border="none"
           v-model="userID"
           :customStyle="{ padding: '18rpx' }"
+          readonly
         >
-          <u-button @click="copy" slot="suffix" type="primary" size="mini"
-            >复制</u-button
-          >
-        </u--input>
+          <u-button @click="copy" slot="suffix" type="primary" size="mini">
+            复制
+          </u-button>
+        </u-input>
       </view>
     </view>
   </view>
@@ -36,6 +37,7 @@ export default {
     },
   },
   onLoad(param) {
+    console.log(param);
     this.userID = param.userID;
   },
 };

@@ -7,7 +7,7 @@
         disabled
         :showAction="false"
         @click="routerGo('./search')"
-      ></u-search>
+      />
     </view>
     <view class="content">
       <view class="item" @click="routerGo('./qrcode')">

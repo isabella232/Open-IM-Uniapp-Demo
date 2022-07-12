@@ -3,10 +3,11 @@
     <Avatar
       class="faceURL"
       :src="card.publicInfo.faceURL || 'error'"
-      :name="card.publicInfo.nickname"
+      :name="nickname"
       size="24px"
+      fontSize="24rpx"
     />
-    <text class="name">{{ card.publicInfo.nickname }}</text>
+    <text class="name">{{ nickname }}</text>
   </view>
 </template>
 
@@ -29,6 +30,14 @@ export default {
       uni.navigateTo({
         url: `/pages/friend/info?id=${sourceID}`,
       });
+    },
+  },
+  computed: {
+    nickname() {
+      if (this.card.friendInfo) {
+        return this.card.friendInfo.remark || this.card.friendInfo.nickname;
+      }
+      return this.card.publicInfo.nickname;
     },
   },
 };

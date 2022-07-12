@@ -5,7 +5,7 @@
       <u-search
         shape="square"
         v-model="searchContent"
-        placeholder="通过手机号/ID号搜索添加"
+        placeholder="搜索"
         actionText="取消"
         :actionStyle="{ color: '#1B72EC' }"
         @change="searchContentChange"
@@ -29,14 +29,7 @@
         v-for="(item, index) in historyMessageList"
         :key="index"
       >
-        <HistoryMessageCard :card="item">
-          <editor
-            slot="msg"
-            read-only
-            :class="['indexEditor-' + index, 'indexEditor']"
-            @ready="editorReady('indexEditor-' + index, item)"
-          />
-        </HistoryMessageCard>
+        <HistoryMessageCard :card="item" />
       </view>
     </view>
   </view>
@@ -79,18 +72,15 @@ export default {
       this.$im.searchLocalMessages(
         this.operationID,
         {
-          sourceID: "", //源ID,单聊为用户ID，群聊为群ID
-          sessionType: 0, //会话类型，单聊为1，群聊为2，如果为0，则代表搜索全部
-          keywordList: [
-            this.searchContent, //搜索关键词列表，目前仅支持一个关键词搜索
-          ],
-          keywordListMatchType: 0, //关键词匹配模式，1代表与，2代表或，暂时未用
-          senderUserIDList: [], //指定消息发送的uid列表，暂时未用
-          messageTypeList: [], //消息类型列表，暂时未用
-          searchTimePosition: 0, //搜索的起始时间点。默认为0即代表从现在开始搜索。UTC 时间戳，单位：秒
-          searchTimePeriod: 0, //从起始时间点开始的过去时间范围，单位秒。默认为0即代表不限制时间范围，传24x60x60代表过去一天。
-          pageIndex: 0, //分页使用的偏移，暂时未用
-          count: 0, //每页数量，暂时未用
+          conversationID: "",
+          keywordList: [this.searchContent],
+          keywordListMatchType: 0,
+          senderUserIDList: [],
+          messageTypeList: [],
+          searchTimePosition: 0,
+          searchTimePeriod: 0,
+          pageIndex: 0,
+          count: 0,
         },
         (res) => {
           if (res.errCode === 0) {

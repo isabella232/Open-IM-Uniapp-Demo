@@ -2,7 +2,7 @@ import { commonConfig } from "@/config";
 function request(method, url, data) {
   return new Promise((resolve, reject) => {
     uni.request({
-      url: commonConfig.api_addr + url,
+      url: commonConfig.api_addr2 + url,
       data,
       method,
       header: getHeader(),

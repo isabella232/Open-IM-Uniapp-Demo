@@ -2,12 +2,12 @@ import { app_login } from "../../../service/api/user";
 const state = {
   platform: "",
   operationID: "",
-  userID: "",
+  userID: "3493949860",
   token: "",
   userInfo: {
-    userID: "",
-    nickname: "",
-    faceURL: "",
+    userID: "3493949860",
+    nickname: "blooming",
+    faceURL: "ic_avatar_02",
     gender: 1,
     phoneNumber: "",
     birth: 0,
@@ -16,8 +16,16 @@ const state = {
     ex: "",
     attachedInfo: "",
   },
+  systemInfo: {
+    screenHeight: 667,
+    screenWidth: 375,
+  },
 };
 const mutations = {
+  set_systemInfo(state, systemInfo) {
+  console.log(systemInfo);
+  state.systemInfo = systemInfo;
+  },
   set_platform(state, platform) {
     state.platform = platform;
   },
@@ -35,14 +43,14 @@ const mutations = {
   },
 };
 const actions = {
-  login({commit}, userInfo) {
+  login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       app_login(userInfo)
         .then((res) => {
           // console.log(res);
           if (res.errCode === 0) {
-            commit("set_token",res.data.token)
-            commit("set_userID",res.data.userID)
+            commit("set_token", res.data.token);
+            commit("set_userID", res.data.userID);
             resolve();
           } else {
             reject({ message: res.errMsg });

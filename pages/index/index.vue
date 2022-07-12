@@ -1,55 +1,50 @@
 <template>
   <view class="index">
     <view class="statusBar"></view>
-    <view class="userInfo">
-      <view class="userInfo-left">
-        <Avatar :src="userInfo.faceURL" :name="userInfo.nickname" />
-      </view>
-      <view class="userInfo-center">
-        <view class="company" v-show="userInfo.attachedInfo">{{
-          userInfo.attachedInfo
-        }}</view>
-        <view class="name">
-          <view class="nickname">{{ userInfo.nickname }}</view>
-          <view class="userStatus">手机在线</view>
+    <u-sticky customNavHeight="0" bgColor="#fff">
+      <view class="userInfo">
+        <view class="userInfo-left">
+          <Avatar :src="userInfo.faceURL" :name="userInfo.nickname" />
+        </view>
+        <view class="userInfo-center">
+          <view class="company" v-show="userInfo.attachedInfo">
+            {{ userInfo.attachedInfo }}
+          </view>
+          <view class="name">
+            <view class="nickname">{{ userInfo.nickname }}</view>
+            <view class="userStatus">手机在线</view>
+          </view>
+        </view>
+        <view class="userInfo-right">
+          <image class="image" src="@/static/images/index/tel.png" />
+          <image
+            class="image"
+            id="addPic"
+            src="@/static/images/index/add.png"
+            @click="showAdd"
+          />
         </view>
       </view>
-      <view class="userInfo-right">
-        <image class="image" src="@/static/images/index/tel.png" />
-        <image
-          class="image"
-          id="addPic"
-          src="@/static/images/index/add.png"
-          @click="showAdd"
+      <view class="search">
+        <u-search
+          shape="square"
+          v-model="searchContent"
+          :showAction="false"
+          placeholder="搜索"
+          disabled
+          @click="routerGo('./search')"
         />
       </view>
-    </view>
-    <view class="search">
-      <u-search
-        shape="square"
-        v-model="searchContent"
-        :showAction="false"
-        placeholder="搜索"
-        disabled
-        @click="routerGo('./search')"
-      />
-    </view>
+    </u-sticky>
     <view class="container">
       <uni-swipe-action>
         <uni-swipe-action-item
+          v-for="item in messageList"
+          :key="item.conversationID"
           :right-options="filterActionOptions(item)"
-          v-for="(item, index) in messageList"
-          :key="index"
           @click="(v) => swipeActionClick(v, item)"
         >
-          <MessageCard :card="item">
-            <editor
-              slot="msg"
-              read-only
-              :class="['indexEditor-' + index, 'indexEditor']"
-              @ready="editorReady('indexEditor-' + index, item)"
-            />
-          </MessageCard>
+          <MessageCard :card="item" />
         </uni-swipe-action-item>
       </uni-swipe-action>
     </view>
@@ -76,7 +71,10 @@
           ></image>
           <text class="text">添加群聊</text>
         </view>
-        <view class="addContent-pop-item">
+        <view
+          class="addContent-pop-item"
+          @click="routerGo('/pages/group/create')"
+        >
           <image
             class="image"
             src="@/static/images/message/createGroup.png"
@@ -120,9 +118,10 @@ export default {
         },
       ],
       addPop: { show: false, style: {} },
+      timer: null,
     };
   },
-  onShow() {
+  onLoad() {
     // #ifdef APP-PLUS
     this.init();
     // #endif
@@ -137,8 +136,10 @@ export default {
           toast(res.errMsg);
         } else {
           const data = JSON.parse(res.data);
-          this.$store.commit("message/setMessageList", data);
           // console.log(data);
+          // console.log(JSON.parse(res.data));
+          this.$store.commit("message/set_messageList", data);
+          this.setTabBarBadge();
         }
       });
     },
@@ -166,23 +167,6 @@ export default {
         });
       }
     },
-    editorReady(className, item) {
-      uni
-        .createSelectorQuery()
-        .select("." + className)
-        .context((res) => {
-          const editorContext = res.context;
-          editorContext.clear();
-          let content = "";
-          let latestMsg = item.latestMsg;
-          if (latestMsg) {
-            latestMsg = JSON.parse(item.latestMsg);
-            content = latestMsg.content;
-          }
-          editorContext.setContents({ html: content });
-        })
-        .exec();
-    },
     filterActionOptions(item) {
       const { isPinned } = item;
       const list = [...this.actionOptions];
@@ -208,11 +192,20 @@ export default {
         );
       } else if (index === 1) {
         this.$im.deleteConversation(this.operationID, conversationID, (res) => {
-          console.log(res);
           if (res.errCode === 0) {
             this.init();
           }
         });
+      }
+    },
+    setTabBarBadge() {
+      if (this.total) {
+        uni.setTabBarBadge({
+          index: 0,
+          text: this.total + "",
+        });
+      } else {
+        uni.removeTabBarBadge({ index: 0 });
       }
     },
   },
@@ -222,11 +215,35 @@ export default {
       "messageList",
       "operationID",
       "newMessageTimes",
+      "indexMessageTimes",
     ]),
+    total() {
+      let t = this.messageList
+        .filter((i) => {
+          return i.recvMsgOpt === 0;
+        })
+        .map((i) => Number(i.unreadCount) || 0)
+        .reduce((total, num) => total + num);
+      t = t > 99 ? 99 : t;
+      return t;
+    },
   },
   watch: {
     newMessageTimes() {
-      this.init();
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        this.init();
+      }, 500);
+    },
+    indexMessageTimes() {
+      if (this.timer) {
+        clearTimeout(this.timer);
+      }
+      this.timer = setTimeout(() => {
+        this.init();
+      }, 500);
     },
   },
 };
@@ -305,8 +322,7 @@ $pdLeft: 44rpx;
     }
   }
   .search {
-    padding: 0 $pdLeft;
-    margin-top: 16rpx;
+    padding: 16rpx $pdLeft 8rpx;
   }
   .container {
     margin-top: 32rpx;
@@ -341,21 +357,23 @@ $pdLeft: 44rpx;
       background-color: #fff;
       width: 130px;
       border-radius: 12rpx;
-      padding: 12rpx 0;
       &-item {
         display: flex;
         align-items: center;
         padding: 18rpx 0;
         border-bottom: 2rpx solid #f0f0f0;
         .image {
-          margin-left: 24rpx;
-          margin-right: 32rpx;
-          width: 48rpx;
-          height: 48rpx;
+          margin-left: 12px;
+          margin-right: 16px;
+          width: 24px;
+          height: 24px;
         }
         .text {
-          font-size: 28rpx;
+          font-size: 14px;
           color: #333333;
+        }
+        &:last-of-type {
+          border-bottom: none;
         }
       }
     }

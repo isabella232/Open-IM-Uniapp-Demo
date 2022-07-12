@@ -32,11 +32,30 @@ export default {
       userID: "",
       friendInfo: {
         publicInfo: {
-          userID: "",
-          nickname: "",
-          faceURL: "",
+          userID: "18381415165",
+          nickname: "mm",
+          faceURL:
+            "https://echat-1302656840.cos.ap-chengdu.myqcloud.com/rc-upload-1650949055268-5icon.png",
           gender: 1,
         },
+        friendInfo: {
+          ownerUserID: "17396220460",
+          userID: "18381415165",
+          remark: "",
+          createTime: 1647569855,
+          addSource: 0,
+          operatorUserID: "18381415165",
+          nickname: "mm",
+          faceURL:
+            "https://echat-1302656840.cos.ap-chengdu.myqcloud.com/rc-upload-1650949055268-5icon.png",
+          gender: 1,
+          phoneNumber: "18381415165",
+          birth: 0,
+          email: "",
+          ex: "",
+          attachedInfo: "",
+        },
+        blackInfo: null,
       },
       sendForm: {
         remark: "",

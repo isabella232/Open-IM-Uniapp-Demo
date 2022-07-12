@@ -12,10 +12,7 @@
       </view>
       <view class="notice">扫一扫下面的二维码，添加我为好友</view>
       <view class="code">
-        <image
-          class="bg"
-          src="@/static/images/friend/qrcode-border.png"
-        ></image>
+        <image class="bg" src="@/static/images/friend/qrcode-border.png" />
         <Qrcode
           class="Qrcode"
           ref="qrcode"
@@ -32,31 +29,34 @@
 <script>
 import Qrcode from "@/components/Qrcode/ay-qrcode.vue";
 import Avatar from "@/components/Avatar.vue";
+import { mapGetters } from "vuex";
 export default {
   components: { Qrcode, Avatar },
   data() {
     return {
       modal_qr: false,
       userInfo: {
-        userID: "",
-        nickname: "",
-        faceURL: "",
+        userID: "3798435312",
+        nickname: "OpenIM-Blooming",
+        faceURL: "ic_avatar_06",
         gender: 0,
-        phoneNumber: "",
-        birth: 0,
-        email: "",
+        phoneNumber: "17396220460",
+        birth: 907156400,
+        email: "blooming2477@gmail.com",
         createTime: 0,
         ex: "",
         attachedInfo: "",
+        globalRecvMsgOpt: 0,
       },
     };
   },
   methods: {
     init() {
-      this.$im.getSelfUserInfo(this.$store.getters.operationID, (res) => {
+      this.$im.getSelfUserInfo(this.operationID, (res) => {
         let data = res.data;
         if (data) {
           data = JSON.parse(data);
+          this.userInfo = data;
           this.showQrcode();
         }
       });
@@ -69,7 +69,12 @@ export default {
     },
   },
   onLoad() {
+    // #ifdef APP-PLUS
     this.init();
+    // #endif
+  },
+  computed: {
+    ...mapGetters(["operationID"]),
   },
 };
 </script>

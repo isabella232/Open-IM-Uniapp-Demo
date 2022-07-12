@@ -106,6 +106,7 @@ import { login as im_login } from "@/config/app";
 import { login as im_login } from "@/config/web";
 // #endif
 import { mapGetters } from "vuex";
+import md5 from "js-md5";
 export default {
   data() {
     return {
@@ -133,12 +134,26 @@ export default {
       checked: [false],
     };
   },
-  onLoad() {
+  onLoad() {},
+  onReady() {
     this.init();
   },
-  onReady() {},
   methods: {
-    init() {},
+    init() {
+      if (process.env.NODE_ENV === "development") {
+        this.checked[0] = true;
+        // this.userInfo.phoneNumber = "18381415165";
+        this.userInfo.phoneNumber = "17396220460";
+        this.userInfo.password = "123456";
+        // this.userInfo.phoneNumber = "18666662412";
+        // this.userInfo.password = "111111";
+        
+        // this.userInfo.phoneNumber = "18886138904";
+        // this.userInfo.phoneNumber = "18886138905";//小红
+        // this.userInfo.password = "wme52052018";
+        this.startLogin();
+      }
+    },
     loginTypeChange(index) {
       this.loginType.current = index;
     },
@@ -147,13 +162,15 @@ export default {
         if (valid) {
           this.$store
             .dispatch("user/login", {
-              userID: this.userInfo.phoneNumber,
+              phoneNumber: this.userInfo.phoneNumber,
+              password: md5(this.userInfo.password),
               operationID: this.operationID,
             })
             .then(() => {
               im_login();
             })
             .catch((error) => {
+              console.log(error);
               this.$toast(error.message);
             });
         }

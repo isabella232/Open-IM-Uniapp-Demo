@@ -2,8 +2,8 @@
     "name" : "openIm",
     "appid" : "__UNI__EC966F0",
     "description" : "",
-    "versionName" : "1.0.3",
-    "versionCode" : 103,
+    "versionName" : "1.0.9",
+    "versionCode" : 109,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -18,35 +18,62 @@
             "delay" : 0
         },
         /* 模块配置 */
-        "modules" : {},
+        "modules" : {
+            "Geolocation" : {},
+            "Maps" : {},
+            "VideoPlayer" : {}
+        },
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
             "android" : {
                 "permissions" : [
-                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
-                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
-                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
-                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
-                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
-                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
-                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
-                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
+                    "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CAMERA\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.LOCATION_HARDWARE\"/>",
+                    "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_LOGS\"/>",
+                    "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
+                    "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
+                    "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+                "privacyDescription" : {
+                    "NSMicrophoneUsageDescription" : "获取麦克风权限为了在语音识别时采集声音",
+                    "NSPhotoLibraryUsageDescription" : "获取相册权限读取为了个人信息中上传自定义头像",
+                    "NSPhotoLibraryAddUsageDescription" : "获取相册权限读取为了保存图片到相册",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "获取定位权限为了本产品使用过程获取位置地址信息"
+                }
+            },
             /* SDK配置 */
             "sdkConfigs" : {
-                "ad" : {}
+                "ad" : {},
+                "geolocation" : {
+                    "system" : {
+                        "__platform__" : [ "ios", "android" ]
+                    }
+                },
+                "maps" : {
+                    "amap" : {
+                        "appkey_ios" : "2cda082ffac6e896acd63c2ca3fa2983",
+                        "appkey_android" : "2cda082ffac6e896acd63c2ca3fa2983"
+                    }
+                },
+                "speech" : {}
             }
         },
         "nativePlugins" : {
@@ -61,6 +88,20 @@
                     "isCloud" : false,
                     "bought" : -1,
                     "pid" : "",
+                    "parameters" : {}
+                }
+            },
+            "Aq-ChooseFile" : {
+                "__plugin_info__" : {
+                    "name" : "文件选择，支持自定义路径，自定义筛选类型，多选",
+                    "description" : "支持android 11（30）文件选择，支持自定义路径",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=5263",
+                    "android_package_name" : "com.openIm.app",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "5263",
                     "parameters" : {}
                 }
             }
@@ -102,6 +143,13 @@
                     "pathRewrite" : {
                         "^/api" : ""
                     }
+                }
+            }
+        },
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "OQ2BZ-AJGK2-IGJUT-CTL3N-LXQZF-PNFV5"
                 }
             }
         }

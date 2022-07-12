@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "html2canvas": "^1.4.1",
     "js-md5": "^0.7.3",
-    "open-im-sdk": "^2.0.3"
+    "open-im-sdk": "^2.0.3",
+    "vuex-persistedstate": "^4.1.0"
   }
 }

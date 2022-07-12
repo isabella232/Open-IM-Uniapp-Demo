@@ -39,3 +39,52 @@ export function parseTime(time, cFormat) {
   });
   return time_str;
 }
+/**
+ * canvas绘图相关，把文字转化成只能行数，多余显示省略号
+ * ctx: 当前的canvas
+ * text: 文本
+ * contentWidth: 文本最大宽度
+ * lineNumber: 显示几行
+ */
+export function transformContent(ctx, text, contentWidth, lineNumber = 1) {
+  let textArray = text.split(""); // 分割成字符串数组
+  let textStr = "";
+  let row = [];
+  const length = textArray.length;
+  let index = 0;
+  for (let i = 0; i < length; i++) {
+    const t = textArray[i];
+    index = i;
+    const width = ctx.measureText(textStr + t).width + i * 0.2;
+    if (width < contentWidth) {
+      textStr += t;
+      if (i === length - 1) {
+        row.push(textStr);
+        textStr = "";
+      }
+    } else {
+      row.push(textStr);
+      textStr = t;
+      if (row.length >= lineNumber) {
+        break;
+      }
+    }
+  }
+  if (index < length) {
+    //文字未显示完
+    const lastIndex = row.length - 1;
+    const str = row[lastIndex];
+    const strLength = str.length;
+    const str2 = "...";
+    for (let j = strLength - 1; j > 0; j--) {
+      let s = str.slice(0, j);
+      const str1 = s + str2;
+      const width = ctx.measureText(str1).width + j * 0.2;
+      if (width < contentWidth) {
+        row.splice(lastIndex, 1, str1);
+        break;
+      }
+    }
+  }
+  return row;
+}
