@@ -9,7 +9,9 @@
         height="73px"
         radius="6"
       >
-        <u-icon slot="error" name="account-fill" size="40" color="#666" />
+        <template v-slot:error>
+          <u-icon name="account-fill" size="40" color="#666" />
+        </template>
       </u--image>
       <text class="nickname">{{ userInfo.nickname }}</text>
       <view class="userID" @click="routerGo('/pages/friend/qrcode')">
@@ -84,13 +86,11 @@ export default {
       });
     },
     logOut() {
-      uni.reLaunch({
-        url: "/pages/login/index",
-      });
+      this.$store.dispatch("user/logOut", this.$im);
     },
   },
   computed: {
-    ...mapGetters(["userInfo"]),
+    ...mapGetters(["userInfo", "operationID"]),
   },
   onLoad() {},
 };

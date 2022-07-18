@@ -279,7 +279,6 @@ export default {
     },
     getGroupMembersInfo() {
       const content = JSON.parse(this.card.content);
-      //测试
       this.$im.getGroupMembersInfo(
         this.operationID,
         this.sourceID,

@@ -43,7 +43,7 @@ export default {
       });
     },
     scanCode() {
-      scan("1");
+      scan("1",this.$im);
     },
   },
 };

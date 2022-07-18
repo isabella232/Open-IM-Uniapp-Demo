@@ -10,9 +10,9 @@
           :customStyle="{ padding: '18rpx' }"
           readonly
         >
-          <u-button @click="copy" slot="suffix" type="primary" size="mini">
-            复制
-          </u-button>
+          <template v-slot:suffix>
+            <u-button @click="copy" type="primary" size="mini"> 复制 </u-button>
+          </template>
         </u-input>
       </view>
     </view>

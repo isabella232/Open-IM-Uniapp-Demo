@@ -1,9 +1,11 @@
 <template>
   <view class="send">
     <u-navbar title="好友验证" autoBack fixed placeholder>
-      <view slot="right">
-        <u-button type="primary" text="发送" size="mini" @click="confirm" />
-      </view>
+      <template v-slot:right>
+        <view>
+          <u-button type="primary" text="发送" size="mini" @click="confirm" />
+        </view>
+      </template>
     </u-navbar>
     <view class="content">
       <view class="label">发送添加好友申请</view>

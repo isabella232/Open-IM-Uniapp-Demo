@@ -1,14 +1,11 @@
 <template>
   <view class="send">
     <u-navbar title="设置备注" autoBack>
-      <view slot="right">
-        <u-button
-          type="primary"
-          text="保存"
-          size="mini"
-          @click="confirm"
-        ></u-button>
-      </view>
+      <template v-slot:right>
+        <view>
+          <u-button type="primary" text="保存" size="mini" @click="confirm" />
+        </view>
+      </template>
     </u-navbar>
     <view class="statusBar"></view>
     <view class="content">

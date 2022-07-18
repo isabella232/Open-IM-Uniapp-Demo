@@ -2,17 +2,18 @@
   <view class="container">
     <view class="statusBar"></view>
     <u-navbar class="navbar" :title="pageTitle" @leftClick="leftClick">
-      <view
-        class="dot"
-        id="addPic"
-        @click="showOperationPop"
-        slot="right"
-        v-show="!showCheckBox && showNavDot"
-      >
-        <text class="dot-text"></text>
-        <text class="dot-text"></text>
-        <text class="dot-text"></text>
-      </view>
+      <template v-slot:right>
+        <view
+          class="dot"
+          id="addPic"
+          @click="showOperationPop"
+          v-show="!showCheckBox && showNavDot"
+        >
+          <text class="dot-text"></text>
+          <text class="dot-text"></text>
+          <text class="dot-text"></text>
+        </view>
+      </template>
     </u-navbar>
     <view class="search">
       <u-search
@@ -610,7 +611,7 @@ export default {
     },
     memberItemClick(item) {
       const userID = item.userID;
-      if(userID===this.userID)return
+      if (userID === this.userID) return;
       if (this.pageStatus === "normal") {
         uni.navigateTo({
           url: "/pages/friend/info?id=" + userID + "&groupID=" + this.groupID,

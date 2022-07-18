@@ -1,7 +1,7 @@
 import { toast } from "@/common/toast";
 import { commonConfig } from "./index";
-import { OpenIMSDK } from "open-im-sdk";
 import store from "@/src/store";
+import { OpenIMSDK } from "open-im-sdk";
 const openIM = new OpenIMSDK();
 //初始化platform
 function init_platform() {
@@ -10,7 +10,8 @@ function init_platform() {
   store.commit("user/set_operationID", systemInfo.deviceId);
   store.commit("user/set_platform", 5);
 }
-function init() {
+export function init() {
+  init_platform();
   const config = {
     userID: store.getters.userID,
     token: store.getters.token,
@@ -27,5 +28,3 @@ function init() {
     });
 }
 export function login() {}
-init_platform();
-export default openIM;

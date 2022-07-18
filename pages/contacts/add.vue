@@ -50,7 +50,7 @@ export default {
       });
     },
     scanCode() {
-      scan();
+      scan("0",this.$im);
     },
   },
 };

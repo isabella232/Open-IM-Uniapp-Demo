@@ -1,9 +1,11 @@
 <template>
   <view class="groupList">
     <u-navbar class="navbar" title="我的群组" autoBack fixed placeholder>
-      <view class="navbar-right" slot="right">
-        <view class="navbar-right-item" @click="createGroup"> 发起群聊 </view>
-      </view>
+      <template v-slot:right>
+        <view class="navbar-right">
+          <view class="navbar-right-item" @click="createGroup"> 发起群聊 </view>
+        </view>
+      </template>
     </u-navbar>
     <u-sticky>
       <view class="search">
@@ -373,7 +375,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["operationID", "userID", "joinedGroupDeletedTimes","indexMessageTimes"]),
+    ...mapGetters([
+      "operationID",
+      "userID",
+      "joinedGroupDeletedTimes",
+      "indexMessageTimes",
+    ]),
     groupList() {
       let list = this.list;
       if (this.searchContent) {

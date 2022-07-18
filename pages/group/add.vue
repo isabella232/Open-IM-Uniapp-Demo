@@ -35,7 +35,7 @@ export default {
       });
     },
     scanCode() {
-      scan("2");
+      scan("2",this.$im);
     },
   },
 };

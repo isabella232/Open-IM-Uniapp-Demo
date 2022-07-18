@@ -2,10 +2,14 @@
   <view class="map">
     <view class="statusBar customBar"></view>
     <u-navbar class="navbar" autoBack>
-      <view class="navbar-center" slot="center"> 位置 </view>
-      <view class="navbar-right" slot="right">
-        <view class="right-item" @click="sendMessage">确定</view>
-      </view>
+      <template v-slot:center>
+        <view class="navbar-center"> 位置 </view>
+      </template>
+      <template v-slot:right>
+        <view class="navbar-right">
+          <view class="right-item" @click="sendMessage">确定</view>
+        </view>
+      </template>
     </u-navbar>
     <map
       id="map"
@@ -134,7 +138,7 @@ export default {
         this.operationID,
         title,
         longitude,
-        latitude,
+        latitude
       );
       this.$im.sendMessage(
         this.operationID,

@@ -2,15 +2,17 @@
   <view class="mergeInfo">
     <view class="statusBar"></view>
     <u-navbar class="navbar" autoBack :title="title">
-      <view class="navbar-right" slot="right">
-        <view class="navbar-right-item">
-          <image
-            @click="share"
-            class="image"
-            src="@/static/images/conversation/share2.png"
-          />
+      <template v-slot:right>
+        <view class="navbar-right">
+          <view class="navbar-right-item">
+            <image
+              @click="share"
+              class="image"
+              src="@/static/images/conversation/share2.png"
+            />
+          </view>
         </view>
-      </view>
+      </template>
     </u-navbar>
     <view class="container">
       <view class="dateStr">{{ dateStr }}</view>

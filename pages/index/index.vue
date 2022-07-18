@@ -12,7 +12,7 @@
           </view>
           <view class="name">
             <view class="nickname">{{ userInfo.nickname }}</view>
-            <view class="userStatus">手机在线</view>
+            <view class="loginStatus">手机在线</view>
           </view>
         </view>
         <view class="userInfo-right">
@@ -37,16 +37,22 @@
       </view>
     </u-sticky>
     <view class="container">
-      <uni-swipe-action>
-        <uni-swipe-action-item
-          v-for="item in messageList"
-          :key="item.conversationID"
-          :right-options="filterActionOptions(item)"
-          @click="(v) => swipeActionClick(v, item)"
-        >
-          <MessageCard :card="item" />
-        </uni-swipe-action-item>
-      </uni-swipe-action>
+      <uni-list :border="false" class="list">
+        <uni-swipe-action>
+          <uni-swipe-action-item
+            v-for="item in messageList"
+            :key="item.conversationID"
+            :right-options="filterActionOptions(item)"
+            @click="(v) => swipeActionClick(v, item)"
+          >
+            <uni-list-item class="list-item">
+              <template v-slot:header></template>
+              <template v-slot:body> <MessageCard class="MessageCard" :card="item" /></template>
+              <template v-slot:footer> </template>
+            </uni-list-item>
+          </uni-swipe-action-item>
+        </uni-swipe-action>
+      </uni-list>
     </view>
     <view v-show="addPop.show" class="addContent" @click="addPop.show = false">
       <view class="addContent-pop" :style="addPop.style">
@@ -118,30 +124,86 @@ export default {
         },
       ],
       addPop: { show: false, style: {} },
-      timer: null,
+      isPending: false,
+      isRefresh: false,
+      firstInitData: { isFirstInit: true, list: [], pageNo: 1, pageSize: 10 },
+      total: 0,
     };
   },
   onLoad() {
     // #ifdef APP-PLUS
-    this.init();
+    this.$store.commit("message/set_messageList", []);
+    if (this.loginStatus) {
+      this.init2();
+    }
     // #endif
   },
+  onShow() {},
   methods: {
+    init2() {
+      this.isRefresh = true;
+      this.init();
+    },
     init() {
-      this.getAllConversationList();
+      if (this.isPending) {
+        this.isRefresh = true;
+      } else if (this.isRefresh) {
+        this.isRefresh = false;
+        this.getAllConversationList();
+        this.getTotalUnreadMsgCount();
+      }
     },
     getAllConversationList() {
+      this.isPending = true;
       this.$im.getAllConversationList(this.operationID, (res) => {
         if (res.errCode !== 0) {
           toast(res.errMsg);
+          this.$nextTick(() => {
+            this.isPending = false;
+            this.init();
+          });
         } else {
           const data = JSON.parse(res.data);
-          // console.log(data);
           // console.log(JSON.parse(res.data));
-          this.$store.commit("message/set_messageList", data);
+          this.checkFirstInit(data);
+        }
+      });
+    },
+    getTotalUnreadMsgCount() {
+      this.$im.getTotalUnreadMsgCount(this.operationID, (res) => {
+        if (res.errCode !== 0) {
+          toast(res.errMsg);
+        } else {
+          this.total = res.data;
           this.setTabBarBadge();
         }
       });
+    },
+    checkFirstInit(list) {
+      // console.log(list);
+      if (this.firstInitData.isFirstInit) {
+        const length = list.length;
+        const num = this.firstInitData.pageNo * this.firstInitData.pageSize;
+        this.$store.commit("message/set_messageList", list.slice(0, num));
+        if (num < length) {
+          this.$nextTick(() => {
+            this.firstInitData.pageNo++;
+            this.checkFirstInit(list);
+          });
+        } else {
+          this.firstInitData.isFirstInit = false;
+          this.$nextTick(() => {
+            this.isPending = false;
+            this.init();
+          });
+        }
+      } else {
+        this.$store.commit("message/set_messageList", list);
+        this.$nextTick(() => {
+          this.isPending = false;
+          this.init();
+        });
+      }
     },
     showAdd() {
       const query = uni.createSelectorQuery().in(this);
@@ -158,7 +220,7 @@ export default {
         .exec();
     },
     scanCode() {
-      scan();
+      scan("0", this.$im);
     },
     routerGo(url) {
       if (url) {
@@ -186,23 +248,24 @@ export default {
           !isPinned,
           (res) => {
             if (res.errCode === 0) {
-              this.init();
+              this.init2();
             }
           }
         );
       } else if (index === 1) {
         this.$im.deleteConversation(this.operationID, conversationID, (res) => {
           if (res.errCode === 0) {
-            this.init();
+            this.init2();
           }
         });
       }
     },
     setTabBarBadge() {
       if (this.total) {
+        const text = this.total > 99 ? "99" : this.total;
         uni.setTabBarBadge({
           index: 0,
-          text: this.total + "",
+          text,
         });
       } else {
         uni.removeTabBarBadge({ index: 0 });
@@ -216,34 +279,25 @@ export default {
       "operationID",
       "newMessageTimes",
       "indexMessageTimes",
+      "loginStatus",
+      "userID",
+      "token",
     ]),
-    total() {
-      let t = this.messageList
-        .filter((i) => {
-          return i.recvMsgOpt === 0;
-        })
-        .map((i) => Number(i.unreadCount) || 0)
-        .reduce((total, num) => total + num);
-      t = t > 99 ? 99 : t;
-      return t;
+    hasLastLoginData() {
+      return this.userID && this.token ? true : false;
     },
   },
   watch: {
     newMessageTimes() {
-      if (this.timer) {
-        clearTimeout(this.timer);
-      }
-      this.timer = setTimeout(() => {
-        this.init();
-      }, 500);
+      this.init2();
     },
     indexMessageTimes() {
-      if (this.timer) {
-        clearTimeout(this.timer);
+      this.init2();
+    },
+    loginStatus(v) {
+      if (v) {
+        this.init2();
       }
-      this.timer = setTimeout(() => {
-        this.init();
-      }, 500);
     },
   },
 };
@@ -251,6 +305,7 @@ export default {
 <style lang="scss" scoped>
 $pdLeft: 44rpx;
 .index {
+  min-height: 100vh;
   .userInfo {
     padding: $pdLeft;
     display: flex;
@@ -289,7 +344,7 @@ $pdLeft: 44rpx;
           text-overflow: ellipsis;
           white-space: nowrap;
         }
-        .userStatus {
+        .loginStatus {
           font-size: 24rpx;
           padding-left: 20rpx;
           position: relative;
@@ -326,21 +381,16 @@ $pdLeft: 44rpx;
   }
   .container {
     margin-top: 32rpx;
-    .indexEditor {
-      height: 24px;
-      line-height: 24px;
-      min-height: 24px;
-      font-size: 26rpx;
-      color: #666666;
-      /deep/ .ql-editor {
-        p {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+    .list {
+      &-item {
+        /deep/ .uni-list-item__container {
+          padding: 0;
         }
-        img {
-          width: 20px;
-          height: 20px;
+        /deep/ .uni-list--border {
+          display: none;
+        }
+        .MessageCard{
+          width: 100%;
         }
       }
     }

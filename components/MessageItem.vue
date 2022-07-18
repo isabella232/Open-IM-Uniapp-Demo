@@ -7,7 +7,7 @@
       :key="index"
       :style="{
         'font-size': fontSize,
-        'color': color,
+        color: color,
       }"
     >
       <text v-if="contentItem.type === 'text'">
@@ -54,6 +54,8 @@ export default {
   &-item {
     display: flex;
     word-break: break-all;
+    height: 36rpx;
+    line-height: 36rpx;
     .atUser {
       color: #3e44ff;
     }

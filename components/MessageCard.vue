@@ -181,6 +181,7 @@ $pdLeft: 44rpx;
       }
       .MessageItem {
         height: 36rpx;
+        line-height: 36rpx;
         flex: 1;
         overflow: hidden;
         text-overflow: ellipsis;

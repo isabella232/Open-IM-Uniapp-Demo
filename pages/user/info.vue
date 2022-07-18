@@ -10,7 +10,9 @@
           height="42px"
           radius="6"
         >
-          <u-icon slot="error" name="account-fill" size="20" color="#666" />
+          <template v-slot:error>
+            <u-icon name="account-fill" size="20" color="#666" />
+          </template>
         </u--image>
         <u-icon class="icon" name="arrow-right" size="18" color="#999" />
       </view>
@@ -157,7 +159,7 @@ export default {
         if (res.errCode === 0) {
           const data = JSON.parse(res.data);
           this.$store.commit("user/set_userInfo", data);
-          this.init()
+          this.init();
         }
       });
     },
@@ -187,7 +189,7 @@ export default {
           path = this.formatPath(path);
           this.$im.uploadFile(this.operationID, path);
         },
-        faile: (error) => {
+        fail: (error) => {
           console.log(error);
         },
       });

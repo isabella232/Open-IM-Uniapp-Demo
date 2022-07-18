@@ -20,11 +20,14 @@ const state = {
     screenHeight: 667,
     screenWidth: 375,
   },
+  loginStatus: false, //是否登录
+  loginUserInfo: null,
+  connectStatus: 1, //服务器连接状态:0,:失败;1:成功;2:连接中
 };
 const mutations = {
   set_systemInfo(state, systemInfo) {
-  console.log(systemInfo);
-  state.systemInfo = systemInfo;
+    console.log(systemInfo);
+    state.systemInfo = systemInfo;
   },
   set_platform(state, platform) {
     state.platform = platform;
@@ -32,14 +35,23 @@ const mutations = {
   set_operationID(state, operationID) {
     state.operationID = operationID;
   },
-  set_userID(state, userID) {
+  set_userID(state, userID = "") {
     state.userID = userID;
   },
-  set_token(state, token) {
+  set_token(state, token = "") {
     state.token = token;
   },
   set_userInfo(state, userInfo) {
     state.userInfo = userInfo;
+  },
+  set_loginUserInfo(state, loginUserInfo = null) {
+    state.loginUserInfo = loginUserInfo;
+  },
+  set_loginStatus(state, loginStatus = false) {
+    state.loginStatus = loginStatus;
+  },
+  set_connectStatus(state, connectStatus = 0) {
+    state.connectStatus = connectStatus;
   },
 };
 const actions = {
@@ -47,7 +59,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       app_login(userInfo)
         .then((res) => {
-          // console.log(res);
           if (res.errCode === 0) {
             commit("set_token", res.data.token);
             commit("set_userID", res.data.userID);
@@ -60,6 +71,18 @@ const actions = {
           console.log(error);
           reject(error);
         });
+    });
+  },
+  logOut({ commit, rootGetters }, im) {
+    commit("set_token");
+    commit("set_userID");
+    commit("set_loginStatus");
+    if (rootGetters.operationID && im) {
+      im.logout(rootGetters.operationID, () => {});
+    }
+    // uni.clearStorage();
+    uni.redirectTo({
+      url: "/pages/login/index",
     });
   },
 };

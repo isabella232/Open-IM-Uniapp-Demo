@@ -147,26 +147,6 @@ export default {
       color: #adadad;
       margin-bottom: 12rpx;
     }
-    .historyMessageItem {
-      .indexEditor {
-        height: 24px;
-        line-height: 24px;
-        min-height: 24px;
-        font-size: 26rpx;
-        color: #333;
-        /deep/ .ql-editor {
-          p {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-          img {
-            width: 20px;
-            height: 20px;
-          }
-        }
-      }
-    }
   }
 }
 </style>

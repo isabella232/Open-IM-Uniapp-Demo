@@ -25,7 +25,7 @@
       }"
       ref="loginForm"
     >
-      <u-form-item prop="phoneNumber" borderBottom>
+      <u-form-item prop="phoneNumber" borderBottom v-show="!showEmail">
         <u-input
           v-model="userInfo.phoneNumber"
           border="none"
@@ -33,10 +33,22 @@
           placeholder="请输入手机号码"
           clearable
         >
-          <view class="phoneNumber-code" slot="prefix">
-            <text class="code">+86</text>
-            <u-icon class="icon" name="arrow-down"></u-icon>
-          </view>
+          <template v-slot:prefix>
+            <view class="phoneNumber-code" @click="showPicker">
+              <text class="code">+{{ userInfo.areaCode }}</text>
+              <u-icon class="icon" name="arrow-down"></u-icon>
+            </view>
+          </template>
+        </u-input>
+      </u-form-item>
+      <u-form-item prop="email" borderBottom v-show="showEmail">
+        <u-input
+          v-model="userInfo.email"
+          border="none"
+          fontSize="36rpx"
+          placeholder="请输入邮箱"
+          clearable
+        >
         </u-input>
       </u-form-item>
       <u-form-item label="密码" prop="password" borderBottom>
@@ -48,13 +60,15 @@
           placeholder="请输入密码"
           type="password"
         >
-          <view class="eye" slot="suffix">
-            <image
-              @click="changeType"
-              class="image"
-              src="@/static/images/login/eye-off.png"
-            />
-          </view>
+          <template v-slot:suffix>
+            <view class="eye">
+              <image
+                @click="changeType"
+                class="image"
+                src="@/static/images/login/eye-off.png"
+              />
+            </view>
+          </template>
         </u-input>
         <u-input
           v-show="!isPassword"
@@ -64,24 +78,26 @@
           placeholder="请输入密码"
           type="text"
         >
-          <view class="eye" slot="suffix">
-            <image
-              @click="changeType"
-              class="image"
-              src="@/static/images/login/eye-open.png"
-            />
-          </view>
+          <template v-slot:suffix>
+            <view class="eye">
+              <image
+                @click="changeType"
+                class="image"
+                src="@/static/images/login/eye-open.png"
+              />
+            </view>
+          </template>
         </u-input>
       </u-form-item>
     </u-form>
     <view class="other">
-      <text class="forget">忘记密码</text>
-      <text class="register">新用户注册</text>
+      <text class="forget" @click="forget">忘记密码</text>
+      <text class="register" @click="routerGo('normal')">新用户注册</text>
     </view>
     <view class="login-btn">
-      <u-button type="primary" @click="startLogin" :disabled="!checked[0]"
-        >登录</u-button
-      >
+      <u-button type="primary" @click="startLogin" :disabled="!checked[0]">
+        登录
+      </u-button>
     </view>
     <view class="agreement">
       <u-checkbox-group v-model="checked">
@@ -95,63 +111,57 @@
       </u-checkbox-group>
       <text class="detail">《服务协议》，《隐私权政策》</text>
     </view>
+    <AreaPicker ref="AreaPicker" @chooseArea="chooseArea" />
   </view>
 </template>
 
 <script>
-// #ifdef APP-PLUS
-import { login as im_login } from "@/config/app";
-// #endif
-// #ifdef H5
-import { login as im_login } from "@/config/web";
-// #endif
 import { mapGetters } from "vuex";
 import md5 from "js-md5";
+import AreaPicker from "./components/AreaPicker";
 export default {
+  components: { AreaPicker },
   data() {
     return {
+      pageStatus: "normal",
       loginType: { list: [{ name: "手机号码" }, { name: "邮箱" }], current: 0 },
       userInfo: {
         phoneNumber: "",
+        email: "",
         password: "",
-      },
-      rules: {
-        phoneNumber: {
-          type: "string",
-          required: true,
-          message: "请输入手机号码",
-          trigger: ["blur", "change"],
-        },
-        password: {
-          type: "string",
-          required: true,
-          message: "请输入密码",
-          trigger: ["blur", "change"],
-        },
+        areaCode: "86",
       },
       passwordType: "password",
       isPassword: true,
       checked: [false],
     };
   },
-  onLoad() {},
+  onLoad(param) {
+    this.pageStatus = param.pageStatus || "normal";
+  },
   onReady() {
     this.init();
   },
   methods: {
     init() {
       if (process.env.NODE_ENV === "development") {
-        this.checked[0] = true;
+        this.checked = [true];
         // this.userInfo.phoneNumber = "18381415165";
-        this.userInfo.phoneNumber = "17396220460";
-        this.userInfo.password = "123456";
+        // this.userInfo.phoneNumber = "17396220460";
+        // this.userInfo.password = "123456";
         // this.userInfo.phoneNumber = "18666662412";
         // this.userInfo.password = "111111";
-        
+
         // this.userInfo.phoneNumber = "18886138904";
-        // this.userInfo.phoneNumber = "18886138905";//小红
+        // this.userInfo.phoneNumber = "18886138905";
         // this.userInfo.password = "wme52052018";
-        this.startLogin();
+        // this.userInfo.phoneNumber = "18666662412";
+        // this.userInfo.password = "222222";
+        // this.startLogin();
+      }
+      if (this.isForgetPage && this.loginUserInfo) {
+        this.userInfo.phoneNumber = this.loginUserInfo.phoneNumber;
+        this.userInfo.password = this.loginUserInfo.password;
       }
     },
     loginTypeChange(index) {
@@ -159,37 +169,159 @@ export default {
     },
     startLogin() {
       this.$refs.loginForm.validate().then((valid) => {
-        if (valid) {
+        if (this.showEmail && valid) {
+          this.$toast("暂不支持邮箱登录");
+        } else if (valid) {
           this.$store
             .dispatch("user/login", {
               phoneNumber: this.userInfo.phoneNumber,
               password: md5(this.userInfo.password),
-              operationID: this.operationID,
             })
             .then(() => {
-              im_login();
+              this.loginCb();
             })
             .catch((error) => {
               console.log(error);
-              this.$toast(error.message);
+              this.$toast(error.errMsg);
             });
         }
       });
+    },
+    loginCb() {
+      if (this.connectStatus === 1) {
+        this.appLogin()
+          .then(() => {
+            this.$im.getSelfUserInfo(this.operationID, (res) => {
+              if (res.errCode === 0) {
+                const data = JSON.parse(res.data);
+                this.$store.commit("user/set_userInfo", data);
+                console.log(data);
+                this.$store.commit("user/set_loginStatus", true);
+                uni.switchTab({
+                  url: "/pages/index/index",
+                });
+              } else {
+                this.$toast(res.errMsg);
+              }
+            });
+          })
+          .catch((msg) => {
+            this.$toast(msg);
+          });
+      } else if (this.connectStatus === 2) {
+        this.$toast("服务器连接中，请稍后再试");
+      } else {
+        this.$toast("服务器连接超时，请稍后再试");
+      }
+    },
+    appLogin() {
+      return new Promise((resolve, reject) => {
+        this.$im.login(this.operationID, this.userID, this.token, (res) => {
+          if (res.errCode === 0) {
+            const loginStatus = this.getLoginStatus();
+            console.log(res, loginStatus);
+            if (loginStatus) {
+              resolve(loginStatus);
+            } else {
+              reject("登录失败");
+            }
+          } else {
+            reject(res.errMsg);
+          }
+        });
+      });
+    },
+    getLoginStatus() {
+      const status = this.$im.getLoginStatus(); // 返回值为 101:登录成功 102:登陆中 103:登录失败 201:登出
+      if (status === 101) {
+        return true;
+      } else {
+        return false;
+      }
     },
     changeType() {
       this.isPassword = !this.isPassword;
       this.passwordType = this.isPassword ? "password" : "text";
     },
+    showPicker() {
+      this.$refs.AreaPicker.init();
+    },
+    chooseArea(areaCode) {
+      this.userInfo.areaCode = areaCode;
+    },
+    forget() {
+      this.$store.commit("user/set_loginUserInfo", this.userInfo);
+      this.routerGo("forget");
+    },
+    routerGo(pageStatus) {
+      uni.navigateTo({
+        url: "./register?pageStatus=" + pageStatus,
+      });
+    },
   },
   computed: {
-    ...mapGetters(["operationID"]),
+    ...mapGetters([
+      "operationID",
+      "userID",
+      "token",
+      "connectStatus",
+      "loginUserInfo",
+    ]),
+    showEmail() {
+      return this.loginType.current === 1;
+    },
+    rules() {
+      const r = {
+        password: [
+          {
+            type: "string",
+            required: true,
+            message: "请输入密码",
+            trigger: ["blur", "change"],
+          },
+        ],
+      };
+      if (!this.showEmail) {
+        r.phoneNumber = [
+          {
+            type: "string",
+            required: true,
+            message: "请输入手机号码",
+            trigger: ["blur", "change"],
+          },
+        ];
+      } else {
+        r.email = [
+          {
+            required: true,
+            message: "请输入邮箱",
+            trigger: ["blur", "change"],
+          },
+          {
+            validator: (rule, value, callback) => {
+              return uni.$u.test.email(value);
+            },
+            message: "邮箱有误",
+            trigger: ["change", "blur"],
+          },
+        ];
+      }
+      return r;
+    },
+    isNormalPage() {
+      return this.pageStatus === "normal";
+    },
+    isForgetPage() {
+      return this.pageStatus === "forget";
+    },
   },
 };
 </script>
 <style lang="scss" scoped>
 .login {
   color: #333333;
-  padding: 126rpx * 2 80rpx 0;
+  padding: 252rpx 80rpx 0;
+  min-height: 100vh;
   .title {
     font-size: 64rpx;
     font-weight: 600;

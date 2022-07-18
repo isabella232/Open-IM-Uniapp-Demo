@@ -15,20 +15,21 @@
       :height="size"
       @error="errorMessage"
     >
-      <view
-        :class="[
-          'Avatar-image-error',
-          isGroup ? 'Avatar-image-error-group' : '',
-        ]"
-        slot="error"
-        :style="{
-          height: size,
-          'line-height': size,
-          'font-size': fontSize,
-        }"
-      >
-        {{ shortName }}
-      </view>
+      <template v-slot:error>
+        <view
+          :class="[
+            'Avatar-image-error',
+            isGroup ? 'Avatar-image-error-group' : '',
+          ]"
+          :style="{
+            height: size,
+            'line-height': size,
+            'font-size': fontSize,
+          }"
+        >
+          {{ shortName }}
+        </view>
+      </template>
     </u-image>
   </view>
 </template>

@@ -2,15 +2,17 @@
   <view class="forward">
     <view class="statusBar"></view>
     <u-navbar class="navbar" title="选择联系人" autoBack>
-      <view slot="right">
-        <u-button
-          type="primary"
-          text="发送"
-          size="mini"
-          :disabled="btnDisabled"
-          @click="modalShow = true"
-        ></u-button>
-      </view>
+      <template v-slot:right>
+        <view>
+          <u-button
+            type="primary"
+            text="发送"
+            size="mini"
+            :disabled="btnDisabled"
+            @click="modalShow = true"
+          />
+        </view>
+      </template>
     </u-navbar>
     <view class="search">
       <u-search

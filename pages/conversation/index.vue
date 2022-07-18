@@ -1,24 +1,28 @@
 <template>
   <view class="conversation" @click="pageClick">
     <u-navbar class="navbar" autoBack fixed placeholder>
-      <view class="navbar-center" slot="center">
-        <view class="name">
-          <view class="nickname">{{ conversationData_showName }}</view>
-          <!-- <view class="userStatus" v-show="isSingleChat">手机在线</view> -->
-        </view>
-      </view>
-      <view class="navbar-right" slot="right">
-        <view class="right-item" v-show="isSingleChat">
-          <image class="image" src="@/static/images/conversation/phone.png" />
-        </view>
-        <view class="right-item" v-show="!conversationData.isNotInGroup">
-          <view class="dot" @click.stop="toInfo">
-            <text class="dot-text"></text>
-            <text class="dot-text"></text>
-            <text class="dot-text"></text>
+      <template v-slot:center>
+        <view class="navbar-center">
+          <view class="name">
+            <view class="nickname">{{ conversationData_showName }}</view>
+            <!-- <view class="userStatus" v-show="isSingleChat">手机在线</view> -->
           </view>
         </view>
-      </view>
+      </template>
+      <template v-slot:right>
+        <view class="navbar-right">
+          <view class="right-item" v-show="isSingleChat">
+            <image class="image" src="@/static/images/conversation/phone.png" />
+          </view>
+          <view class="right-item" v-show="!conversationData.isNotInGroup">
+            <view class="dot" @click.stop="toInfo">
+              <text class="dot-text"></text>
+              <text class="dot-text"></text>
+              <text class="dot-text"></text>
+            </view>
+          </view>
+        </view>
+      </template>
     </u-navbar>
     <scroll-view
       class="scrollView"
@@ -70,12 +74,13 @@
             @showBigPhoto="showBigPhoto"
             @showVideoPop="showVideoPop"
           >
-            <u-checkbox
-              v-show="multipleData.show"
-              slot="checkbox"
-              :name="item.clientMsgID"
-              shape="circle"
-            />
+            <template v-slot:checkbox>
+              <u-checkbox
+                v-show="multipleData.show"
+                :name="item.clientMsgID"
+                shape="circle"
+              />
+            </template>
           </ConversationCard>
         </u-checkbox-group>
         <view id="messageContent-bottom"></view>
@@ -2363,7 +2368,8 @@ export default {
             set_messageToLocal(
               this.messageList,
               this.sourceID,
-              this.sessionType
+              this.sessionType,
+              this.$im
             );
           }
         }
@@ -2404,7 +2410,8 @@ export default {
             set_messageToLocal(
               this.messageList,
               this.sourceID,
-              this.sessionType
+              this.sessionType,
+              this.$im
             );
           }
         }
@@ -2431,7 +2438,12 @@ export default {
             this.messageList.unshift(...data);
             this.getMessageOptions.startClientMsgID = "";
             this.markMessageAsRead();
-            set_messageToLocal(...data, this.sourceID, this.sessionType);
+            set_messageToLocal(
+              ...data,
+              this.sourceID,
+              this.sessionType,
+              this.$im
+            );
           }
         }
       );
@@ -2936,7 +2948,7 @@ export default {
           });
           // #endif
         },
-        faile: (error) => {
+        fail: (error) => {
           console.log(error);
         },
       });
