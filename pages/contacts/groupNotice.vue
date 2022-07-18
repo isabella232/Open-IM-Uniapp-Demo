@@ -127,7 +127,7 @@ export default {
       return list.slice(0, this.maxLength.selfGroupNotice);
     },
     showSelfGroupNoticeMore() {
-      return this.selfGroupNoticeList.length > this.maxLength.groupNotice
+      return this.selfGroupNoticeList.length > this.maxLength.selfGroupNotice
         ? true
         : false;
     },

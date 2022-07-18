@@ -46,9 +46,9 @@
             @click="(v) => swipeActionClick(v, item)"
           >
             <uni-list-item class="list-item">
-              <template v-slot:header></template>
-              <template v-slot:body> <MessageCard class="MessageCard" :card="item" /></template>
-              <template v-slot:footer> </template>
+              <view slot="header"></view>
+              <MessageCard slot="body" class="MessageCard" :card="item" />
+              <view slot="footer"></view>
             </uni-list-item>
           </uni-swipe-action-item>
         </uni-swipe-action>
@@ -164,7 +164,7 @@ export default {
           });
         } else {
           const data = JSON.parse(res.data);
-          // console.log(JSON.parse(res.data));
+          console.log(JSON.parse(res.data));
           this.checkFirstInit(data);
         }
       });
@@ -389,7 +389,7 @@ $pdLeft: 44rpx;
         /deep/ .uni-list--border {
           display: none;
         }
-        .MessageCard{
+        .MessageCard {
           width: 100%;
         }
       }

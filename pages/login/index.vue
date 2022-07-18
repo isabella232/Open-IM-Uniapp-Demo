@@ -33,12 +33,10 @@
           placeholder="请输入手机号码"
           clearable
         >
-          <template v-slot:prefix>
-            <view class="phoneNumber-code" @click="showPicker">
-              <text class="code">+{{ userInfo.areaCode }}</text>
-              <u-icon class="icon" name="arrow-down"></u-icon>
-            </view>
-          </template>
+          <view slot="prefix" class="phoneNumber-code" @click="showPicker">
+            <text class="code">+{{ userInfo.areaCode }}</text>
+            <u-icon class="icon" name="arrow-down"></u-icon>
+          </view>
         </u-input>
       </u-form-item>
       <u-form-item prop="email" borderBottom v-show="showEmail">
@@ -60,15 +58,13 @@
           placeholder="请输入密码"
           type="password"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changeType"
-                class="image"
-                src="@/static/images/login/eye-off.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="suffix">
+            <image
+              @click="changeType"
+              class="image"
+              src="@/static/images/login/eye-off.png"
+            />
+          </view>
         </u-input>
         <u-input
           v-show="!isPassword"
@@ -78,15 +74,13 @@
           placeholder="请输入密码"
           type="text"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changeType"
-                class="image"
-                src="@/static/images/login/eye-open.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="right">
+            <image
+              @click="changeType"
+              class="image"
+              src="@/static/images/login/eye-open.png"
+            />
+          </view>
         </u-input>
       </u-form-item>
     </u-form>
@@ -147,11 +141,10 @@ export default {
       if (process.env.NODE_ENV === "development") {
         this.checked = [true];
         // this.userInfo.phoneNumber = "18381415165";
-        // this.userInfo.phoneNumber = "17396220460";
-        // this.userInfo.password = "123456";
+        this.userInfo.phoneNumber = "17396220460";
+        this.userInfo.password = "123456";
         // this.userInfo.phoneNumber = "18666662412";
         // this.userInfo.password = "111111";
-
         // this.userInfo.phoneNumber = "18886138904";
         // this.userInfo.phoneNumber = "18886138905";
         // this.userInfo.password = "wme52052018";

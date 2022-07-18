@@ -32,12 +32,10 @@
           placeholder="请输入手机号码"
           clearable
         >
-          <template v-slot:prefix>
-            <view class="phoneNumber-code" @click="showPicker">
-              <text class="code">+{{ userInfo.areaCode }}</text>
-              <u-icon class="icon" name="arrow-down"></u-icon>
-            </view>
-          </template>
+          <view slot="right" class="phoneNumber-code" @click="showPicker">
+            <text class="code">+{{ userInfo.areaCode }}</text>
+            <u-icon class="icon" name="arrow-down"></u-icon>
+          </view>
         </u-input>
       </u-form-item>
     </u-form>

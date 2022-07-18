@@ -2,14 +2,10 @@
   <view class="map">
     <view class="statusBar customBar"></view>
     <u-navbar class="navbar" autoBack>
-      <template v-slot:center>
-        <view class="navbar-center"> 位置 </view>
-      </template>
-      <template v-slot:right>
-        <view class="navbar-right">
-          <view class="right-item" @click="sendMessage">确定</view>
-        </view>
-      </template>
+      <view class="navbar-center" slot="center"> 位置 </view>
+      <view class="navbar-right" slot="right">
+        <view class="right-item" @click="sendMessage">确定</view>
+      </view>
     </u-navbar>
     <map
       id="map"

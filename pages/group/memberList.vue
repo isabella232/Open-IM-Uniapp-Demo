@@ -2,8 +2,7 @@
   <view class="container">
     <view class="statusBar"></view>
     <u-navbar class="navbar" :title="pageTitle" @leftClick="leftClick">
-      <template v-slot:right>
-        <view
+        <view slot="right"
           class="dot"
           id="addPic"
           @click="showOperationPop"
@@ -13,7 +12,6 @@
           <text class="dot-text"></text>
           <text class="dot-text"></text>
         </view>
-      </template>
     </u-navbar>
     <view class="search">
       <u-search

@@ -9,9 +9,7 @@
         height="73px"
         radius="6"
       >
-        <template v-slot:error>
-          <u-icon name="account-fill" size="40" color="#666" />
-        </template>
+        <u-icon slot="error" name="account-fill" size="40" color="#666" />
       </u--image>
       <text class="nickname">{{ userInfo.nickname }}</text>
       <view class="userID" @click="routerGo('/pages/friend/qrcode')">

@@ -1,16 +1,13 @@
 <template>
   <view class="send">
     <u-navbar title="群聊验证" autoBack>
-      <template v-slot:right>
-        <view>
-          <u-button
-            type="primary"
-            text="发送"
-            size="mini"
-            @click="confirm"
-          ></u-button>
-        </view>
-      </template>
+      <u-button
+        slot="right"
+        type="primary"
+        text="发送"
+        size="mini"
+        @click="confirm"
+      />
     </u-navbar>
     <view class="statusBar"></view>
     <view class="content">

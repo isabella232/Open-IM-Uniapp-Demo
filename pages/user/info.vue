@@ -10,9 +10,7 @@
           height="42px"
           radius="6"
         >
-          <template v-slot:error>
-            <u-icon name="account-fill" size="20" color="#666" />
-          </template>
+          <u-icon slot="error" name="account-fill" size="20" color="#666" />
         </u--image>
         <u-icon class="icon" name="arrow-right" size="18" color="#999" />
       </view>

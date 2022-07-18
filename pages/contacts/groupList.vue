@@ -1,11 +1,9 @@
 <template>
   <view class="groupList">
     <u-navbar class="navbar" title="我的群组" autoBack fixed placeholder>
-      <template v-slot:right>
-        <view class="navbar-right">
-          <view class="navbar-right-item" @click="createGroup"> 发起群聊 </view>
-        </view>
-      </template>
+      <view class="navbar-right" slot="right">
+        <view class="navbar-right-item" @click="createGroup"> 发起群聊 </view>
+      </view>
     </u-navbar>
     <u-sticky>
       <view class="search">

@@ -1,24 +1,22 @@
 <template>
   <view class="notification">
     <u-navbar class="navbar" title="群公告" autoBack fixed placeholder>
-      <template v-slot:right>
-        <view class="navbar-right">
-          <view
-            class="navbar-right-item"
-            v-show="canDoEdit && !isEdit"
-            @click="isEdit = true"
-          >
-            <image class="image" src="@/static/images/friend/edit.png" />
-          </view>
-          <view
-            class="navbar-right-item"
-            v-show="canDoEdit && isEdit"
-            @click="setGroupInfo"
-          >
-            <u-button type="primary" size="mini">完成</u-button>
-          </view>
+      <view class="navbar-right" slot="right">
+        <view
+          class="navbar-right-item"
+          v-show="canDoEdit && !isEdit"
+          @click="isEdit = true"
+        >
+          <image class="image" src="@/static/images/friend/edit.png" />
         </view>
-      </template>
+        <view
+          class="navbar-right-item"
+          v-show="canDoEdit && isEdit"
+          @click="setGroupInfo"
+        >
+          <u-button type="primary" size="mini">完成</u-button>
+        </view>
+      </view>
     </u-navbar>
     <view class="content">
       <u--textarea

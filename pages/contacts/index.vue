@@ -1,23 +1,19 @@
 <template>
   <view class="contacts">
     <u-navbar class="navbar" fixed placeholder>
-      <template v-slot:left>
-        <view class="navbar-left"> 通讯录 </view>
-      </template>
-      <template v-slot:right>
-        <view class="navbar-right">
-          <image
-            @click="routerGo('./add')"
-            class="image"
-            src="@/static/images/contact/search.png"
-          />
-          <image
-            @click="routerGo('./add')"
-            class="image"
-            src="@/static/images/contact/add.png"
-          />
-        </view>
-      </template>
+      <view class="navbar-left" slot="left"> 通讯录 </view>
+      <view class="navbar-right" slot="right">
+        <image
+          @click="routerGo('./add')"
+          class="image"
+          src="@/static/images/contact/search.png"
+        />
+        <image
+          @click="routerGo('./add')"
+          class="image"
+          src="@/static/images/contact/add.png"
+        />
+      </view>
     </u-navbar>
     <view class="top">
       <view class="top-item" @click="routerGo('./friendNotice')">

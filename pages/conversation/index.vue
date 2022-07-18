@@ -1,28 +1,24 @@
 <template>
   <view class="conversation" @click="pageClick">
     <u-navbar class="navbar" autoBack fixed placeholder>
-      <template v-slot:center>
-        <view class="navbar-center">
-          <view class="name">
-            <view class="nickname">{{ conversationData_showName }}</view>
-            <!-- <view class="userStatus" v-show="isSingleChat">手机在线</view> -->
+      <view class="navbar-center" slot="right">
+        <view class="name">
+          <view class="nickname">{{ conversationData_showName }}</view>
+          <!-- <view class="userStatus" v-show="isSingleChat">手机在线</view> -->
+        </view>
+      </view>
+      <view class="navbar-right" slot="right">
+        <view class="right-item" v-show="isSingleChat">
+          <image class="image" src="@/static/images/conversation/phone.png" />
+        </view>
+        <view class="right-item" v-show="!conversationData.isNotInGroup">
+          <view class="dot" @click.stop="toInfo">
+            <text class="dot-text"></text>
+            <text class="dot-text"></text>
+            <text class="dot-text"></text>
           </view>
         </view>
-      </template>
-      <template v-slot:right>
-        <view class="navbar-right">
-          <view class="right-item" v-show="isSingleChat">
-            <image class="image" src="@/static/images/conversation/phone.png" />
-          </view>
-          <view class="right-item" v-show="!conversationData.isNotInGroup">
-            <view class="dot" @click.stop="toInfo">
-              <text class="dot-text"></text>
-              <text class="dot-text"></text>
-              <text class="dot-text"></text>
-            </view>
-          </view>
-        </view>
-      </template>
+      </view>
     </u-navbar>
     <scroll-view
       class="scrollView"
@@ -74,13 +70,12 @@
             @showBigPhoto="showBigPhoto"
             @showVideoPop="showVideoPop"
           >
-            <template v-slot:checkbox>
-              <u-checkbox
-                v-show="multipleData.show"
-                :name="item.clientMsgID"
-                shape="circle"
-              />
-            </template>
+            <u-checkbox
+              slot="checkbox"
+              v-show="multipleData.show"
+              :name="item.clientMsgID"
+              shape="circle"
+            />
           </ConversationCard>
         </u-checkbox-group>
         <view id="messageContent-bottom"></view>

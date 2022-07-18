@@ -25,15 +25,13 @@
           placeholder="请输入密码"
           type="password"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changePasswordType"
-                class="image"
-                src="@/static/images/login/eye-off.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="right">
+            <image
+              @click="changePasswordType"
+              class="image"
+              src="@/static/images/login/eye-off.png"
+            />
+          </view>
         </u-input>
         <u-input
           v-show="!isPassword"
@@ -43,15 +41,13 @@
           placeholder="请输入密码"
           type="text"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changePasswordType"
-                class="image"
-                src="@/static/images/login/eye-open.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="suffix">
+            <image
+              @click="changePasswordType"
+              class="image"
+              src="@/static/images/login/eye-open.png"
+            />
+          </view>
         </u-input>
       </u-form-item>
       <u-form-item label="确认密码" prop="confirmPassword" borderBottom>
@@ -63,15 +59,13 @@
           placeholder="请输入密码"
           type="password"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changeConfirmPasswordType"
-                class="image"
-                src="@/static/images/login/eye-off.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="suffix">
+            <image
+              @click="changeConfirmPasswordType"
+              class="image"
+              src="@/static/images/login/eye-off.png"
+            />
+          </view>
         </u-input>
         <u-input
           v-show="!isConfirmPassword"
@@ -81,15 +75,13 @@
           placeholder="请输入密码"
           type="text"
         >
-          <template v-slot:suffix>
-            <view class="eye">
-              <image
-                @click="changeConfirmPasswordType"
-                class="image"
-                src="@/static/images/login/eye-open.png"
-              />
-            </view>
-          </template>
+          <view class="eye" slot="suffix">
+            <image
+              @click="changeConfirmPasswordType"
+              class="image"
+              src="@/static/images/login/eye-open.png"
+            />
+          </view>
         </u-input>
       </u-form-item>
     </u-form>

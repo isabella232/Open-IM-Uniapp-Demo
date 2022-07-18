@@ -36,8 +36,7 @@ export default {
   },
   onLoad() {
     if (process.env.NODE_ENV === "development") {
-      // this.searchContent = "1877196314";
-      this.searchContent = "18886138904";
+      this.searchContent = "1877196314";
     }
   },
   methods: {
