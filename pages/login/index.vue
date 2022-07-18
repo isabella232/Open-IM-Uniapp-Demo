@@ -141,8 +141,8 @@ export default {
       if (process.env.NODE_ENV === "development") {
         this.checked = [true];
         // this.userInfo.phoneNumber = "18381415165";
-        this.userInfo.phoneNumber = "17396220460";
-        this.userInfo.password = "123456";
+        // this.userInfo.phoneNumber = "17396220460";
+        // this.userInfo.password = "123456";
         // this.userInfo.phoneNumber = "18666662412";
         // this.userInfo.password = "111111";
         // this.userInfo.phoneNumber = "18886138904";
