@@ -140,17 +140,6 @@ export default {
     init() {
       if (process.env.NODE_ENV === "development") {
         this.checked = [true];
-        // this.userInfo.phoneNumber = "18381415165";
-        // this.userInfo.phoneNumber = "17396220460";
-        // this.userInfo.password = "123456";
-        // this.userInfo.phoneNumber = "18666662412";
-        // this.userInfo.password = "111111";
-        // this.userInfo.phoneNumber = "18886138904";
-        // this.userInfo.phoneNumber = "18886138905";
-        // this.userInfo.password = "wme52052018";
-        // this.userInfo.phoneNumber = "18666662412";
-        // this.userInfo.password = "222222";
-        // this.startLogin();
       }
       if (this.isForgetPage && this.loginUserInfo) {
         this.userInfo.phoneNumber = this.loginUserInfo.phoneNumber;
@@ -175,7 +164,7 @@ export default {
             })
             .catch((error) => {
               console.log(error);
-              this.$toast(error.errMsg);
+              this.$toast(error.errMsg || error.message);
             });
         }
       });
@@ -188,11 +177,22 @@ export default {
               if (res.errCode === 0) {
                 const data = JSON.parse(res.data);
                 this.$store.commit("user/set_userInfo", data);
-                console.log(data);
+                // console.log(data);
                 this.$store.commit("user/set_loginStatus", true);
+                uni.hideLoading();
                 uni.switchTab({
                   url: "/pages/index/index",
                 });
+                this.$store.dispatch("contacts/get_friendNoticeList", this.$im);
+                this.$store.dispatch(
+                  "contacts/get_selfFriendNoticeList",
+                  this.$im
+                );
+                this.$store.dispatch("contacts/get_groupNoticeList", this.$im);
+                this.$store.dispatch(
+                  "contacts/get_selfGroupNoticeList",
+                  this.$im
+                );
               } else {
                 this.$toast(res.errMsg);
               }
@@ -209,6 +209,7 @@ export default {
     },
     appLogin() {
       return new Promise((resolve, reject) => {
+        uni.showLoading();
         this.$im.login(this.operationID, this.userID, this.token, (res) => {
           if (res.errCode === 0) {
             const loginStatus = this.getLoginStatus();

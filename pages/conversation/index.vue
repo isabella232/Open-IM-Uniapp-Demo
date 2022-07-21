@@ -1,7 +1,7 @@
 <template>
   <view class="conversation" @click="pageClick">
     <u-navbar class="navbar" autoBack fixed placeholder>
-      <view class="navbar-center" slot="right">
+      <view class="navbar-center" slot="center">
         <view class="name">
           <view class="nickname">{{ conversationData_showName }}</view>
           <!-- <view class="userStatus" v-show="isSingleChat">手机在线</view> -->
@@ -50,8 +50,9 @@
           placement="column"
         >
           <ConversationCard
+            :id="'viewId-' + item.clientMsgID"
             class="messageContent-item"
-            v-for="item in messageList"
+            v-for="item in localMessageList"
             :key="item.clientMsgID"
             :card="item"
             :isSingleChat="isSingleChat"
@@ -290,7 +291,6 @@ import {
   formatSendContent,
   getEmojiContent,
 } from "@/utils/formatMessage";
-import { set_messageToLocal } from "@/utils/setLocalMessage";
 import { transformContent } from "@/utils";
 import MessageItem from "@/components/MessageItem.vue";
 //#ifdef APP-PLUS
@@ -329,12 +329,8 @@ export default {
         canChangeKeyboardHeight: true,
         keyboardTimer: null,
         is2Tower: true, //是否在底部
-      },
-      getMessageOptions: {
-        userID: "", //拉取单个用户之间的聊天消息
-        groupID: "", //拉取群的聊天消息
-        startClientMsgID: "", // 起始的消息clientMsgID，第一次拉取为""
-        count: 20, //拉取消息的数量
+        scrollTop: 0,
+        scrollHeight: 0,
       },
       conversationData: {
         conversationID: "group_8f1f2680ccd152762d5fa9c86c063d4c",
@@ -357,1844 +353,6 @@ export default {
         attachedInfo: "",
         ex: "",
       },
-      messageList: [
-        {
-          clientMsgID: "95a1eb1843ad7ac7738f517c46adf814",
-          serverMsgID: "f66e3b247e3d08fac010cf080cd7e79c",
-          createTime: 1656039861902,
-          sendTime: 1656039862025,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content: "叫个毛",
-          seq: 5560,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656040182157,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656040182157,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "35dc4f4eb71ae16f194e9803fe70d272",
-          serverMsgID: "378c6b68c5e0f96c7171391d56489e7d",
-          createTime: 1656040186934,
-          sendTime: 1656040186995,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "tamade",
-          seq: 5585,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656043476604,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656043476604,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "4d9bdcd425ef64b9c0eebcd84d986169",
-          serverMsgID: "ff5f30322db8c98033d591946b29e27e",
-          createTime: 1656040198003,
-          sendTime: 1656040198065,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "你们这个不行啊",
-          seq: 5586,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656043476615,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656043476615,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "26e9bee54e8bc754913f652c277ac667",
-          serverMsgID: "370e808879c4e93eb1fbfa551d003f46",
-          createTime: 1656040207188,
-          sendTime: 1656040207250,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "发了五分钟我才收到",
-          seq: 5587,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656043476612,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656043476612,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "9af3c2124174511814ffbb80e63df107",
-          serverMsgID: "a12bc0b6f53d3b5e786d73fe38a74495",
-          createTime: 1656040224918,
-          sendTime: 1656040224983,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "延时通信",
-          seq: 5588,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656043476608,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656043476608,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "7b4139fef5162f73beec23f6c696e541",
-          serverMsgID: "b7ddf52d2a59e0c105a18bba1a7d85a7",
-          createTime: 1656043533029,
-          sendTime: 1656043533099,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content: "来提两个PR",
-          seq: 5614,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656051263802,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656051263802,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "1e6cfd18783a508931c5ec8d0ebc5df5",
-          serverMsgID: "b86d68876b32adbfc573bc86bcc4ff67",
-          createTime: 1656051279324,
-          sendTime: 1656051279393,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "不想提",
-          seq: 5711,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656051524693,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656051524693,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "d9cca0b1c3ff63ae90209d734ee3ab66",
-          serverMsgID: "4b201630710349abfc65c34bf52bb2a9",
-          createTime: 1656051565608,
-          sendTime: 1656051565771,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 108,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content:
-            '{"ownerUserID":"3798435312","userID":"565214579","remark":"","createTime":1655896351,"addSource":0,"operatorUserID":"3798435312","nickname":"弔儿子","faceURL":"ic_avatar_06","gender":0,"phoneNumber":"","birth":0,"email":"","ex":"","attachedInfo":""}',
-          seq: 5718,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053188650,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053188650,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "e9d84f774c790088f95192b8b5b1796b",
-          serverMsgID: "d3285c7e470b14cc4aab1fa36992754e",
-          createTime: 1656051570537,
-          sendTime: 1656051570692,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 108,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content:
-            '{"ownerUserID":"3798435312","userID":"2539466345","remark":"","createTime":1655884519,"addSource":0,"operatorUserID":"3798435312","nickname":"林伯宇","faceURL":"ic_avatar_02","gender":0,"phoneNumber":"","birth":0,"email":"","ex":"","attachedInfo":""}',
-          seq: 5719,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053188674,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053188674,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "27b7086fa6b0689a1e5b55556872f2f2",
-          serverMsgID: "c59a3558f107e9b9e6d83ce104ff60d2",
-          createTime: 1656051577600,
-          sendTime: 1656051577757,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content: "看看你们三个憨批",
-          seq: 5720,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053188699,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053188699,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "ac3b8d745c1ed6816dfce043c39e3c1a",
-          serverMsgID: "1892294562c22e5f1c1d3983299f93e8",
-          createTime: 1656053196216,
-          sendTime: 1656053196279,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "cao",
-          seq: 5783,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053207354,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053207354,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "6eacd96f93437347bf22e1699ebc6401",
-          serverMsgID: "5d627dcc5554561cba3f40d2320ef304",
-          createTime: 1656053203455,
-          sendTime: 1656053203533,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "你知道谁是谁？",
-          seq: 5786,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053207349,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053207349,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "e71f4585980e1a47da317dbb4b91679d",
-          serverMsgID: "7104956854bc49fb27136938e84bc470",
-          createTime: 1656053223040,
-          sendTime: 1656053223176,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content: "  那我肯定知道",
-          seq: 5794,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053400045,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053400045,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "bbfe9dcba51dfc372a02e198a9faf509",
-          serverMsgID: "5f288027d894dadb735f3c77df80af94",
-          createTime: 1656053425171,
-          sendTime: 1656053425237,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "你这么牛逼你咋不上天呢",
-          seq: 5832,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053452991,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053452991,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "e263fcee6f4b245c249d9fba13c64ea1",
-          serverMsgID: "65bce1c265e8d55e2711b8e61115b7cd",
-          createTime: 1656053434625,
-          sendTime: 1656053434686,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "年轻人不要太气盛",
-          seq: 5835,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053452995,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053452995,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "ec17c172f4c1cd304dd246aa9fe9c262",
-          serverMsgID: "92e2b5d1a2224a20ba99f85ad7531cdc",
-          createTime: 1656053479807,
-          sendTime: 1656053479992,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content: "韓罴",
-          seq: 5845,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053483144,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053483144,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "42cb0197f6773d0856f9236653abf612",
-          serverMsgID: "0630dc82d5a529220a498b6a88ba617d",
-          createTime: 1656053856838,
-          sendTime: 1656053856898,
-          sessionType: 1,
-          sendID: "2507057290",
-          recvID: "3798435312",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "袁帅",
-          senderFaceUrl: "ic_avatar_02",
-          content: "你发个吉尔",
-          seq: 5882,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656053857172,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656053857172,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "d9e24471b660ac24a08d1b747738fb7a",
-          serverMsgID: "9561900afb14eb5aa7502263d650de08",
-          createTime: 1656584452082,
-          sendTime: 1656584452189,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 102,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content:
-            '{"sourcePath":"/storage/emulated/0/Download/dog.gif","sourcePicture":{"uuid":"1656581554965792060-4674073639784955121.gif","type":"image/gif","size":2232124,"width":206,"height":320,"url":"https://storage-online.rentsoft.cn/openim/1656581554965792060-4674073639784955121.gif"},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":200,"height":200,"url":"https://storage-online.rentsoft.cn/openim/1656581554965792060-4674073639784955121.gif?imageView2/2/w/200/h/200"}}',
-          seq: 8853,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656927745788,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePath: "/storage/emulated/0/Download/dog.gif",
-            sourcePicture: {
-              uuid: "1656581554965792060-4674073639784955121.gif",
-              type: "image/gif",
-              size: 2232124,
-              width: 206,
-              height: 320,
-              url: "https://storage-online.rentsoft.cn/openim/1656581554965792060-4674073639784955121.gif",
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 200,
-              height: 200,
-              url: "https://storage-online.rentsoft.cn/openim/1656581554965792060-4674073639784955121.gif?imageView2/2/w/200/h/200",
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656927745788,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "a8746448ec99111999e9690875cd08a4",
-          serverMsgID: "4e230a5ae530edd3c17aa55940d1fbca",
-          createTime: 1656588576124,
-          sendTime: 1656588576257,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 108,
-          platformID: 5,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content:
-            '{"userID":"3798435312","nickname":"OpenIM-Blooming","faceURL":"ic_avatar_06","gender":0,"phoneNumber":"17396220460","birth":907156400,"email":"blooming2477@gmail.com","createTime":0,"ex":"","attachedInfo":"","globalRecvMsgOpt":0,"departments":"openIM/后台开发中心","positions":"后端工程师"}',
-          seq: 8900,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          attachedInfo:
-            '{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":1656927745764,"notSenderNotificationPush":false}',
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 1656927745764,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "bac258a7e486f8671493c6e735527d3d",
-          serverMsgID: "be4cb7868cce780be3001d11f3c7fd2f",
-          createTime: 1657259841022,
-          sendTime: 1657259754412,
-          sessionType: 1,
-          sendID: "3798435312",
-          recvID: "2507057290",
-          msgFrom: 100,
-          contentType: 107,
-          platformID: 2,
-          senderNickname: "OpenIM-Blooming",
-          senderFaceUrl: "ic_avatar_06",
-          content:
-            '{"title":"聊天记录","abstractList":["OpenIM-Blooming:[晕][眨眼]rt[眨眼][笑脸]","OpenIM-Blooming:[吓哭][笑脸][看穿]","OpenIM-Blooming:{\\"text\\":\\"5\\",\\"quoteMessage\\":{\\"clientMsgID\\":\\"8dfa14ec2e422cc46dc159508333ef57\\",\\"serverMsgID\\":\\"76fb6fec0fcb20266929d905406300d1\\",\\"createTime\\":1657259806203,\\"sendTime\\":1657259702198,\\"sessionType\\":1,\\"sendID\\":\\"3798435312\\",\\"recvID\\":\\"1877196314\\",\\"msgFrom\\":100,\\"contentType\\":101,\\"platformID\\":2,\\"senderNickname\\":\\"OpenIM-Blooming\\",\\"senderFaceUrl\\":\\"ic_avatar_06\\",\\"content\\":\\"[吓哭][笑脸][看穿]\\",\\"seq\\":12666,\\"isRead\\":false,\\"status\\":2,\\"offlinePush\\":{},\\"pictureElem\\":{\\"sourcePicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0},\\"bigPicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0},\\"snapshotPicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0}},\\"soundElem\\":{\\"dataSize\\":0,\\"duration\\":0},\\"videoElem\\":{\\"videoSize\\":0,\\"duration\\":0,\\"snapshotSize\\":0,\\"snapshotWidth\\":0,\\"snapshotHeight\\":0},\\"fileElem\\":{\\"fileSize\\":0},\\"mergeElem\\":{},\\"atElem\\":{\\"isAtSelf\\":false},\\"faceElem\\":{\\"index\\":0},\\"locationElem\\":{\\"longitude\\":0,\\"latitude\\":0},\\"customElem\\":{},\\"quoteElem\\":{},\\"notificationElem\\":{},\\"messageEntityElem\\":{},\\"attachedInfoElem\\":{\\"groupHasReadInfo\\":{\\"hasReadCount\\":0,\\"groupMemberCount\\":0},\\"isPrivateChat\\":false,\\"hasReadTime\\":0,\\"notSenderNotificationPush\\":false}}}"],"multiMessage":[{"clientMsgID":"47e053e4f4b121800281b27ea71a4ad2","serverMsgID":"c7850b3f4c5b855e764f1a54cd58e515","createTime":1657164966802,"sendTime":1657164862725,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":101,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"[晕][眨眼]rt[眨眼][笑脸]","seq":11900,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}},{"clientMsgID":"8dfa14ec2e422cc46dc159508333ef57","serverMsgID":"76fb6fec0fcb20266929d905406300d1","createTime":1657259806203,"sendTime":1657259702198,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":101,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"[吓哭][笑脸][看穿]","seq":12666,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}},{"clientMsgID":"7c29f7cf18ee83cf5ab9f8f9a087cab9","serverMsgID":"0957d056a4b0bba21bb6d2153e599a57","createTime":1657259812346,"sendTime":1657259708295,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":114,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"{\\"text\\":\\"5\\",\\"quoteMessage\\":{\\"clientMsgID\\":\\"8dfa14ec2e422cc46dc159508333ef57\\",\\"serverMsgID\\":\\"76fb6fec0fcb20266929d905406300d1\\",\\"createTime\\":1657259806203,\\"sendTime\\":1657259702198,\\"sessionType\\":1,\\"sendID\\":\\"3798435312\\",\\"recvID\\":\\"1877196314\\",\\"msgFrom\\":100,\\"contentType\\":101,\\"platformID\\":2,\\"senderNickname\\":\\"OpenIM-Blooming\\",\\"senderFaceUrl\\":\\"ic_avatar_06\\",\\"content\\":\\"[吓哭][笑脸][看穿]\\",\\"seq\\":12666,\\"isRead\\":false,\\"status\\":2,\\"offlinePush\\":{},\\"pictureElem\\":{\\"sourcePicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0},\\"bigPicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0},\\"snapshotPicture\\":{\\"size\\":0,\\"width\\":0,\\"height\\":0}},\\"soundElem\\":{\\"dataSize\\":0,\\"duration\\":0},\\"videoElem\\":{\\"videoSize\\":0,\\"duration\\":0,\\"snapshotSize\\":0,\\"snapshotWidth\\":0,\\"snapshotHeight\\":0},\\"fileElem\\":{\\"fileSize\\":0},\\"mergeElem\\":{},\\"atElem\\":{\\"isAtSelf\\":false},\\"faceElem\\":{\\"index\\":0},\\"locationElem\\":{\\"longitude\\":0,\\"latitude\\":0},\\"customElem\\":{},\\"quoteElem\\":{},\\"notificationElem\\":{},\\"messageEntityElem\\":{},\\"attachedInfoElem\\":{\\"groupHasReadInfo\\":{\\"hasReadCount\\":0,\\"groupMemberCount\\":0},\\"isPrivateChat\\":false,\\"hasReadTime\\":0,\\"notSenderNotificationPush\\":false}}}","seq":12667,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{"text":"5","quoteMessage":{"clientMsgID":"8dfa14ec2e422cc46dc159508333ef57","serverMsgID":"76fb6fec0fcb20266929d905406300d1","createTime":1657259806203,"sendTime":1657259702198,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":101,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"[吓哭][笑脸][看穿]","seq":12666,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}}},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}}]}',
-          seq: 12668,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {
-            title: "聊天记录",
-            abstractList: [
-              "OpenIM-Blooming:[晕][眨眼]rt[眨眼][笑脸]",
-              "OpenIM-Blooming:[吓哭][笑脸][看穿]",
-              'OpenIM-Blooming:{"text":"5","quoteMessage":{"clientMsgID":"8dfa14ec2e422cc46dc159508333ef57","serverMsgID":"76fb6fec0fcb20266929d905406300d1","createTime":1657259806203,"sendTime":1657259702198,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":101,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"[吓哭][笑脸][看穿]","seq":12666,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}}}',
-            ],
-            multiMessage: [
-              {
-                clientMsgID: "47e053e4f4b121800281b27ea71a4ad2",
-                serverMsgID: "c7850b3f4c5b855e764f1a54cd58e515",
-                createTime: 1657164966802,
-                sendTime: 1657164862725,
-                sessionType: 1,
-                sendID: "3798435312",
-                recvID: "1877196314",
-                msgFrom: 100,
-                contentType: 101,
-                platformID: 2,
-                senderNickname: "OpenIM-Blooming",
-                senderFaceUrl: "ic_avatar_06",
-                content: "[晕][眨眼]rt[眨眼][笑脸]",
-                seq: 11900,
-                isRead: false,
-                status: 2,
-                offlinePush: {},
-                pictureElem: {
-                  sourcePicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  bigPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  snapshotPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                },
-                soundElem: {
-                  dataSize: 0,
-                  duration: 0,
-                },
-                videoElem: {
-                  videoSize: 0,
-                  duration: 0,
-                  snapshotSize: 0,
-                  snapshotWidth: 0,
-                  snapshotHeight: 0,
-                },
-                fileElem: {
-                  fileSize: 0,
-                },
-                mergeElem: {},
-                atElem: {
-                  isAtSelf: false,
-                },
-                faceElem: {
-                  index: 0,
-                },
-                locationElem: {
-                  longitude: 0,
-                  latitude: 0,
-                },
-                customElem: {},
-                quoteElem: {},
-                notificationElem: {},
-                messageEntityElem: {},
-                attachedInfoElem: {
-                  groupHasReadInfo: {
-                    hasReadCount: 0,
-                    groupMemberCount: 0,
-                  },
-                  isPrivateChat: false,
-                  hasReadTime: 0,
-                  notSenderNotificationPush: false,
-                },
-              },
-              {
-                clientMsgID: "8dfa14ec2e422cc46dc159508333ef57",
-                serverMsgID: "76fb6fec0fcb20266929d905406300d1",
-                createTime: 1657259806203,
-                sendTime: 1657259702198,
-                sessionType: 1,
-                sendID: "3798435312",
-                recvID: "1877196314",
-                msgFrom: 100,
-                contentType: 101,
-                platformID: 2,
-                senderNickname: "OpenIM-Blooming",
-                senderFaceUrl: "ic_avatar_06",
-                content: "[吓哭][笑脸][看穿]",
-                seq: 12666,
-                isRead: false,
-                status: 2,
-                offlinePush: {},
-                pictureElem: {
-                  sourcePicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  bigPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  snapshotPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                },
-                soundElem: {
-                  dataSize: 0,
-                  duration: 0,
-                },
-                videoElem: {
-                  videoSize: 0,
-                  duration: 0,
-                  snapshotSize: 0,
-                  snapshotWidth: 0,
-                  snapshotHeight: 0,
-                },
-                fileElem: {
-                  fileSize: 0,
-                },
-                mergeElem: {},
-                atElem: {
-                  isAtSelf: false,
-                },
-                faceElem: {
-                  index: 0,
-                },
-                locationElem: {
-                  longitude: 0,
-                  latitude: 0,
-                },
-                customElem: {},
-                quoteElem: {},
-                notificationElem: {},
-                messageEntityElem: {},
-                attachedInfoElem: {
-                  groupHasReadInfo: {
-                    hasReadCount: 0,
-                    groupMemberCount: 0,
-                  },
-                  isPrivateChat: false,
-                  hasReadTime: 0,
-                  notSenderNotificationPush: false,
-                },
-              },
-              {
-                clientMsgID: "7c29f7cf18ee83cf5ab9f8f9a087cab9",
-                serverMsgID: "0957d056a4b0bba21bb6d2153e599a57",
-                createTime: 1657259812346,
-                sendTime: 1657259708295,
-                sessionType: 1,
-                sendID: "3798435312",
-                recvID: "1877196314",
-                msgFrom: 100,
-                contentType: 114,
-                platformID: 2,
-                senderNickname: "OpenIM-Blooming",
-                senderFaceUrl: "ic_avatar_06",
-                content:
-                  '{"text":"5","quoteMessage":{"clientMsgID":"8dfa14ec2e422cc46dc159508333ef57","serverMsgID":"76fb6fec0fcb20266929d905406300d1","createTime":1657259806203,"sendTime":1657259702198,"sessionType":1,"sendID":"3798435312","recvID":"1877196314","msgFrom":100,"contentType":101,"platformID":2,"senderNickname":"OpenIM-Blooming","senderFaceUrl":"ic_avatar_06","content":"[吓哭][笑脸][看穿]","seq":12666,"isRead":false,"status":2,"offlinePush":{},"pictureElem":{"sourcePicture":{"size":0,"width":0,"height":0},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":0,"height":0}},"soundElem":{"dataSize":0,"duration":0},"videoElem":{"videoSize":0,"duration":0,"snapshotSize":0,"snapshotWidth":0,"snapshotHeight":0},"fileElem":{"fileSize":0},"mergeElem":{},"atElem":{"isAtSelf":false},"faceElem":{"index":0},"locationElem":{"longitude":0,"latitude":0},"customElem":{},"quoteElem":{},"notificationElem":{},"messageEntityElem":{},"attachedInfoElem":{"groupHasReadInfo":{"hasReadCount":0,"groupMemberCount":0},"isPrivateChat":false,"hasReadTime":0,"notSenderNotificationPush":false}}}',
-                seq: 12667,
-                isRead: false,
-                status: 2,
-                offlinePush: {},
-                pictureElem: {
-                  sourcePicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  bigPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                  snapshotPicture: {
-                    size: 0,
-                    width: 0,
-                    height: 0,
-                  },
-                },
-                soundElem: {
-                  dataSize: 0,
-                  duration: 0,
-                },
-                videoElem: {
-                  videoSize: 0,
-                  duration: 0,
-                  snapshotSize: 0,
-                  snapshotWidth: 0,
-                  snapshotHeight: 0,
-                },
-                fileElem: {
-                  fileSize: 0,
-                },
-                mergeElem: {},
-                atElem: {
-                  isAtSelf: false,
-                },
-                faceElem: {
-                  index: 0,
-                },
-                locationElem: {
-                  longitude: 0,
-                  latitude: 0,
-                },
-                customElem: {},
-                quoteElem: {
-                  text: "5",
-                  quoteMessage: {
-                    clientMsgID: "8dfa14ec2e422cc46dc159508333ef57",
-                    serverMsgID: "76fb6fec0fcb20266929d905406300d1",
-                    createTime: 1657259806203,
-                    sendTime: 1657259702198,
-                    sessionType: 1,
-                    sendID: "3798435312",
-                    recvID: "1877196314",
-                    msgFrom: 100,
-                    contentType: 101,
-                    platformID: 2,
-                    senderNickname: "OpenIM-Blooming",
-                    senderFaceUrl: "ic_avatar_06",
-                    content: "[吓哭][笑脸][看穿]",
-                    seq: 12666,
-                    isRead: false,
-                    status: 2,
-                    offlinePush: {},
-                    pictureElem: {
-                      sourcePicture: {
-                        size: 0,
-                        width: 0,
-                        height: 0,
-                      },
-                      bigPicture: {
-                        size: 0,
-                        width: 0,
-                        height: 0,
-                      },
-                      snapshotPicture: {
-                        size: 0,
-                        width: 0,
-                        height: 0,
-                      },
-                    },
-                    soundElem: {
-                      dataSize: 0,
-                      duration: 0,
-                    },
-                    videoElem: {
-                      videoSize: 0,
-                      duration: 0,
-                      snapshotSize: 0,
-                      snapshotWidth: 0,
-                      snapshotHeight: 0,
-                    },
-                    fileElem: {
-                      fileSize: 0,
-                    },
-                    mergeElem: {},
-                    atElem: {
-                      isAtSelf: false,
-                    },
-                    faceElem: {
-                      index: 0,
-                    },
-                    locationElem: {
-                      longitude: 0,
-                      latitude: 0,
-                    },
-                    customElem: {},
-                    quoteElem: {},
-                    notificationElem: {},
-                    messageEntityElem: {},
-                    attachedInfoElem: {
-                      groupHasReadInfo: {
-                        hasReadCount: 0,
-                        groupMemberCount: 0,
-                      },
-                      isPrivateChat: false,
-                      hasReadTime: 0,
-                      notSenderNotificationPush: false,
-                    },
-                  },
-                },
-                notificationElem: {},
-                messageEntityElem: {},
-                attachedInfoElem: {
-                  groupHasReadInfo: {
-                    hasReadCount: 0,
-                    groupMemberCount: 0,
-                  },
-                  isPrivateChat: false,
-                  hasReadTime: 0,
-                  notSenderNotificationPush: false,
-                },
-              },
-            ],
-          },
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-      ],
       friendInfo: null,
       sendContent: "",
       sendData: {
@@ -2298,10 +456,20 @@ export default {
       revokeMessageData: {
         timer: null,
       },
+      pageMessageData: {
+        pageNo: 1,
+        pageSize: 20,
+      },
+      getMessageOptions: {
+        userID: "", //拉取单个用户之间的聊天消息
+        groupID: "", //拉取群的聊天消息
+        startClientMsgID: "", // 起始的消息clientMsgID，第一次拉取为""
+        count: 20, //拉取消息的数量
+      },
     };
   },
   methods: {
-    init2() {
+    init() {
       this.getMessageOptions.startClientMsgID = "";
       this.showEmoji = false;
       this.showOther = false;
@@ -2340,108 +508,134 @@ export default {
           if (res.errCode === 0) {
             let list = JSON.parse(res.data);
             let item = list[0] || null;
-            console.log(item);
             this.friendInfo = item;
           }
         }
       );
     },
     getNormalHistoryMessageList() {
-      this.$im.getHistoryMessageList(
-        this.operationID,
-        this.getMessageOptions,
-        (res) => {
-          if (res.errCode !== 0) {
-            this.$toast(res.errMsg);
-          } else {
-            const data = JSON.parse(res.data);
-            this.messageList = data;
-            // console.log(this.messageList);
-            // console.log(JSON.parse(res.data));
-            this.resetScrollTo();
-            this.markMessageAsRead();
-            set_messageToLocal(
-              this.messageList,
-              this.sourceID,
-              this.sessionType,
-              this.$im
-            );
-          }
+      const fn = () => {
+        const { pageNo, viewId } = this.scrollToMessage();
+        this.pageMessageData.pageNo = pageNo;
+        // console.log(pageNo, viewId);
+        this.markMessageAsRead();
+        if (viewId) {
+          this.$nextTick(() => {
+            this.resetScrollTo(viewId);
+          });
+        } else {
+          this.resetScrollTo();
         }
-      );
+      };
+      if (!this.localMessageList.length) {
+        this.$im.getHistoryMessageList(
+          this.operationID,
+          this.getMessageOptions,
+          (res) => {
+            if (res.errCode !== 0) {
+              this.$toast(res.errMsg);
+            } else {
+              const data = JSON.parse(res.data) || [];
+              if (data.length < this.getMessageOptions.count) {
+                this.scrollViewData.loadmore.status = "nomore";
+              }
+              data.map((messageItem) => {
+                this.$store.dispatch("message/push_localConversationMessage", {
+                  userID: this.getMessageOptions.userID,
+                  groupID: this.getMessageOptions.groupID,
+                  messageItem,
+                  currentUserID: this.userID,
+                  im: this.$im,
+                });
+              });
+              fn();
+            }
+          }
+        );
+      } else {
+        fn();
+      }
     },
     refreshNewMessageList() {
-      this.$im.getHistoryMessageList(
-        this.operationID,
-        this.getMessageOptions,
-        (res) => {
-          if (res.errCode !== 0) {
-            this.$toast(res.errMsg);
-          } else {
-            const data = JSON.parse(res.data);
-            // console.log(JSON.parse(res.data));
-            if (this.messageList.length) {
-              //更新单条消息
-              const firstMessage = data[0];
-              const index = this.messageList.findIndex(
-                (j) => firstMessage.clientMsgID === j.clientMsgID
-              );
-              if (index === -1) {
-                this.messageList = data;
-              } else {
-                this.messageList.splice(
-                  index,
-                  this.messageList.length,
-                  ...data
-                );
-              }
-            } else {
-              this.messageList = data;
-            }
-            if (this.scrollViewData.is2Tower) {
-              this.resetScrollTo();
-            }
-            this.markMessageAsRead();
-            set_messageToLocal(
-              this.messageList,
-              this.sourceID,
-              this.sessionType,
-              this.$im
-            );
-          }
-        }
-      );
+      if (this.isNearBottom) {
+        this.resetScrollTo();
+      }
+      this.markMessageAsRead();
     },
     getMoreHistoryMessageList() {
       //下拉加载更多
-      this.$im.getHistoryMessageList(
+      if (this.localAllMessageListLength > this.localAllMessageListShowLength) {
+        setTimeout(() => {
+          this.scrollViewData.triggered = false;
+          this.scrollViewData.isFreshing = false;
+          this.pageMessageData.pageNo++;
+          this.getMessageOptions.startClientMsgID = "";
+          this.scrollViewData.loadmore.status = "loadmore";
+          this.markMessageAsRead();
+        }, 50);
+        // setTimeout(() => {
+        //   this.scrollViewData.triggered = false;
+        //   this.scrollViewData.isFreshing = false;
+        // }, 0);
+      } else {
+        this.$im.getHistoryMessageList(
+          this.operationID,
+          this.getMessageOptions,
+          (res) => {
+            this.scrollViewData.loadmore.status = "loadmore";
+            setTimeout(() => {
+              this.scrollViewData.triggered = false;
+              this.scrollViewData.isFreshing = false;
+            }, 0);
+            if (res.errCode !== 0) {
+              this.$toast(res.errMsg);
+            } else {
+              this.getMessageOptions.startClientMsgID = "";
+              const data = JSON.parse(res.data);
+              if (data.length < this.getMessageOptions.count) {
+                this.scrollViewData.loadmore.status = "nomore";
+              }
+              (data || []).reverse().map((messageItem) => {
+                this.$store.dispatch(
+                  "message/unshift_localConversationMessage",
+                  {
+                    userID: this.getMessageOptions.userID,
+                    groupID: this.getMessageOptions.groupID,
+                    messageItem,
+                    currentUserID: this.userID,
+                    im: this.$im,
+                  }
+                );
+              });
+              this.markMessageAsRead();
+            }
+          }
+        );
+      }
+    },
+    getHistoryMessageListReverse() {
+      //获取最后一条消息之后的新消息
+      this.$im.getHistoryMessageListReverse(
         this.operationID,
         this.getMessageOptions,
-        (res) => {
-          this.scrollViewData.loadmore.status = "loadmore";
-          setTimeout(() => {
-            this.scrollViewData.triggered = false;
-            this.scrollViewData.isFreshing = false;
-          }, 0);
-          if (res.errCode !== 0) {
-            this.$toast(res.errMsg);
-          } else {
-            const data = JSON.parse(res.data);
-            if (data.length < this.getMessageOptions.count) {
-              this.scrollViewData.loadmore.status = "nomore";
-            }
-            this.messageList.unshift(...data);
-            this.getMessageOptions.startClientMsgID = "";
-            this.markMessageAsRead();
-            set_messageToLocal(
-              ...data,
-              this.sourceID,
-              this.sessionType,
-              this.$im
-            );
-          }
-        }
+        ({ data, errCode }) => {}
       );
+    },
+    scrollToMessage() {
+      let pageNo = 1;
+      let viewId = "";
+      const clientMsgID = this.clientMsgID;
+      if (clientMsgID) {
+        const index = this.localAllMessageList.findIndex(
+          (i) => i.clientMsgID === clientMsgID
+        );
+        if (index >= 0) {
+          let total = this.localAllMessageListLength - index;
+          pageNo = Math.ceil(total / this.pageMessageData.pageSize);
+          viewId = "viewId-" + clientMsgID;
+        }
+      }
+      return { pageNo, viewId };
     },
     getGroupCurrentUserInfo() {
       this.$im.getGroupMembersInfo(
@@ -2464,6 +658,35 @@ export default {
           this.sendData.text = this.defaultText;
         },
       });
+      if (this.conversationData && this.conversationData.draftText) {
+        const arr = getEmojiContent([
+          {
+            type: "text",
+            content: this.conversationData.draftText,
+            startIndex: 0,
+            endIndex: this.conversationData.draftText.length - 1,
+          },
+        ])
+          .map((i) => {
+            const { content, type } = i;
+            let src = "";
+            if (type === "emoji") {
+              const emoji =
+                faceArr.filter((i) => i.context === content)[0] || null;
+              if (emoji) {
+                src = emoji.src;
+              }
+            }
+            return {
+              content,
+              type,
+              src,
+            };
+          })
+          .filter((i) => i.type === "text" || (i.type === "emoji" && i.src));
+        const DisbaledKeyboard = this.$refs.DisbaledKeyboard;
+        DisbaledKeyboard.setDraftText(arr);
+      }
     },
     hideAll() {
       this.showEmoji = false;
@@ -2628,22 +851,22 @@ export default {
         });
       }
     },
-    resetScrollTo() {
+    resetScrollTo(id = "messageContent-bottom") {
       this.scrollViewData.scrollIntoView = "";
       this.$nextTick(() => {
         setTimeout(() => {
-          this.scrollViewData.scrollIntoView = "messageContent-bottom";
+          this.scrollViewData.scrollIntoView = id;
         }, 50);
       });
     },
     markMessageAsRead() {
-      const unReadIdList = [];
       if (this.isSingleChat) {
         this.$im.markC2CMessageAsRead(
           this.operationID,
           this.conversationData.userID,
-          unReadIdList,
-          () => {
+          [],
+          (r) => {
+            // console.log(r);
             this.$store.commit("message/set_indexMessageTimes");
           }
         );
@@ -2651,8 +874,9 @@ export default {
         this.$im.markGroupMessageAsRead(
           this.operationID,
           this.conversationData.groupID,
-          unReadIdList,
-          () => {
+          [],
+          (r) => {
+            // console.log(r);
             this.$store.commit("message/set_indexMessageTimes");
           }
         );
@@ -2679,37 +903,35 @@ export default {
     addHideAllToolTimes() {
       this.hideAllToolTimes++;
     },
-    delMessageItem(clientMsgID) {
-      const index = this.messageList.findIndex(
-        (i) => i.clientMsgID === clientMsgID
-      );
-      this.messageList.splice(index, 1);
+    delMessageItem(messageItem) {
+      this.$store.commit("message/del_localConversationMessage", {
+        groupID: this.getMessageOptions.groupID,
+        userID: this.getMessageOptions.userID,
+        messageItem,
+        currentUserID: this.userID,
+      });
     },
     revoke(m) {
       //撤回消息
       this.$im.revokeMessage(this.operationID, m, (res) => {
         if (res.errCode === 0) {
-          const index = this.messageList.findIndex(
-            (i) => i.clientMsgID === m.clientMsgID
-          );
-          if (index !== -1) {
-            this.messageList.splice(index, 1);
-          }
+          this.delMessageItem(m);
           this.$store.commit("message/set_successTimes");
         }
       });
     },
     recvRevokeMessage() {
-      if (this.revokeMessageList.length) {
-        const clientMsgID = this.revokeMessageList[0];
-        const index = this.messageList.findIndex(
-          (i) => i.clientMsgID === clientMsgID
-        );
-        if (index >= 20) {
-          this.messageList.splice(index, 1);
-        }
-        this.$store.commit("message/shift_revokeMessageList");
-        this.recvRevokeMessage();
+      if (this.revokeMessageInPage.length > 0) {
+        const list = [...this.revokeMessageInPage];
+        list.map((clientMsgID) => {
+          this.$store.commit("message/del_revokeMessageList", clientMsgID);
+          this.$store.commit("message/del_localConversationMessage", {
+            groupID: this.getMessageOptions.groupID,
+            userID: this.getMessageOptions.userID,
+            messageItem: { clientMsgID },
+            currentUserID: this.userID,
+          });
+        });
       }
     },
     doCheck() {
@@ -2732,7 +954,7 @@ export default {
       }
     },
     multipleSelect({ index }) {
-      const messageList3 = this.messageList.filter((i) => {
+      const messageList3 = this.localMessageList.filter((i) => {
         return this.multipleData.selectedList.includes(i.clientMsgID);
       });
       if (index === "0") {
@@ -2851,11 +1073,15 @@ export default {
       if (this.scrollViewData.isFreshing) return;
       this.scrollViewData.isFreshing = true;
       this.scrollViewData.triggered = true;
-      if (this.scrollViewData.loadmore.status === "loadmore") {
+      if (
+        this.scrollViewData.loadmore.status === "loadmore" &&
+        this.localMessageList[0] &&
+        this.localMessageList[0].clientMsgID
+      ) {
+        this.scrollViewData.loadmore.status = "loading";
         setTimeout(() => {
-          this.scrollViewData.loadmore.status = "loading";
           this.getMessageOptions.startClientMsgID =
-            this.messageList[0].clientMsgID;
+            this.localMessageList[0].clientMsgID;
           // #ifdef H5
           setTimeout(() => {
             this.scrollViewData.loadmore.status = "loadmore";
@@ -3130,7 +1356,15 @@ export default {
     },
     pushMessageToStatusList(type = "normal") {
       const messageContent = JSON.parse(this.sendData.messageContent);
-      this.messageList.push(messageContent);
+      // console.log(messageContent);
+      // this.messageList.push(messageContent);
+      this.$store.dispatch("message/push_localConversationMessage", {
+        userID: this.getMessageOptions.userID,
+        groupID: this.getMessageOptions.groupID,
+        messageItem: messageContent,
+        currentUserID: this.userID,
+        im: this.$im,
+      });
       const messageItem = {
         messageContent,
         userID: this.getMessageOptions.userID,
@@ -3214,17 +1448,36 @@ export default {
         this.scrollViewData.keyboardHeight = v.height;
       }
     },
-    onScroll() {
+    onScroll(e) {
+      this.scrollViewData.scrollTop = e.detail.scrollTop;
+      this.scrollViewData.scrollHeight = e.detail.scrollHeight;
       this.scrollViewData.is2Tower = false;
     },
     scrolltolower() {
       this.scrollViewData.is2Tower = true;
     },
+    setDraftText() {
+      let draftText = "";
+      if (this.hasContent) {
+        draftText = formatSendContent(this.sendData.html).content;
+      }
+      this.$im.setConversationDraft(
+        this.operationID,
+        this.conversationData.conversationID,
+        draftText,
+        () => {
+          this.$store.commit("message/set_indexMessageTimes");
+        }
+      );
+    },
   },
   onReady() {
     // #ifdef H5
-    this.resetScrollTo();
+    // this.resetScrollTo();
     // #endif
+  },
+  onHide() {
+    this.setDraftText();
   },
   onLoad(param) {
     this.$store.commit("message/clear_sendMessageStatusList");
@@ -3238,10 +1491,11 @@ export default {
       this.sessionType === "2" ? param.sourceID : ""; //群聊
     this.scrollViewData.sendContentTopHeight = parseInt(uni.upx2px(108));
     // #ifdef APP-PLUS
-    this.messageList = [];
-    this.init2();
+    this.init();
     // #endif
     // #ifdef H5
+    // this.clientMsgID = "9895b9b504449b5cd4b30f8509ca8cea";
+    // this.getNormalHistoryMessageList();
     // #endif
     uni.onKeyboardHeightChange((res) => {
       this.keyboardHeightChange(res);
@@ -3252,6 +1506,8 @@ export default {
     this.$store.commit("message/clear_newMessageList");
     this.$store.commit("message/clear_revokeMessageList");
     uni.offKeyboardHeightChange(this.keyboardHeightChange);
+    console.log("onUnload");
+    this.setDraftText();
   },
   computed: {
     ...mapGetters([
@@ -3267,7 +1523,881 @@ export default {
       "clearHistoryMessageTimes",
       "frinendChangeTimes",
       "frinendInfoChangeTimes",
+      "localConversationMessageList",
     ]),
+    localConversation() {
+      const item = this.localConversationMessageList.filter(
+        (i) => i.groupID === this.sourceID || i.userID === this.sourceID
+      )[0] || { messageList: [] };
+      return item;
+    },
+    localAllMessageList() {
+      const list = this.localConversation.messageList;
+      // console.log(list);
+      // #ifdef H5
+      return [
+        {
+          clientMsgID: "21c84a0427fd47f6a250d7cd8adde22d",
+          serverMsgID: "22cf1d4a4c306631f4a433555381cb45",
+          createTime: 1658304560511,
+          sendTime: 1658304560530,
+          sessionType: 1,
+          sendID: "2911830477",
+          recvID: "3138541532",
+          msgFrom: 200,
+          contentType: 1204,
+          platformID: 0,
+          content:
+            '{"detail":"CiYKCjI5MTE4MzA0NzcYsPDelgYiBkiN9rmWBjIKMjkxMTgzMDQ3NxoiCgoyOTExODMwNDc3EgZoaWhpaGkaDGljX2F2YXRhcl8wNQ==","defaultTips":"We have become friends","jsonDetail":"{\\"friend\\":{\\"ownerUserID\\":\\"2911830477\\",\\"createTime\\":1658304560,\\"friendUser\\":{\\"createTime\\":1657699085},\\"operatorUserID\\":\\"2911830477\\"},\\"opUser\\":{\\"userID\\":\\"2911830477\\",\\"nickname\\":\\"hihihi\\",\\"faceURL\\":\\"ic_avatar_05\\"}}"}',
+          seq: 1549,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {
+            detail:
+              '{"friend":{"ownerUserID":"2911830477","createTime":1658304560,"friendUser":{"createTime":1657699085},"operatorUserID":"2911830477"},"opUser":{"userID":"2911830477","nickname":"hihihi","faceURL":"ic_avatar_05"}}',
+            defaultTips: "We have become friends",
+          },
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "dd20a4a7465725285b24a297db9feaa2",
+          serverMsgID: "68e76a40288ba1354b38318bc7099bdc",
+          createTime: 1658304574787,
+          sendTime: 1658304575063,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "1",
+          seq: 0,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "07609c9426110bfd89c2f37fba36c943",
+          serverMsgID: "813db01e202e623a1500026cfd5c4934",
+          createTime: 1658304613785,
+          sendTime: 1658304613939,
+          sessionType: 1,
+          sendID: "2911830477",
+          recvID: "3138541532",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 5,
+          senderNickname: "hihihi",
+          senderFaceUrl: "ic_avatar_05",
+          content: "2",
+          seq: 1553,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "152f8fc72912bc5f12310f8bb8548e93",
+          serverMsgID: "9c39dd019a53d8021c438aedb96a9692",
+          createTime: 1658304881803,
+          sendTime: 1658304882091,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "4",
+          seq: 0,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "9895b9b504449b5cd4b30f8509ca8cea",
+          serverMsgID: "c86b354fc7b5d832daef0047c5f014b6",
+          createTime: 1658305109525,
+          sendTime: 1658305109611,
+          sessionType: 1,
+          sendID: "2911830477",
+          recvID: "3138541532",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 5,
+          senderNickname: "hihihi",
+          senderFaceUrl: "ic_avatar_05",
+          content: "5",
+          seq: 1591,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "6521a9d39d2023e173edd4e097bf0eee",
+          serverMsgID: "14b79142abc0975103f40b72018c52c3",
+          createTime: 1658305160155,
+          sendTime: 1658305160436,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "6",
+          seq: 0,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "ebc6724d19b516e0989309d956a06c50",
+          serverMsgID: "dd7a717ed880fe6f1096289b57769c08",
+          createTime: 1658305276636,
+          sendTime: 1658305276917,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "7",
+          seq: 0,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "e4b95d1f2a8f7de37df0b98bf54c7535",
+          serverMsgID: "8c01c086c3b41370a8ba653cd9f371de",
+          createTime: 1658305686395,
+          sendTime: 1658305686814,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "8",
+          seq: 0,
+          isRead: true,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "9f61f3fff976023c59c1552bbd377357",
+          serverMsgID: "58c400805561f01c6c5d2280d137d4fb",
+          createTime: 1658307244426,
+          sendTime: 1658307244725,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 101,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content: "[吓哭]",
+          seq: 0,
+          isRead: true,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "0ec963d63cf73d077c962b4c1e7b8abf",
+          serverMsgID: "cdce7838253912a090bcab5288f9d552",
+          createTime: 1658307691529,
+          sendTime: 1658307587628,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 109,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content:
+            '{"description":"乡村基(孵化园B区店)","longitude":104.085803,"latitude":30.510904}',
+          seq: 1670,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            description: "乡村基(孵化园B区店)",
+            longitude: 104.085803,
+            latitude: 30.510904,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+        {
+          clientMsgID: "c0093369fc51fca4727d64dc899fd1c3",
+          serverMsgID: "b8aa226f51aa65ca3e162550b5254bf9",
+          createTime: 1658307829532,
+          sendTime: 1658307726449,
+          sessionType: 1,
+          sendID: "3138541532",
+          recvID: "2911830477",
+          msgFrom: 100,
+          contentType: 102,
+          platformID: 2,
+          senderNickname: "Jack-Chain",
+          senderFaceUrl: "ic_avatar_03",
+          content:
+            '{"sourcePath":"/storage/emulated/0/Android/data/com.openIm.app/apps/__UNI__EC966F0/doc/uniapp_temp/compressed/1658307829353_1658234418918.jpg","sourcePicture":{"uuid":"1658307829945248077-702731134813084759.jpg","type":"image/jpeg","size":69617,"width":744,"height":1080,"url":"https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg"},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":200,"height":200,"url":"https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg?imageView2/2/w/200/h/200"}}',
+          seq: 1673,
+          isRead: false,
+          status: 2,
+          offlinePush: {},
+          pictureElem: {
+            sourcePath:
+              "/storage/emulated/0/Android/data/com.openIm.app/apps/__UNI__EC966F0/doc/uniapp_temp/compressed/1658307829353_1658234418918.jpg",
+            sourcePicture: {
+              uuid: "1658307829945248077-702731134813084759.jpg",
+              type: "image/jpeg",
+              size: 69617,
+              width: 744,
+              height: 1080,
+              url: "https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg",
+            },
+            bigPicture: {
+              size: 0,
+              width: 0,
+              height: 0,
+            },
+            snapshotPicture: {
+              size: 0,
+              width: 200,
+              height: 200,
+              url: "https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg?imageView2/2/w/200/h/200",
+            },
+          },
+          soundElem: {
+            dataSize: 0,
+            duration: 0,
+          },
+          videoElem: {
+            videoSize: 0,
+            duration: 0,
+            snapshotSize: 0,
+            snapshotWidth: 0,
+            snapshotHeight: 0,
+          },
+          fileElem: {
+            fileSize: 0,
+          },
+          mergeElem: {},
+          atElem: {
+            isAtSelf: false,
+          },
+          faceElem: {
+            index: 0,
+          },
+          locationElem: {
+            longitude: 0,
+            latitude: 0,
+          },
+          customElem: {},
+          quoteElem: {},
+          notificationElem: {},
+          messageEntityElem: {},
+          attachedInfoElem: {
+            groupHasReadInfo: {
+              hasReadCount: 0,
+              groupMemberCount: 0,
+            },
+            isPrivateChat: false,
+            hasReadTime: 0,
+            notSenderNotificationPush: false,
+          },
+        },
+      ];
+      // #endif
+      return list;
+    },
+    localAllMessageListLength() {
+      return this.localAllMessageList.length;
+    },
+    localAllMessageListShowLength() {
+      return this.pageMessageData.pageNo * this.pageMessageData.pageSize;
+    },
+    localMessageList() {
+      let index =
+        this.localAllMessageListLength - this.localAllMessageListShowLength;
+      index = index < 0 ? 0 : index;
+      return this.localAllMessageList.slice(
+        index,
+        this.localAllMessageListLength
+      );
+    },
+    revokeMessageInPage() {
+      return this.revokeMessageList.filter((clientMsgID) => {
+        return (
+          this.localMessageList.filter((i) => i.clientMsgID === clientMsgID)
+            .length > 0
+        );
+      });
+    },
+    isNearBottom() {
+      const max = 100;
+      return (
+        this.scrollViewData.scrollHeight -
+          this.scrollViewData.scrollTop -
+          this.scrollStyle.scrollHeight <=
+        max
+      );
+    },
     getUsersInfoTimes() {
       return this.frinendChangeTimes + this.frinendInfoChangeTimes;
     },
@@ -3329,7 +2459,10 @@ export default {
       if (this.showOther && !this.scrollViewData.keyboardHeight) {
         scrollHeight -= fileHeight;
       }
-      return { height: scrollHeight + "px" };
+      // #ifdef H5
+      scrollHeight = 500;
+      // #endif
+      return { height: scrollHeight + "px", scrollHeight: scrollHeight };
     },
     isBlackUser() {
       return this.isSingleChat && this.friendInfo && this.friendInfo.blackInfo;
@@ -3408,7 +2541,11 @@ export default {
       }, 500);
     },
     clearHistoryMessageTimes() {
-      this.messageList = [];
+      this.$store.commit("message/clear_localConversationMessage", {
+        groupID: this.getMessageOptions.groupID,
+        userID: this.getMessageOptions.userID,
+        currentUserID: this.userID,
+      });
     },
     getUsersInfoTimes() {
       if (!this.isGroupChat) {
@@ -3420,7 +2557,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .conversation {
-  min-height: 100vh;
+  height: 100vh;
   // overflow-y: hidden;
   .navbar {
     &-center {

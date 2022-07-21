@@ -278,83 +278,82 @@ export default {
       }
     },
     getGroupMembersInfo() {
-      const content = JSON.parse(this.card.content);
-      this.$im.getGroupMembersInfo(
-        this.operationID,
-        this.sourceID,
-        [content.atUserList],
-        (response) => {
-          if (response.errCode === 0) {
-            let groupMembersInfo = JSON.parse(response.data);
-            groupMembersInfo = groupMembersInfo.sort(
-              (a, b) => b.nickname.length - a.nickname.length
-            ); //先匹配nickname长的
-            let textArr = content.text.split("@");
-            let textArrCurrentIndex = 0;
-            textArr = textArr.map((t, j) => {
-              const text = j === 0 ? t : "@" + t;
-              const length = text.length;
-              const index = textArrCurrentIndex;
-              textArrCurrentIndex += length;
-              return { text, index };
+      const content = JSON.parse(this.card.content) || null;
+      if (!content) return [];
+      console.log(content);
+      let textArr = content.text.split("@");
+      let atUsersInfo = content.atUsersInfo || [];
+      let atUserList = content.atUserList || [];
+      let textArrCurrentIndex = 0;
+      textArr = textArr.map((t, j) => {
+        const text = j === 0 ? t : "@" + t;
+        const length = text.length;
+        const index = textArrCurrentIndex;
+        textArrCurrentIndex += length;
+        return { text, index };
+      });
+      if (textArr[0].text === "") {
+        textArr.splice(0, 1);
+      }
+      let atMemberPositionList = [];
+      const fn = (atUserID, groupNickname) => {
+        const nickname = "@" + atUserID;
+        const index = textArr.findIndex((item) => {
+          return item.text.indexOf(nickname) === 0;
+        });
+        if (index !== -1) {
+          const textArrItem = textArr[index];
+          let startIndex = textArrItem.index;
+          let endIndex = startIndex + nickname.length - 1;
+          atMemberPositionList.push({
+            startIndex,
+            endIndex,
+            type: "atUser",
+            content: content.text.slice(startIndex, endIndex + 1),
+            userID: atUserID,
+            nickname: groupNickname,
+          });
+          let startIndex2 = endIndex + 1;
+          let endIndex2 = startIndex + textArrItem.text.length - 1;
+          if (startIndex2 <= endIndex2) {
+            atMemberPositionList.push({
+              startIndex: startIndex2,
+              endIndex: endIndex2,
+              type: "text",
+              content: content.text.slice(startIndex2, endIndex2 + 1),
             });
-            if (textArr[0].text === "") {
-              textArr.splice(0, 1);
-            }
-            let atMemberPositionList = [];
-            groupMembersInfo.map((member) => {
-              // const nickname = "@" + member.nickname;
-              const nickname = "@" + member.userID;
-              const index = textArr.findIndex((item) => {
-                return item.text.indexOf(nickname) === 0;
-              });
-              if (index !== -1) {
-                const textArrItem = textArr[index];
-                let startIndex = textArrItem.index;
-                let endIndex = startIndex + nickname.length - 1;
-                atMemberPositionList.push({
-                  startIndex,
-                  endIndex,
-                  type: "atUser",
-                  content: content.text.slice(startIndex, endIndex + 1),
-                  userID: member.userID,
-                  nickname: member.nickname,
-                });
-                let startIndex2 = endIndex + 1;
-                let endIndex2 = startIndex + textArrItem.text.length - 1;
-                if (startIndex2 <= endIndex2) {
-                  atMemberPositionList.push({
-                    startIndex: startIndex2,
-                    endIndex: endIndex2,
-                    type: "text",
-                    content: content.text.slice(startIndex2, endIndex2 + 1),
-                  });
-                }
-                textArr.splice(index, 1);
-              }
-            });
-            textArr.map((textArrItem) => {
-              let startIndex = textArrItem.index;
-              const index = atMemberPositionList.findIndex(
-                (i) => i.startIndex === startIndex
-              );
-              if (index === -1) {
-                let endIndex = startIndex + textArrItem.text.length - 1;
-                atMemberPositionList.push({
-                  startIndex,
-                  endIndex,
-                  type: "text",
-                  content: content.text.slice(startIndex, endIndex + 1),
-                });
-              }
-            });
-            atMemberPositionList = atMemberPositionList.sort((a, b) => {
-              return a.startIndex - b.startIndex;
-            });
-            return getEmojiContent(atMemberPositionList);
           }
+          textArr.splice(index, 1);
         }
-      );
+      };
+      if (atUsersInfo.length) {
+        atUsersInfo.map((member) => {
+          fn(member.atUserID, member.groupNickname);
+        });
+      } else {
+        atUserList.map((id) => {
+          fn(id, id);
+        });
+      }
+      textArr.map((textArrItem) => {
+        let startIndex = textArrItem.index;
+        const index = atMemberPositionList.findIndex(
+          (i) => i.startIndex === startIndex
+        );
+        if (index === -1) {
+          let endIndex = startIndex + textArrItem.text.length - 1;
+          atMemberPositionList.push({
+            startIndex,
+            endIndex,
+            type: "text",
+            content: content.text.slice(startIndex, endIndex + 1),
+          });
+        }
+      });
+      atMemberPositionList = atMemberPositionList.sort((a, b) => {
+        return a.startIndex - b.startIndex;
+      });
+      return getEmojiContent(atMemberPositionList);
     },
     toInfo() {
       if (!this.isSelf && !this.checkboxShow) {
@@ -456,13 +455,14 @@ export default {
     },
     confirmDel() {
       this.tooltip.showDel = false;
-      this.$im.deleteMessageFromLocalStorage(
+      this.$im.deleteMessageFromLocalAndSvr(
         this.operationID,
         this.card,
         (res) => {
-          this.$toast(res.errMsg);
           if (res.errCode === 0) {
-            this.$emit("delMessageItem", this.card.clientMsgID);
+            this.$emit("delMessageItem", this.card);
+          } else {
+            this.$toast(res.errMsg);
           }
         }
       );
@@ -588,7 +588,8 @@ export default {
     },
     isBlackUser() {
       return (
-        (this.currentMessageStatusItem &&
+        (this.isSingleChat &&
+          this.currentMessageStatusItem &&
           this.currentMessageStatusItem.errCode &&
           this.currentMessageStatusItem.errCode === 600) ||
         this.haveSendMessageStatus === 3

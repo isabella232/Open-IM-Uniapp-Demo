@@ -62,6 +62,9 @@ function getContent(c, cType, latestMsg) {
     case 115:
       content = "[语音通话]";
       break;
+    case 118:
+      content = latestMsg.senderNickname + "撤回了一条消息";
+      break;
     case 1204:
       content = `你们已经是好友啦,开始聊天吧~`;
       break;
@@ -149,8 +152,8 @@ function getNickname(nickname = "", conversationType = 1) {
   return nickname ? nickname + " :" : "";
 }
 const noticeTypeList = [
-  111, 1204, 1400, 1501, 1502, 1503, 1504, 1505, 1506, 1507, 1508, 1509, 1510,
-  1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1701,
+  111, 118, 1204, 1400, 1501, 1502, 1503, 1504, 1505, 1506, 1507, 1508, 1509,
+  1510, 1511, 1512, 1513, 1514, 1515, 1516, 1517, 1518, 1701,
 ];
 export function isNoticeMessage(cType, msgFrom = null) {
   //是否会话提示信息

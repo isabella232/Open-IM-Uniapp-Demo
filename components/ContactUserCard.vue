@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     acceptFriend() {
-      console.log(this.fromUserID);
       this.$im.acceptFriendApplication(
         this.operationID,
         {

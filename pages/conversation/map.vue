@@ -73,6 +73,7 @@ export default {
         },
       ],
       search: { param: "", list: [], id: "" },
+      isSend: false,
     };
   },
   methods: {
@@ -127,14 +128,15 @@ export default {
       this.markers[0].longitude = longitude;
     },
     sendMessage() {
+      if (this.isSend) return;
+      this.isSend = true;
       const { title, latitude, longitude } = this.currentLocationItem;
       // #ifdef APP-PLUS
-      console.log(latitude, longitude);
       const content = this.$im.createLocationMessage(
         this.operationID,
         title,
-        longitude,
-        latitude
+        latitude,
+        longitude
       );
       this.$im.sendMessage(
         this.operationID,
@@ -151,6 +153,7 @@ export default {
       );
       this.$toast("发送成功");
       setTimeout(() => {
+        this.isSend = false;
         uni.navigateBack();
       }, 1000);
       // #endif

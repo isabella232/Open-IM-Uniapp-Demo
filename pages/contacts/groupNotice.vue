@@ -29,7 +29,7 @@
         @refresh="init"
       >
       </ContactGroupCard>
-      <view class="more" v-show="!showGroupNoticeMore">
+      <view class="more" v-show="showGroupNoticeMore">
         <view class="btn" @click="toApplicationList('0')">
           查看全部入群申请
         </view>
@@ -46,7 +46,7 @@
         @refresh="init"
       >
       </ContactGroupCard>
-      <view class="more" v-show="!showSelfGroupNoticeMore">
+      <view class="more" v-show="showSelfGroupNoticeMore">
         <view class="btn" @click="toApplicationList('1')"
           >查看我的入群申请</view
         >

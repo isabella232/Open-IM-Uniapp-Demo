@@ -164,7 +164,7 @@ export default {
           });
         } else {
           const data = JSON.parse(res.data);
-          console.log(JSON.parse(res.data));
+          // console.log(JSON.parse(res.data));
           this.checkFirstInit(data);
         }
       });
@@ -261,7 +261,7 @@ export default {
       }
     },
     setTabBarBadge() {
-      if (this.total) {
+      if (this.total>0) {
         const text = this.total > 99 ? "99" : this.total;
         uni.setTabBarBadge({
           index: 0,

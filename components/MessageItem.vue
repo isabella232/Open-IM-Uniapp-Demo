@@ -10,6 +10,7 @@
         color: color,
       }"
     >
+      <text v-if="hasDraftText && index===0" class="draftText"> [草稿] </text>
       <text v-if="contentItem.type === 'text'">
         {{ contentItem.content }}
       </text>
@@ -40,6 +41,10 @@ export default {
       type: String,
       default: "#333",
     },
+    hasDraftText: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
@@ -56,6 +61,9 @@ export default {
     word-break: break-all;
     height: 36rpx;
     line-height: 36rpx;
+    .draftText {
+      color: #f44038;
+    }
     .atUser {
       color: #3e44ff;
     }

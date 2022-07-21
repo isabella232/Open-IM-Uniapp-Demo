@@ -1,3 +1,4 @@
+import { set_messageToLocal } from "@/utils/setLocalMessage";
 const state = {
   messageList: [
     {
@@ -508,6 +509,15 @@ const state = {
     userID: "",
     groupID: "",
   },
+  localConversationMessageList: [
+    {
+      groupID: "",
+      userID: "",
+      currentUserID: "",
+      messageList: [],
+      draftText: "", //草稿
+    },
+  ],
   newMessageList: [],
   revokeMessageTimes: 0, //撤回消息次数
   revokeMessageList: [],
@@ -564,7 +574,7 @@ const mutations = {
     });
   },
   set_singleMessageStatusList(state, data) {
-    const { message, status,errCode } = data;
+    const { message, status, errCode } = data;
     console.log("sendMessageStatus", status, message);
     //status:   0：发送中,1：发送成功,-1:发送失败
     const clientMsgID = message.clientMsgID;
@@ -609,8 +619,13 @@ const mutations = {
   set_revokeMessageList(state, msgId) {
     state.revokeMessageList.push(msgId);
   },
-  shift_revokeMessageList(state) {
-    state.revokeMessageList.shift(0);
+  del_revokeMessageList(state, clientMsgID) {
+    const index = state.revokeMessageList.findIndex(
+      (cID) => cID === clientMsgID
+    );
+    if (index >= 0) {
+      state.revokeMessageList.splice(index, 1);
+    }
   },
   clear_revokeMessageList(state) {
     state.revokeMessageList = [];
@@ -626,8 +641,208 @@ const mutations = {
     state.frinendInfoChangeTimes++;
     state.indexMessageTimes++;
   },
+  push_localConversationMessage(
+    state,
+    { groupID, userID, messageItem, currentUserID, im }
+  ) {
+    if (messageItem) {
+      const index = state.localConversationMessageList.findIndex(
+        (i) =>
+          (groupID &&
+            i.groupID === groupID &&
+            i.currentUserID === currentUserID) ||
+          (userID && i.userID === userID && i.currentUserID === currentUserID)
+      );
+      set_messageToLocal(messageItem, im);
+      if (index >= 0) {
+        state.localConversationMessageList[index].messageList.push(messageItem);
+      } else {
+        state.localConversationMessageList.push({
+          groupID,
+          userID,
+          messageList: [messageItem],
+          currentUserID,
+          draftText: "",
+        });
+      }
+    }
+  },
+  unshift_localConversationMessage(
+    state,
+    { groupID, userID, messageItem, currentUserID, im }
+  ) {
+    if (messageItem) {
+      const index = state.localConversationMessageList.findIndex(
+        (i) =>
+          (groupID &&
+            i.groupID === groupID &&
+            i.currentUserID === currentUserID) ||
+          (userID && i.userID === userID && i.currentUserID === currentUserID)
+      );
+      set_messageToLocal(messageItem, im);
+      if (index >= 0) {
+        state.localConversationMessageList[index].messageList.unshift(
+          messageItem
+        );
+      } else {
+        state.localConversationMessageList.push({
+          groupID,
+          userID,
+          messageList: [messageItem],
+          currentUserID,
+          draftText: "",
+        });
+      }
+    }
+  },
+  update_localConversationMessage(
+    state,
+    { groupID, userID, messageItem, currentUserID }
+  ) {
+    const index = state.localConversationMessageList.findIndex(
+      (i) =>
+        (groupID &&
+          i.groupID === groupID &&
+          i.currentUserID === currentUserID) ||
+        (userID && i.userID === userID && i.currentUserID === currentUserID)
+    );
+    if (index >= 0) {
+      const messageIndex = state.localConversationMessageList[
+        index
+      ].messageList.findIndex((i) => i.clientMsgID === messageItem.clientMsgID);
+      if (messageIndex >= 0) {
+        state.localConversationMessageList[index].messageList.splice(
+          messageIndex,
+          1,
+          messageItem
+        );
+      } else {
+        state.localConversationMessageList[index].messageList.push(messageItem);
+      }
+    }
+  },
+  del_localConversationMessage(
+    state,
+    { groupID, userID, messageItem, currentUserID }
+  ) {
+    const index = state.localConversationMessageList.findIndex(
+      (i) =>
+        (groupID &&
+          i.groupID === groupID &&
+          i.currentUserID === currentUserID) ||
+        (userID && i.userID === userID && i.currentUserID === currentUserID)
+    );
+    if (index >= 0) {
+      const messageIndex = state.localConversationMessageList[
+        index
+      ].messageList.findIndex((i) => i.clientMsgID === messageItem.clientMsgID);
+      if (messageIndex >= 0) {
+        state.localConversationMessageList[index].messageList.splice(
+          messageIndex,
+          1
+        );
+      }
+    }
+  },
+  clear_localConversationMessage(state, { groupID, userID, currentUserID }) {
+    const index = state.localConversationMessageList.findIndex(
+      (i) =>
+        (groupID &&
+          i.groupID === groupID &&
+          i.currentUserID === currentUserID) ||
+        (userID && i.userID === userID && i.currentUserID === currentUserID)
+    );
+    if (index >= 0) {
+      state.localConversationMessageList[index].messageList = [];
+    }
+  },
+  clear_allLocalConversationMessage(state, { currentUserID }) {
+    state.localConversationMessageList.map((i) => {
+      if (i.currentUserID === currentUserID) {
+        i.messageList = [];
+      }
+    });
+  },
+  set_localMessageAsRead(state, { list, currentUserID }) {
+    // console.log(list);
+    list.map((item) => {
+      const { groupID, userID, msgIDList, sessionType } = item;
+      let index = -1;
+      if (sessionType === 1) {
+        index = state.localConversationMessageList.findIndex(
+          (i) =>
+            userID && i.userID === userID && i.currentUserID === currentUserID
+        );
+      } else if (sessionType === 2) {
+        index = state.localConversationMessageList.findIndex(
+          (i) =>
+            groupID &&
+            i.groupID === groupID &&
+            i.currentUserID === currentUserID
+        );
+      }
+      if (index >= 0) {
+        msgIDList.map((clientMsgID) => {
+          const messageIndex = state.localConversationMessageList[
+            index
+          ].messageList.findIndex((i) => i.clientMsgID === clientMsgID);
+          if (messageIndex >= 0) {
+            state.localConversationMessageList[index].messageList[
+              messageIndex
+            ].isRead = true;
+          }
+        });
+      }
+    });
+  },
+  set_draftText(state, { groupID, userID, currentUserID, draftText }) {
+    const index = state.localConversationMessageList.findIndex(
+      (i) =>
+        (groupID &&
+          i.groupID === groupID &&
+          i.currentUserID === currentUserID) ||
+        (userID && i.userID === userID && i.currentUserID === currentUserID)
+    );
+    if (index >= 0) {
+      state.localConversationMessageList[index].draftText = draftText;
+    }
+  },
 };
-const actions = {};
+const actions = {
+  do_singleMessageStatusList({ commit, state }, m) {
+    commit("set_singleMessageStatusList", m);
+    const message = m.message;
+    const groupID = message.groupID || state.conversationData.groupID;
+    const userID = message.recvID || state.conversationData.userID;
+    commit("update_localConversationMessage", {
+      groupID,
+      userID,
+      messageItem: m.message,
+      currentUserID: m.currentUserID,
+    });
+  },
+  push_localConversationMessage({ commit }, d) {
+    commit("push_localConversationMessage", d);
+  },
+  unshift_localConversationMessage({ commit }, d) {
+    commit("unshift_localConversationMessage", d);
+  },
+  set_newMessageTimes({ commit }) {
+    commit("set_newMessageTimes");
+  },
+  set_newMessageList({ commit }, d) {
+    commit("set_newMessageList", d);
+  },
+  set_revokeMessageTimes({ commit }) {
+    commit("set_revokeMessageTimes");
+  },
+  set_revokeMessageList({ commit }, d) {
+    commit("set_revokeMessageList", d);
+  },
+  set_draftText({ commit }, d) {
+    commit("set_draftText", d);
+  },
+};
 export default {
   namespaced: true,
   state,

@@ -104,9 +104,6 @@ export default {
       return this.card.nickname;
     },
   },
-  created(){
-    console.log(this.card);
-  }
 };
 </script>
 

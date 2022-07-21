@@ -9,7 +9,9 @@
         height="73px"
         radius="6"
       >
-        <u-icon slot="error" name="account-fill" size="40" color="#666" />
+        <view slot="error" class="faceURL-error">
+          {{ shortName }}
+        </view>
       </u--image>
       <text class="nickname">{{ userInfo.nickname }}</text>
       <view class="userID" @click="routerGo('/pages/friend/qrcode')">
@@ -89,6 +91,17 @@ export default {
   },
   computed: {
     ...mapGetters(["userInfo", "operationID"]),
+    shortName() {
+      const name = this.userInfo.nickname.substr(0, 2);
+      const enNameReg = /[A-Za-z0-9]$/g; //是否英文名
+      if (this.isGroup) {
+        return this.name;
+      } else if (enNameReg.test(name)) {
+        return name;
+      } else {
+        return name.substr(0, 1);
+      }
+    },
   },
   onLoad() {},
 };
@@ -112,6 +125,23 @@ export default {
     }
     .faceURL {
       margin-top: 120rpx;
+      /deep/ .u-image__error {
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #0773ff;
+      }
+      &-error {
+        width: 100%;
+        overflow: hidden;
+        text-align: center;
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0 16rpx;
+        white-space: nowrap;
+      }
     }
     .nickname {
       margin-top: 30rpx;

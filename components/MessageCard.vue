@@ -31,7 +31,13 @@
         <text class="date">{{ formatTime(card.latestMsgSendTime) }}</text>
       </view>
       <view class="msgContent">
-        <MessageItem class="MessageItem" :list="messageList" fontSize="26rpx" color="#666" />
+        <MessageItem
+          class="MessageItem"
+          :list="messageList"
+          :hasDraftText="hasDraftText"
+          fontSize="26rpx"
+          color="#666"
+        />
         <!-- <view class="msg">{{ msg }}</view> -->
         <text v-show="showTotal && unreadCount" class="unReadCount">
           {{ unreadCount }}
@@ -106,8 +112,14 @@ export default {
     msg() {
       return formatMessageCardMessage(this.card);
     },
+    hasDraftText() {
+      return this.draftText ? true : false;
+    },
+    draftText() {
+      return this.card.draftText || "";
+    },
     messageList() {
-      const content = this.msg || "";
+      const content = this.draftText || this.msg || "";
       const item = {
         type: "text",
         content,

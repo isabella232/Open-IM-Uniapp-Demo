@@ -69,60 +69,106 @@ function addListener() {
   // connect status
   event.addEventListener("onConnectSuccess", (res) => {
     console.log("onConnectSuccess", res);
-    store.commit("user/set_connectStatus", 1);
+    const connectStatus = store.getters.connectStatus;
+    if (connectStatus !== 1) {
+      store.commit("user/set_connectStatus", 1);
+    }
     // checkCurrenUser();
   });
   event.addEventListener("onConnectFailed", (res) => {
     console.log("onConnectFailed", res);
-    store.commit("user/set_connectStatus", 0);
-    toast("服务器连接超时，请稍后再试");
+    const connectStatus = store.getters.connectStatus;
+    const { errCode } = res;
+    const kickedArr = [706, 1001];
+    if (kickedArr.includes(errCode)) {
+      toast("该账号已在另一设备登录");
+      setTimeout(() => {
+        store.dispatch("user/logOut", im);
+      }, 1000);
+    } else if (connectStatus !== 0) {
+      store.commit("user/set_connectStatus", 0);
+      toast("服务器连接超时，请稍后再试");
+    }
   });
   event.addEventListener("onConnecting", (res) => {
     console.log("onConnecting", res);
-    store.commit("user/set_connectStatus", 2);
+    const connectStatus = store.getters.connectStatus;
+    if (connectStatus !== 2) {
+      store.commit("user/set_connectStatus", 2);
+    }
   });
   // sendMessage callback
   event.addEventListener("sendMessageProgress", (res) => {
     // console.log("sendMessageProgress", res);
-    store.commit("message/set_singleMessageStatusList", {
+    const currentUserID = store.getters.userID;
+    store.dispatch("message/do_singleMessageStatusList", {
       message: JSON.parse(res.message),
       status: 0,
+      currentUserID,
     });
   });
   event.addEventListener("sendMessageSuccess", (res) => {
-    // console.log("sendMessageSuccess", JSON.parse(res.message));
+    console.log("sendMessageSuccess", JSON.parse(res.message));
     store.commit("message/set_successTimes");
+    const currentUserID = store.getters.userID;
     //status:   0：发送中,1：发送成功,-1:发送失败
-    store.commit("message/set_singleMessageStatusList", {
+    store.dispatch("message/do_singleMessageStatusList", {
       message: JSON.parse(res.message),
       status: 1,
+      currentUserID,
     });
   });
   event.addEventListener("sendMessageFailed", (res) => {
     console.log("sendMessageFailed", res);
-    store.commit("message/set_singleMessageStatusList", {
+    const currentUserID = store.getters.userID;
+    store.dispatch("message/do_singleMessageStatusList", {
       message: JSON.parse(res.message),
       status: -1,
       errCode: res.errCode,
+      currentUserID,
     });
   });
   // message listener
   event.addEventListener("onRecvNewMessage", (res) => {
     console.log("onRecvNewMessage", res);
-    store.commit("message/set_newMessageTimes");
-    store.commit("message/set_newMessageList", JSON.parse(res.message));
+    const m = JSON.parse(res.message);
+    if (m.contentType !== 113) {
+      store.dispatch("message/set_newMessageTimes");
+      store.dispatch("message/set_newMessageList", m);
+      const currentUserID = store.getters.userID;
+      const userID = currentUserID === m.sendID ? m.recvID : m.sendID;
+      store.dispatch("message/push_localConversationMessage", {
+        groupID: m.sessionType === 2 ? m.groupID : "",
+        userID: m.sessionType === 1 ? userID : "",
+        messageItem: m,
+        currentUserID,
+        im,
+      });
+    }
   });
   event.addEventListener("onRecvMessageRevoked", (res) => {
     console.log("onRecvMessageRevoked", res);
-    store.commit("message/set_revokeMessageList", res.msgId);
-    store.commit("message/set_revokeMessageTimes");
-    store.commit("message/set_newMessageTimes");
+    store.dispatch("message/set_revokeMessageList", res.msgId);
+    store.dispatch("message/set_revokeMessageTimes");
+    store.dispatch("message/set_newMessageTimes");
   });
+  //标记单聊消息已读
   event.addEventListener("onRecvC2CReadReceipt", (res) => {
-    // console.log("onRecvC2CReadReceipt", res);
+    console.log("onRecvC2CReadReceipt", res);
+    const currentUserID = store.getters.userID;
+    store.commit("message/set_localMessageAsRead", {
+      list: JSON.parse(res.msgReceiptList),
+      currentUserID,
+    });
   });
+  //标记群聊消息已读
   event.addEventListener("onRecvGroupReadReceipt", (res) => {
-    // console.log("onRecvGroupReadReceipt", res);
+    console.log("onRecvGroupReadReceipt", res);
+    const currentUserID = store.getters.userID;
+    store.commit("message/set_localMessageAsRead", {
+      list: JSON.parse(res.groupMsgReceiptList),
+      currentUserID,
+    });
   });
   //文件上传
   event.addEventListener("uploadFileFailed", (res) => {
@@ -149,6 +195,27 @@ function addListener() {
     console.log("onFriendInfoChanged", res);
     store.commit("message/set_frinendInfoChangeTimes");
   });
+  event.addEventListener("onFriendApplicationAdded", () => {
+    store.dispatch("contacts/get_friendNoticeList", im);
+  });
+  event.addEventListener("onFriendApplicationDeleted", () => {
+    store.dispatch("contacts/get_friendNoticeList", im);
+  });
+  event.addEventListener("onGroupApplicationAdded", () => {
+    store.dispatch("contacts/get_groupNoticeList", im);
+  });
+  event.addEventListener("onGroupApplicationDeleted", () => {
+    store.dispatch("contacts/get_groupNoticeList", im);
+  });
+  // event.addEventListener("onNewConversation", (res) => {
+  //   console.log("onNewConversation", res);
+  // });
+  // event.addEventListener("onConversationChanged", (res) => {
+  //   console.log("onConversationChanged", res);
+  // });
+  // event.addEventListener("onTotalUnreadMessageCountChanged", (res) => {
+  //   console.log("onTotalUnreadMessageCountChanged", res);
+  // });
 }
 //上次没有退出登录-自动登录
 function checkCurrenUser() {
@@ -175,6 +242,10 @@ function startLogin() {
             store.commit("user/set_userInfo", data);
             console.log(data);
             store.commit("user/set_loginStatus", true);
+            store.dispatch("contacts/get_friendNoticeList", im);
+            store.dispatch("contacts/get_selfFriendNoticeList", im);
+            store.dispatch("contacts/get_groupNoticeList", im);
+            store.dispatch("contacts/get_selfGroupNoticeList", im);
           }
         } else {
           toast(res.errMsg);

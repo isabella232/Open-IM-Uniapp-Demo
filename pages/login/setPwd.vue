@@ -2,7 +2,7 @@
   <view class="setPwd commonPage">
     <view class="statusBar"></view>
     <view class="title">请设置账号密码</view>
-    <view class="secondTitle">登陆密码用于登陆司聊账号</view>
+    <view class="secondTitle">登陆密码用于登陆OpenIM账号</view>
     <u-form
       class="loginForm commonPage-form"
       labelPosition="top"

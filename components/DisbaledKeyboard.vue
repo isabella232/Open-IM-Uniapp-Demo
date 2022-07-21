@@ -24,9 +24,36 @@ export default {
       availableTimes: 0,
       editorCtx: null,
       imageData: null,
+      draftTextArr: [],
+      draftTextIndex: 0,
     };
   },
   methods: {
+    setDraftText(arr = []) {
+      this.draftTextArr = arr;
+      this.draftTextIndex = 0;
+      if (this.editorCtx) {
+        this.setDraftTextItem();
+      }
+    },
+    setDraftTextItem() {
+      const item = this.draftTextArr[this.draftTextIndex];
+      if (!item) {
+        this.draftTextArr = [];
+        this.draftTextIndex = 0;
+        return;
+      }
+      const { content, type, src } = item;
+      if (type === "text") {
+        this.editorCtx.insertText({
+          text: content,
+        });
+        this.draftTextIndex++;
+        this.setDraftTextItem();
+      } else if (type === "emoji") {
+        this.insertImage(src, "20px", "20px", { emojiText: content });
+      }
+    },
     editorReady() {
       uni
         .createSelectorQuery()
@@ -34,6 +61,9 @@ export default {
         .context((res) => {
           this.$emit("ready", res);
           this.editorCtx = res.context;
+          if (this.draftTextArr.length) {
+            this.setDraftTextItem();
+          }
         })
         .exec();
     },
@@ -49,6 +79,8 @@ export default {
         data: this.imageData.data,
         complete: () => {
           this.availableTimes++;
+          this.draftTextIndex++;
+          this.setDraftTextItem();
         },
       });
     },

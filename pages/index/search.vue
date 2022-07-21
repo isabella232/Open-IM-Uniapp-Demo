@@ -61,12 +61,21 @@ export default {
       }
     },
     searchFriend() {
-      this.$im.getUsersInfo(this.operationID, [this.searchContent], (res) => {
-        if (res.errCode === 0) {
-          let list = JSON.parse(res.data);
-          this.friendList = list;
+      this.$im.searchFriends(
+        this.operationID,
+        {
+          keywordList: [this.searchContent],
+          isSearchUserID: true,
+          isSearchNickname: true,
+          isSearchRemark: true,
+        },
+        (res) => {
+          if (res.errCode === 0) {
+            let list = JSON.parse(res.data);
+            this.friendList = list;
+          }
         }
-      });
+      );
     },
     searchMessage() {
       this.$im.searchLocalMessages(

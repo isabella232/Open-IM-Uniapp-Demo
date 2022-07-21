@@ -1,6 +1,6 @@
 <template>
   <view class="send">
-    <u-navbar title="设置备注" autoBack>
+    <u-navbar title="设置备注" autoBack fixed placeholder>
       <u-button
         slot="right"
         type="primary"
@@ -9,7 +9,6 @@
         @click="confirm"
       />
     </u-navbar>
-    <view class="statusBar"></view>
     <view class="content">
       <view class="label">备注名</view>
       <view class="input">

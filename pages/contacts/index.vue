@@ -85,16 +85,6 @@ export default {
         url: url,
       });
     },
-    setTabBarBadge() {
-      if (this.total) {
-        uni.setTabBarBadge({
-          index: 1,
-          text: this.total + "",
-        });
-      } else {
-        uni.removeTabBarBadge({ index: 1 });
-      }
-    },
   },
   computed: {
     ...mapGetters(["friendNoticeList", "groupNoticeList"]),
@@ -107,16 +97,6 @@ export default {
       return (
         this.groupNoticeList.filter((i) => i.handleResult === 0).length || 0
       );
-    },
-    total() {
-      let t = this.friendNoticeListNum + this.groupNoticeListNum;
-      t = t > 99 ? 99 : t;
-      return t;
-    },
-  },
-  watch: {
-    total() {
-      this.setTabBarBadge();
     },
   },
 };

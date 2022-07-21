@@ -17,7 +17,7 @@
     <view class="userSetting-item search">
       <view class="search-title">查找聊天记录</view>
       <view class="search-icons">
-        <view class="search-icons-item" @click="toSearch">
+        <view class="search-icons-item" @click="toSearch()">
           <image
             class="image"
             src="@/static/images/conversation/info/search.png"
@@ -341,7 +341,9 @@ export default {
     },
     nickname() {
       if (this.userInfo.friendInfo) {
-        return this.userInfo.friendInfo.remark||this.userInfo.friendInfo.nickname;
+        return (
+          this.userInfo.friendInfo.remark || this.userInfo.friendInfo.nickname
+        );
       }
       return this.userInfo.publicInfo.nickname;
     },

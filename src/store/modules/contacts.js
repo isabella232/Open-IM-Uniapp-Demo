@@ -313,53 +313,163 @@ const state = {
   friendNoticeItem: null,
   groupNoticeList: [
     {
-      groupID: "857447475",
-      groupName: "测试测试",
-      notification: "ccc",
+      groupID: "4039827985",
+      groupName: "栓Q",
+      notification: "",
       introduction: "",
-      groupFaceURL: "",
-      createTime: 1655970064,
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216673228801991-2610529275472644968image_cropper_1658216666068.jpg",
+      createTime: 1658216675,
       status: 0,
-      creatorUserID: "3798435312",
+      creatorUserID: "3087749056",
       groupType: 0,
-      ownerUserID: "3798435312",
-      memberCount: 3,
-      userID: "2911830477",
-      nickname: "hihihi",
-      userFaceURL: "ic_avatar_05",
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "2063942761",
+      nickname: "小红花",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216376611080014-7955079406183515637.jpg",
       gender: 0,
       handleResult: 0,
-      reqMsg:
-        "请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加",
+      reqMsg: "",
       handledMsg: "",
-      reqTime: 1655970669,
-      handleUserID: "3798435312",
+      reqTime: 1658321072,
+      handleUserID: "",
       handledTime: 0,
       ex: "",
       attachedInfo: "",
     },
     {
-      groupID: "857447475",
-      groupName: "测试测试",
-      notification: "ccc",
+      groupID: "4039827985",
+      groupName: "栓Q",
+      notification: "",
       introduction: "",
-      groupFaceURL: "",
-      createTime: 1655970064,
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216673228801991-2610529275472644968image_cropper_1658216666068.jpg",
+      createTime: 1658216675,
       status: 0,
-      creatorUserID: "3798435312",
+      creatorUserID: "3087749056",
       groupType: 0,
-      ownerUserID: "3798435312",
-      memberCount: 3,
-      userID: "870517699",
-      nickname: "小红",
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "578660011",
+      nickname: "小红帽",
       userFaceURL:
-        "https://storage-online.rentsoft.cn/openim/1655532712536247948-8273290538659802269image_cropper_1655532711426.jpg",
+        "https://storage-online.rentsoft.cn/openim/1658218072491547984-8695401978176517617.jpg",
       gender: 0,
       handleResult: -1,
+      reqMsg: "我是小红帽",
+      handledMsg: "",
+      reqTime: 1658218164,
+      handleUserID: "3087749056",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "1248868322",
+      groupName: "哈哈",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658218351010163145-3407101214571374881image_cropper_1658218350142.jpg",
+      createTime: 1658218352,
+      status: 0,
+      creatorUserID: "3087749056",
+      groupType: 0,
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "2063942761",
+      nickname: "小红花",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216376611080014-7955079406183515637.jpg",
+      gender: 0,
+      handleResult: 1,
+      reqMsg: "我是小红花",
+      handledMsg: "",
+      reqTime: 1658218452,
+      handleUserID: "3087749056",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "1248868322",
+      groupName: "哈哈",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658218351010163145-3407101214571374881image_cropper_1658218350142.jpg",
+      createTime: 1658218352,
+      status: 0,
+      creatorUserID: "3087749056",
+      groupType: 0,
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "578660011",
+      nickname: "小红帽",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658218072491547984-8695401978176517617.jpg",
+      gender: 0,
+      handleResult: -1,
+      reqMsg: "我是小红帽",
+      handledMsg: "",
+      reqTime: 1658218371,
+      handleUserID: "3087749056",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "4200180770",
+      groupName: "不住道",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658320973584730053-4452428813400194097.jpg",
+      createTime: 1658320978,
+      status: 0,
+      creatorUserID: "3087749056",
+      groupType: 0,
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "2063942761",
+      nickname: "小红花",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216376611080014-7955079406183515637.jpg",
+      gender: 0,
+      handleResult: 0,
       reqMsg: "",
       handledMsg: "",
-      reqTime: 1656407124,
-      handleUserID: "3798435312",
+      reqTime: 1658321032,
+      handleUserID: "",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "4160919831",
+      groupName: "只能收到四个",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658321104929533158-2970700287221458280.jpg",
+      createTime: 1658321109,
+      status: 0,
+      creatorUserID: "3087749056",
+      groupType: 0,
+      ownerUserID: "3087749056",
+      memberCount: 2,
+      userID: "2063942761",
+      nickname: "小红花",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216376611080014-7955079406183515637.jpg",
+      gender: 0,
+      handleResult: 0,
+      reqMsg: "",
+      handledMsg: "",
+      reqTime: 1658321123,
+      handleUserID: "",
       handledTime: 0,
       ex: "",
       attachedInfo: "",
@@ -367,76 +477,131 @@ const state = {
   ],
   selfGroupNoticeList: [
     {
-      groupID: "857447475",
-      groupName: "测试测试",
-      notification: "ccc",
+      groupID: "1585766761",
+      groupName: "真的假的",
+      notification: "",
       introduction: "",
-      groupFaceURL: "",
-      createTime: 1655970064,
-      status: 0,
-      creatorUserID: "3798435312",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658216748202162249-6555455521637047278.jpg",
+      createTime: 0,
+      status: 2,
+      creatorUserID: "2063942761",
       groupType: 0,
-      ownerUserID: "3798435312",
-      memberCount: 3,
-      userID: "2911830477",
-      nickname: "hihihi",
-      userFaceURL: "ic_avatar_05",
+      ownerUserID: "",
+      memberCount: 0,
+      userID: "3087749056",
+      nickname: "小红丫丫",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658319345598115198-8717882922351946713.jpg",
       gender: 0,
-      handleResult: 0,
-      reqMsg:
-        "请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加请假添加",
+      handleResult: 1,
+      reqMsg: "",
       handledMsg: "",
-      reqTime: 1655970669,
-      handleUserID: "3798435312",
+      reqTime: 1658217884,
+      handleUserID: "2063942761",
       handledTime: 0,
       ex: "",
       attachedInfo: "",
     },
     {
-      groupID: "857447475",
-      groupName: "测试测试",
-      notification: "ccc",
+      groupID: "3144406613",
+      groupName: "445",
+      notification: "",
       introduction: "",
       groupFaceURL: "",
-      createTime: 1655970064,
+      createTime: 1657526202,
       status: 0,
-      creatorUserID: "3798435312",
+      creatorUserID: "2911830477",
       groupType: 0,
-      ownerUserID: "3798435312",
-      memberCount: 3,
-      userID: "870517699",
-      nickname: "小红",
+      ownerUserID: "2911830477",
+      memberCount: 1,
+      userID: "3087749056",
+      nickname: "小红丫丫",
       userFaceURL:
-        "https://storage-online.rentsoft.cn/openim/1655532712536247948-8273290538659802269image_cropper_1655532711426.jpg",
+        "https://storage-online.rentsoft.cn/openim/1658319345598115198-8717882922351946713.jpg",
+      gender: 0,
+      handleResult: 0,
+      reqMsg: "我是小红测试",
+      handledMsg: "",
+      reqTime: 1658217778,
+      handleUserID: "",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "3243128769",
+      groupName: "不不不",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658218305473521386-7267104140862379789.jpg",
+      createTime: 1658218309,
+      status: 0,
+      creatorUserID: "578660011",
+      groupType: 0,
+      ownerUserID: "578660011",
+      memberCount: 2,
+      userID: "3087749056",
+      nickname: "小红丫丫",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658319345598115198-8717882922351946713.jpg",
       gender: 0,
       handleResult: 1,
       reqMsg: "",
       handledMsg: "",
-      reqTime: 1656407124,
-      handleUserID: "3798435312",
+      reqTime: 1658218333,
+      handleUserID: "578660011",
+      handledTime: 0,
+      ex: "",
+      attachedInfo: "",
+    },
+    {
+      groupID: "1304810619",
+      groupName: "测试一下",
+      notification: "",
+      introduction: "",
+      groupFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658319763094824676-8456667422123641445image_cropper_1658319761239.jpg",
+      createTime: 1658319764,
+      status: 0,
+      creatorUserID: "2063942761",
+      groupType: 0,
+      ownerUserID: "2063942761",
+      memberCount: 3,
+      userID: "3087749056",
+      nickname: "小红丫丫",
+      userFaceURL:
+        "https://storage-online.rentsoft.cn/openim/1658319345598115198-8717882922351946713.jpg",
+      gender: 0,
+      handleResult: 1,
+      reqMsg: "我是小红丫丫",
+      handledMsg: "",
+      reqTime: 1658320874,
+      handleUserID: "2063942761",
       handledTime: 0,
       ex: "",
       attachedInfo: "",
     },
   ],
   groupNoticeItem: null,
-  joinedGroupDeletedTimes:0
+  joinedGroupDeletedTimes: 0,
 };
 const mutations = {
   set_friendNoticeList(state, list) {
-    console.log("friendNoticeList", list);
+    // console.log("friendNoticeList", list);
     state.friendNoticeList = list;
   },
   set_selfFriendNoticeList(state, list) {
-    console.log("selfFriendNoticeList", list);
+    // console.log("selfFriendNoticeList", list);
     state.selfFriendNoticeList = list;
   },
   set_groupNoticeList(state, list) {
-    console.log("groupNoticeList", list);
+    // console.log("groupNoticeList", list);
     state.groupNoticeList = list;
   },
   set_selfGroupNoticeList(state, list) {
-    console.log("selfGroupNoticeList", list);
+    // console.log("selfGroupNoticeList", list);
     state.selfGroupNoticeList = list;
   },
   set_friendNoticeItem(state, item = null) {
@@ -446,39 +611,66 @@ const mutations = {
     state.groupNoticeItem = item;
   },
   set_joinedGroupDeletedTimes(state) {
-    state.joinedGroupDeletedTimes ++;
+    state.joinedGroupDeletedTimes++;
+  },
+  set_tabBarBadge(state) {
+    const friendNoticeListNum =
+      state.friendNoticeList.filter((i) => i.handleResult === 0).length || 0;
+    const groupNoticeListNum =
+      state.groupNoticeList.filter((i) => i.handleResult === 0).length || 0;
+    let total = friendNoticeListNum + groupNoticeListNum;
+    if (total > 0) {
+      total = total > 99 ? 99 : total;
+      uni.setTabBarBadge({
+        index: 1,
+        text: total + "",
+      });
+    } else {
+      uni.removeTabBarBadge({ index: 1 });
+    }
   },
 };
 const actions = {
   get_friendNoticeList({ commit, rootGetters }, im) {
     im.getRecvFriendApplicationList(rootGetters.operationID, (res) => {
       if (res.errCode === 0) {
-        console.log("set_friendNoticeList", JSON.parse(res.data));
-        commit("set_friendNoticeList", JSON.parse(res.data));
+        // console.log("set_friendNoticeList", JSON.parse(res.data));
+        // 0待处理  1同意 -1拒绝
+        const data = JSON.parse(res.data);
+        const list = data.sort((a, b) => a.createTime - b.createTime);
+        commit("set_friendNoticeList", list);
+        commit("set_tabBarBadge");
       }
     });
   },
   get_selfFriendNoticeList({ commit, rootGetters }, im) {
     im.getSendFriendApplicationList(rootGetters.operationID, (res) => {
       if (res.errCode === 0) {
-        console.log("set_selfFriendNoticeList", JSON.parse(res.data));
-        commit("set_selfFriendNoticeList", JSON.parse(res.data));
+        // console.log("set_selfFriendNoticeList", JSON.parse(res.data));
+        const data = JSON.parse(res.data);
+        const list = data.sort((a, b) => a.createTime - b.createTime);
+        commit("set_selfFriendNoticeList", list);
       }
     });
   },
   get_groupNoticeList({ commit, rootGetters }, im) {
     im.getRecvGroupApplicationList(rootGetters.operationID, (res) => {
       if (res.errCode === 0) {
-        console.log("set_groupNoticeList", JSON.parse(res.data));
-        commit("set_groupNoticeList", JSON.parse(res.data));
+        // console.log("set_groupNoticeList", JSON.parse(res.data));
+        const data = JSON.parse(res.data);
+        const list = data.sort((a, b) => a.createTime - b.createTime);
+        commit("set_groupNoticeList", list);
+        commit("set_tabBarBadge");
       }
     });
   },
   get_selfGroupNoticeList({ commit, rootGetters }, im) {
     im.getSendGroupApplicationList(rootGetters.operationID, (res) => {
       if (res.errCode === 0) {
-        console.log("set_selfGroupNoticeList", JSON.parse(res.data));
-        commit("set_selfGroupNoticeList", JSON.parse(res.data));
+        // console.log("set_selfGroupNoticeList", JSON.parse(res.data));
+        const data = JSON.parse(res.data);
+        const list = data.sort((a, b) => a.createTime - b.createTime);
+        commit("set_selfGroupNoticeList", list);
       }
     });
   },

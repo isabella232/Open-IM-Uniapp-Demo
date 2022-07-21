@@ -758,7 +758,7 @@ export default {
     padding: 36rpx 44rpx 24rpx;
     background-color: #fff;
     &-title {
-      font-size: 26rpx;
+      // font-size: 26rpx;
       color: #000000;
       display: flex;
       flex-direction: row;

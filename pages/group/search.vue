@@ -33,7 +33,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      searchContent: "3144406613",
+      searchContent: "",
       isEmpty: false,
     };
   },

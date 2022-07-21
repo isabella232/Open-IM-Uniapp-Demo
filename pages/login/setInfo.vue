@@ -1,7 +1,7 @@
 <template>
   <view class="setInfo commonPage">
     <view class="statusBar"></view>
-    <view class="title">欢迎使用司聊</view>
+    <view class="title">欢迎使用OpenIM</view>
     <view class="secondTitle2">请完善个人信息</view>
     <view class="avatar" @click="fileImageData.actionShow = true">
       <view class="avatar-item">
@@ -45,7 +45,7 @@
     </u-form>
     <view class="btn">
       <u-button :loading="isLoading" type="primary" @click="doNext">
-        进入司聊
+        进入OpenIM
       </u-button>
     </view>
     <u-action-sheet
@@ -100,8 +100,7 @@ export default {
       isLoading: false,
     };
   },
-  onLoad() {
-  },
+  onLoad() {},
   methods: {
     confirmChooseAlbum(item) {
       switch (item.type) {
@@ -188,6 +187,16 @@ export default {
               this.$store.commit("user/set_userInfo", data);
               this.$store.commit("user/set_loginStatus", true);
               this.$store.commit("user/set_loginUserInfo", null);
+              this.$store.dispatch("contacts/get_friendNoticeList", this.$im);
+              this.$store.dispatch(
+                "contacts/get_selfFriendNoticeList",
+                this.$im
+              );
+              this.$store.dispatch("contacts/get_groupNoticeList", this.$im);
+              this.$store.dispatch(
+                "contacts/get_selfGroupNoticeList",
+                this.$im
+              );
               uni.switchTab({
                 url: "/pages/index/index",
               });
