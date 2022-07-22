@@ -73,6 +73,7 @@ export default {
           if (res.errCode === 0) {
             let list = JSON.parse(res.data);
             this.friendList = list;
+            console.log(this.friendList);
           }
         }
       );

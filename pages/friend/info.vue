@@ -468,6 +468,7 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      text-align: center;
       .image {
         width: 100rpx;
         height: 100rpx;
@@ -481,7 +482,7 @@ export default {
       }
       .text1 {
         color: #1d6bed;
-        // color: #b8b8b8;
+        // color: #b8b8b8;x
       }
       .text2 {
         color: #1d6bed;

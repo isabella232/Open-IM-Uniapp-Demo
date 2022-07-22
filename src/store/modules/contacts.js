@@ -637,7 +637,7 @@ const actions = {
         // console.log("set_friendNoticeList", JSON.parse(res.data));
         // 0待处理  1同意 -1拒绝
         const data = JSON.parse(res.data);
-        const list = data.sort((a, b) => a.createTime - b.createTime);
+        const list = data.sort((a, b) => b.createTime - a.createTime);
         commit("set_friendNoticeList", list);
         commit("set_tabBarBadge");
       }
@@ -648,7 +648,7 @@ const actions = {
       if (res.errCode === 0) {
         // console.log("set_selfFriendNoticeList", JSON.parse(res.data));
         const data = JSON.parse(res.data);
-        const list = data.sort((a, b) => a.createTime - b.createTime);
+        const list = data.sort((a, b) => b.createTime - a.createTime);
         commit("set_selfFriendNoticeList", list);
       }
     });
@@ -658,7 +658,7 @@ const actions = {
       if (res.errCode === 0) {
         // console.log("set_groupNoticeList", JSON.parse(res.data));
         const data = JSON.parse(res.data);
-        const list = data.sort((a, b) => a.createTime - b.createTime);
+        const list = data.sort((a, b) => b.createTime - a.createTime);
         commit("set_groupNoticeList", list);
         commit("set_tabBarBadge");
       }
@@ -669,7 +669,7 @@ const actions = {
       if (res.errCode === 0) {
         // console.log("set_selfGroupNoticeList", JSON.parse(res.data));
         const data = JSON.parse(res.data);
-        const list = data.sort((a, b) => a.createTime - b.createTime);
+        const list = data.sort((a, b) => b.createTime - a.createTime);
         commit("set_selfGroupNoticeList", list);
       }
     });

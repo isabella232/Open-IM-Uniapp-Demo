@@ -822,25 +822,46 @@ const actions = {
     });
   },
   push_localConversationMessage({ commit }, d) {
-    commit("push_localConversationMessage", d);
+    return new Promise((resolve) => {
+      commit("push_localConversationMessage", d);
+      resolve();
+    });
   },
   unshift_localConversationMessage({ commit }, d) {
-    commit("unshift_localConversationMessage", d);
+    return new Promise((resolve) => {
+      commit("unshift_localConversationMessage", d);
+      resolve();
+    });
   },
   set_newMessageTimes({ commit }) {
-    commit("set_newMessageTimes");
+    return new Promise((resolve) => {
+      commit("set_newMessageTimes");
+      resolve();
+    });
   },
   set_newMessageList({ commit }, d) {
-    commit("set_newMessageList", d);
+    return new Promise((resolve) => {
+      commit("set_newMessageList", d);
+      resolve();
+    });
   },
   set_revokeMessageTimes({ commit }) {
-    commit("set_revokeMessageTimes");
+    return new Promise((resolve) => {
+      commit("set_revokeMessageTimes");
+      resolve();
+    });
   },
   set_revokeMessageList({ commit }, d) {
-    commit("set_revokeMessageList", d);
+    return new Promise((resolve) => {
+      commit("set_revokeMessageList", d);
+      resolve();
+    });
   },
   set_draftText({ commit }, d) {
-    commit("set_draftText", d);
+    return new Promise((resolve) => {
+      commit("set_draftText", d);
+      resolve();
+    });
   },
 };
 export default {

@@ -2,7 +2,7 @@
   <view :class="['HistoryFriendCard']" @click="toInfo">
     <Avatar
       class="faceURL"
-      :src="card.publicInfo.faceURL || 'error'"
+      :src="card.faceURL || 'error'"
       :name="nickname"
       size="24px"
       fontSize="24rpx"
@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     toInfo() {
-      const sourceID = this.card.publicInfo.userID;
+      const sourceID = this.card.userID;
       uni.navigateTo({
         url: `/pages/friend/info?id=${sourceID}`,
       });
@@ -34,10 +34,7 @@ export default {
   },
   computed: {
     nickname() {
-      if (this.card.friendInfo) {
-        return this.card.friendInfo.remark || this.card.friendInfo.nickname;
-      }
-      return this.card.publicInfo.nickname;
+      return this.card.remark || this.card.nickname;
     },
   },
 };

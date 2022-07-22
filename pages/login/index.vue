@@ -171,6 +171,7 @@ export default {
     },
     loginCb() {
       if (this.connectStatus === 1) {
+        uni.showLoading();
         this.appLogin()
           .then(() => {
             this.$im.getSelfUserInfo(this.operationID, (res) => {
@@ -179,10 +180,6 @@ export default {
                 this.$store.commit("user/set_userInfo", data);
                 // console.log(data);
                 this.$store.commit("user/set_loginStatus", true);
-                uni.hideLoading();
-                uni.switchTab({
-                  url: "/pages/index/index",
-                });
                 this.$store.dispatch("contacts/get_friendNoticeList", this.$im);
                 this.$store.dispatch(
                   "contacts/get_selfFriendNoticeList",
@@ -193,6 +190,10 @@ export default {
                   "contacts/get_selfGroupNoticeList",
                   this.$im
                 );
+                uni.hideLoading();
+                uni.switchTab({
+                  url: "/pages/index/index",
+                });
               } else {
                 this.$toast(res.errMsg);
               }
@@ -209,7 +210,6 @@ export default {
     },
     appLogin() {
       return new Promise((resolve, reject) => {
-        uni.showLoading();
         this.$im.login(this.operationID, this.userID, this.token, (res) => {
           if (res.errCode === 0) {
             const loginStatus = this.getLoginStatus();
