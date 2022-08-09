@@ -4,12 +4,12 @@ export default {
   onLaunch() {
     this.$store.commit("user/set_loginStatus", false);
     this.$store.commit("user/set_connectStatus", 1);
-    if (process.env.NODE_ENV === "development") {
-      // this.$store.commit("message/clear_allLocalConversationMessage");
-    }
   },
-  onShow() {},
+  onShow() {
+    this.$im.wakeUp();
+  },
   onHide() {},
+  onError(e) {console.log(e);},
   methods: {},
   computed: {
     ...mapGetters(["userID"]),

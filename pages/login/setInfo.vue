@@ -63,6 +63,10 @@
 import { mapGetters } from "vuex";
 import md5 from "js-md5";
 import { app_register } from "@/service/api/user";
+import {
+  checkPhotoLibraryPermission,
+  checkCameraPermission,
+} from "@/utils/checkPermission";
 export default {
   data() {
     return {
@@ -105,15 +109,27 @@ export default {
     confirmChooseAlbum(item) {
       switch (item.type) {
         case "album":
-          this.chooseImage("album");
+          this.checkPhotoLibrary();
           break;
         case "camera":
-          this.chooseImage("camera");
+          this.checkCamera();
           break;
       }
     },
+    async checkPhotoLibrary() {
+      const status = await checkPhotoLibraryPermission();
+      if (status === true) {
+        this.chooseImage("album");
+      }
+    },
+    async checkCamera() {
+      const status = await checkCameraPermission();
+      if (status === true) {
+        this.chooseImage("camera");
+      }
+    },
     chooseImage(sourceType) {
-      uni.chooseImage({
+      wx.chooseImage({
         count: 1,
         sourceType: [sourceType],
         success: (res) => {

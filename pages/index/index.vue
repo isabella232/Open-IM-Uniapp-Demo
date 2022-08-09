@@ -94,7 +94,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { toast } from "@/common/toast";
 import { scan } from "@/utils/scan";
 import MessageCard from "@/components/MessageCard";
 import Avatar from "@/components/Avatar.vue";
@@ -126,6 +125,7 @@ export default {
       addPop: { show: false, style: {} },
       isPending: false,
       isRefresh: false,
+      initTimer: null,
       firstInitData: { isFirstInit: true, list: [], pageNo: 1, pageSize: 10 },
       total: 0,
     };
@@ -138,7 +138,6 @@ export default {
     }
     // #endif
   },
-  onShow() {},
   methods: {
     init2() {
       this.isRefresh = true;
@@ -152,57 +151,78 @@ export default {
         this.getAllConversationList();
         this.getTotalUnreadMsgCount();
       }
+      // if (this.initTimer) {
+      //   clearTimeout(this.initTimer);
+      // }
+      // this.initTimer = setTimeout(() => {
+      //   if (this.isPending) {
+      //     this.isRefresh = true;
+      //   } else if (this.isRefresh) {
+      //     this.isRefresh = false;
+      //     this.getAllConversationList();
+      //     this.getTotalUnreadMsgCount();
+      //   }
+      // }, 1000);
     },
     getAllConversationList() {
       this.isPending = true;
       this.$im.getAllConversationList(this.operationID, (res) => {
         if (res.errCode !== 0) {
-          toast(res.errMsg);
-          this.$nextTick(() => {
-            this.isPending = false;
-            this.init();
-          });
+          this.$toast(res.errMsg);
+          this.isPending = false;
+          this.init();
         } else {
           const data = JSON.parse(res.data);
           // console.log(JSON.parse(res.data));
           this.checkFirstInit(data);
+          // if (this.isIos) {
+          //   this.checkFirstInit2(data);
+          // } else {
+          //   this.checkFirstInit(data);
+          // }
         }
       });
     },
     getTotalUnreadMsgCount() {
       this.$im.getTotalUnreadMsgCount(this.operationID, (res) => {
         if (res.errCode !== 0) {
-          toast(res.errMsg);
+          this.$toast(res.errMsg);
         } else {
           this.total = res.data;
           this.setTabBarBadge();
         }
       });
     },
+    checkFirstInit2(list) {
+      this.$store.commit("message/set_messageList", list);
+      setTimeout(() => {
+        this.isPending = false;
+        this.init();
+      }, 200);
+    },
     checkFirstInit(list) {
-      // console.log(list);
       if (this.firstInitData.isFirstInit) {
         const length = list.length;
         const num = this.firstInitData.pageNo * this.firstInitData.pageSize;
         this.$store.commit("message/set_messageList", list.slice(0, num));
         if (num < length) {
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.firstInitData.pageNo++;
             this.checkFirstInit(list);
-          });
+          }, 200);
         } else {
           this.firstInitData.isFirstInit = false;
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.isPending = false;
             this.init();
-          });
+          }, 200);
         }
       } else {
         this.$store.commit("message/set_messageList", list);
-        this.$nextTick(() => {
+        setTimeout(() => {
           this.isPending = false;
           this.init();
-        });
+        }, 200);
       }
     },
     showAdd() {
@@ -261,7 +281,7 @@ export default {
       }
     },
     setTabBarBadge() {
-      if (this.total>0) {
+      if (this.total > 0) {
         const text = this.total > 99 ? "99" : this.total;
         uni.setTabBarBadge({
           index: 0,
@@ -282,9 +302,13 @@ export default {
       "loginStatus",
       "userID",
       "token",
+      "systemInfo",
     ]),
     hasLastLoginData() {
       return this.userID && this.token ? true : false;
+    },
+    isIos() {
+      return this.systemInfo.platform === "ios";
     },
   },
   watch: {

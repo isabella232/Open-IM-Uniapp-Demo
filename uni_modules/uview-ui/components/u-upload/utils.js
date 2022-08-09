@@ -73,7 +73,7 @@ export function chooseFile({
     return new Promise((resolve, reject) => {
         switch (accept) {
         case 'image':
-            uni.chooseImage({
+            wx.chooseImage({
                 count: multiple ? Math.min(maxCount, 9) : 1,
                 sourceType: capture,
                 sizeType,

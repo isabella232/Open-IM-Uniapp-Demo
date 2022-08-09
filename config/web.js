@@ -1,5 +1,4 @@
 import { toast } from "@/common/toast";
-import { commonConfig } from "./index";
 import store from "@/src/store";
 import { OpenIMSDK } from "open-im-sdk";
 const openIM = new OpenIMSDK();
@@ -12,10 +11,11 @@ function init_platform() {
 }
 export function init() {
   init_platform();
+  const apiConfig = store.getters.apiConfig;
   const config = {
     userID: store.getters.userID,
     token: store.getters.token,
-    url: commonConfig.ws_addr,
+    url: apiConfig.ws_addr,
     platformID: store.getters.platform,
   };
   openIM

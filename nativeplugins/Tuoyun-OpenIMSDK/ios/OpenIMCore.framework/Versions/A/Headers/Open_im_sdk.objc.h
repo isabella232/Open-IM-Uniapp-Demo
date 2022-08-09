@@ -48,6 +48,10 @@ FOUNDATION_EXPORT void Open_im_sdkClearGroupHistoryMessageFromLocalAndSvr(id<Ope
 
 FOUNDATION_EXPORT void Open_im_sdkClearWorkMomentsNotification(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID);
 
+FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkCreateAdvancedQuoteMessage(NSString* _Nullable operationID, NSString* _Nullable text, NSString* _Nullable message, NSString* _Nullable messageEntityList);
+
+FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkCreateAdvancedTextMessage(NSString* _Nullable operationID, NSString* _Nullable text, NSString* _Nullable messageEntityList);
+
 FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkCreateCardMessage(NSString* _Nullable operationID, NSString* _Nullable cardInfo);
 
 FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkCreateCustomMessage(NSString* _Nullable operationID, NSString* _Nullable data, NSString* _Nullable extension, NSString* _Nullable description);
@@ -110,6 +114,8 @@ FOUNDATION_EXPORT void Open_im_sdkDeleteMessageFromLocalStorage(id<Open_im_sdk_c
 
 FOUNDATION_EXPORT void Open_im_sdkDismissGroup(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID);
 
+FOUNDATION_EXPORT void Open_im_sdkGetAdvancedHistoryMessageList(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable getMessageOptions);
+
 FOUNDATION_EXPORT void Open_im_sdkGetAllConversationList(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID);
 
 FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkGetAtAllTag(void);
@@ -138,6 +144,8 @@ FOUNDATION_EXPORT void Open_im_sdkGetFriendList(id<Open_im_sdk_callbackBase> _Nu
 FOUNDATION_EXPORT void Open_im_sdkGetGroupMemberList(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, int32_t filter, int32_t offset, int32_t count);
 
 FOUNDATION_EXPORT void Open_im_sdkGetGroupMemberListByJoinTimeFilter(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, int32_t offset, int32_t count, int64_t joinTimeBegin, int64_t joinTimeEnd, NSString* _Nullable filterUserIDList);
+
+FOUNDATION_EXPORT void Open_im_sdkGetGroupMemberOwnerAndAdmin(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID);
 
 FOUNDATION_EXPORT void Open_im_sdkGetGroupMembersInfo(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable userIDList);
 
@@ -201,7 +209,7 @@ FOUNDATION_EXPORT void Open_im_sdkInsertSingleMessageToLocalStorage(id<Open_im_s
 
 FOUNDATION_EXPORT void Open_im_sdkInviteUserToGroup(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable reason, NSString* _Nullable userIDList);
 
-FOUNDATION_EXPORT void Open_im_sdkJoinGroup(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable reqMsg);
+FOUNDATION_EXPORT void Open_im_sdkJoinGroup(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable reqMsg, int32_t joinSource);
 
 FOUNDATION_EXPORT void Open_im_sdkKickGroupMember(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable reason, NSString* _Nullable userIDList);
 
@@ -220,6 +228,8 @@ FOUNDATION_EXPORT void Open_im_sdkMarkGroupMessageHasRead(id<Open_im_sdk_callbac
 
 FOUNDATION_EXPORT void Open_im_sdkMarkMessageAsReadByConID(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable conversationID, NSString* _Nullable msgIDList);
 
+FOUNDATION_EXPORT void Open_im_sdkNewRevokeMessage(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable message);
+
 FOUNDATION_EXPORT void Open_im_sdkPinConversation(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable conversationID, BOOL isPinned);
 
 FOUNDATION_EXPORT void Open_im_sdkQuitGroup(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID);
@@ -232,6 +242,9 @@ FOUNDATION_EXPORT void Open_im_sdkRemoveBlack(id<Open_im_sdk_callbackBase> _Null
 
 FOUNDATION_EXPORT void Open_im_sdkResetConversationGroupAtType(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable conversationID);
 
+/**
+ * deprecated
+ */
 FOUNDATION_EXPORT void Open_im_sdkRevokeMessage(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable message);
 
 FOUNDATION_EXPORT NSString* _Nonnull Open_im_sdkSdkVersion(void);
@@ -264,12 +277,16 @@ FOUNDATION_EXPORT void Open_im_sdkSetFriendRemark(id<Open_im_sdk_callbackBase> _
 
 FOUNDATION_EXPORT void Open_im_sdkSetGlobalRecvMessageOpt(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, long opt);
 
+FOUNDATION_EXPORT void Open_im_sdkSetGroupApplyMemberFriend(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, int32_t rule);
+
 FOUNDATION_EXPORT void Open_im_sdkSetGroupInfo(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable groupInfo);
 
 /**
  * ////////////////////////group//////////////////////////////////////////
  */
 FOUNDATION_EXPORT void Open_im_sdkSetGroupListener(id<Open_im_sdk_callbackOnGroupListener> _Nullable callback);
+
+FOUNDATION_EXPORT void Open_im_sdkSetGroupLookMemberInfo(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, int32_t rule);
 
 FOUNDATION_EXPORT void Open_im_sdkSetGroupMemberNickname(id<Open_im_sdk_callbackBase> _Nullable callback, NSString* _Nullable operationID, NSString* _Nullable groupID, NSString* _Nullable userID, NSString* _Nullable groupMemberNickname);
 

@@ -36,6 +36,7 @@ export default {
   frinendInfoChangeTimes: (state) => state.message.frinendInfoChangeTimes,
   localConversationMessageList: (state) =>
     getLocalConversationMessageList(state),
+  apiConfig: (state) => state.user.apiConfig,
 };
 function getLocalConversationMessageList(state) {
   const localConversationMessageList =

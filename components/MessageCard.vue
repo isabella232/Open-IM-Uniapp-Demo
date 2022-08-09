@@ -83,10 +83,13 @@ export default {
       return faceURL;
     },
     toConversation() {
+      // console.log(this.card);
       const sourceID =
         this.card.conversationType === 1 ? this.card.userID : this.card.groupID;
+      // const conversationType = this.card.conversationType === 1 ? 1 : 2;
+      const conversationType = this.card.conversationType;
       uni.navigateTo({
-        url: `/pages/conversation/index?sessionType=${this.card.conversationType}&sourceID=${sourceID}`,
+        url: `/pages/conversation/index?sessionType=${conversationType}&sourceID=${sourceID}`,
       });
     },
     formatTime(time) {

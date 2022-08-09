@@ -231,6 +231,12 @@ export function formatSendContent(c) {
   });
   return { content, atUserList };
 }
+function checkSystemEmoji(v) {
+  const emojiReg =
+    /(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*/;
+  let isSystemEmoji = emojiReg.test(v);
+  return isSystemEmoji;
+}
 export function getEmojiContent(atMemberPositionList) {
   let list = [];
   atMemberPositionList.map((item) => {
@@ -248,12 +254,25 @@ export function getEmojiContent(atMemberPositionList) {
           if (strIndex !== 0) {
             const text = str.slice(0, strIndex);
             for (let j = 0; j < text.length; j++) {
-              newArr.push({
-                content: text.slice(j, j + 1),
-                startIndex: startIndex + strStartIndex,
-                endIndex: startIndex + strStartIndex,
-                type: "text",
-              });
+              let emojiText = text.slice(j, j + 2);
+              const isSystemEmoji = checkSystemEmoji(emojiText);
+              if (isSystemEmoji) {
+                newArr.push({
+                  content: emojiText,
+                  startIndex: startIndex + strStartIndex + 1,
+                  endIndex: startIndex + strStartIndex + 1,
+                  type: "text",
+                });
+                strStartIndex += 1;
+                j++;
+              } else {
+                newArr.push({
+                  content: text.slice(j, j + 1),
+                  startIndex: startIndex + strStartIndex,
+                  endIndex: startIndex + strStartIndex,
+                  type: "text",
+                });
+              }
               strStartIndex += 1;
             }
           }
@@ -283,12 +302,25 @@ export function getEmojiContent(atMemberPositionList) {
           const text = str.slice(strIndex + t.length, str.length);
           if (arrIndex === arr.length - 1 && text) {
             for (let j = 0; j < text.length; j++) {
-              newArr.push({
-                content: text.slice(j, j + 1),
-                startIndex: startIndex + strStartIndex,
-                endIndex: startIndex + strStartIndex,
-                type: "text",
-              });
+              let emojiText = text.slice(j, j + 2);
+              const isSystemEmoji = checkSystemEmoji(emojiText);
+              if (isSystemEmoji) {
+                newArr.push({
+                  content: emojiText,
+                  startIndex: startIndex + strStartIndex + 1,
+                  endIndex: startIndex + strStartIndex + 1,
+                  type: "text",
+                });
+                strStartIndex += 1;
+                j++;
+              } else {
+                newArr.push({
+                  content: text.slice(j, j + 1),
+                  startIndex: startIndex + strStartIndex,
+                  endIndex: startIndex + strStartIndex,
+                  type: "text",
+                });
+              }
               strStartIndex += 1;
             }
           }
@@ -296,12 +328,25 @@ export function getEmojiContent(atMemberPositionList) {
       } else {
         const text = item.content;
         for (let j = 0; j < text.length; j++) {
-          newArr.push({
-            content: text.slice(j, j + 1),
-            startIndex: startIndex + strStartIndex,
-            endIndex: startIndex + strStartIndex,
-            type: "text",
-          });
+          let emojiText = text.slice(j, j + 2);
+          const isSystemEmoji = checkSystemEmoji(emojiText);
+          if (isSystemEmoji) {
+            newArr.push({
+              content: emojiText,
+              startIndex: startIndex + strStartIndex + 1,
+              endIndex: startIndex + strStartIndex + 1,
+              type: "text",
+            });
+            strStartIndex += 1;
+            j++;
+          } else {
+            newArr.push({
+              content: text.slice(j, j + 1),
+              startIndex: startIndex + strStartIndex,
+              endIndex: startIndex + strStartIndex,
+              type: "text",
+            });
+          }
           strStartIndex += 1;
         }
       }

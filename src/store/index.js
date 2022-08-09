@@ -1,14 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import createPersistedState from 'vuex-persistedstate'
-Vue.use(Vuex)
+import createPersistedState from "vuex-persistedstate";
+Vue.use(Vuex);
 const vuexPersisted = new createPersistedState({
   storage: {
-    getItem: key => uni.getStorageSync(key),
-    setItem: (key, value) => uni.setStorageSync(key, value),
-    removeItem: key => uni.removeStorageSync(key)
-  }
-})
+    getItem: (key) => uni.getStorage(key),
+    setItem: (key, value) => {
+      uni.setStorage(key, value);
+    },
+    removeItem: (key) => uni.removeStorage(key),
+  },
+});
 import getters from "./getters";
 import user from "./modules/user";
 import message from "./modules/message";
@@ -22,7 +24,7 @@ const store = new Vuex.Store({
     contacts,
   },
   getters,
-  plugins: [vuexPersisted]
+  plugins: [vuexPersisted],
 });
 
 export default store;

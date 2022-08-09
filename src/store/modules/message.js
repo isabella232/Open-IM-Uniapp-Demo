@@ -603,7 +603,7 @@ const mutations = {
       (item.sessionType === 1 &&
         state.conversationData &&
         item.sendID === state.conversationData.userID) ||
-      (item.sessionType === 2 &&
+      ((item.sessionType === 2 || item.sessionType === 3) &&
         state.conversationData &&
         item.groupID === state.conversationData.groupID)
     ) {
@@ -773,7 +773,7 @@ const mutations = {
           (i) =>
             userID && i.userID === userID && i.currentUserID === currentUserID
         );
-      } else if (sessionType === 2) {
+      } else if (sessionType === 2 || sessionType === 3) {
         index = state.localConversationMessageList.findIndex(
           (i) =>
             groupID &&

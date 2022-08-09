@@ -136,16 +136,16 @@
             >按住说话</view
           >
           <image
-            v-show="!hasContent"
-            class="image"
-            src="@/static/images/conversation/other.png"
-            @click.stop="changeShowOther"
-          />
-          <image
             v-show="!showEmoji || this.scrollViewData.keyboardHeight"
             class="image"
             src="@/static/images/conversation/emoji.png"
             @click.stop="changeShowEmoji"
+          />
+          <image
+            v-show="!hasContent"
+            class="image"
+            src="@/static/images/conversation/other.png"
+            @click.stop="changeShowOther"
           />
           <text
             class="send-btn"
@@ -293,6 +293,7 @@ import {
 } from "@/utils/formatMessage";
 import { transformContent } from "@/utils";
 import MessageItem from "@/components/MessageItem.vue";
+import { checkCameraPermission } from "@/utils/checkPermission";
 //#ifdef APP-PLUS
 const AfDocument = uni.requireNativePlugin("Aq-ChooseFile");
 //#endif
@@ -499,6 +500,7 @@ export default {
       } else {
         this.getUsersInfo();
       }
+      // console.log(this.localMessageList);
     },
     getUsersInfo() {
       this.$im.getUsersInfo(
@@ -731,7 +733,7 @@ export default {
     insertImage(src, context) {
       this.isInsertImage = true;
       const DisbaledKeyboard = this.$refs.DisbaledKeyboard;
-      DisbaledKeyboard.insertImage(src, "20px", "20px", { emojiText: context });
+      DisbaledKeyboard.insertImage(src, "22px", "20px", { emojiText: context });
     },
     setQuoteMessage(m) {
       this.sendData.quoteMessage = m;
@@ -768,89 +770,6 @@ export default {
       this.sendData.messageContent = null;
       this.sendData.messageType = "text";
     },
-    makeEditorContent(list, index, editorContext, messageItem) {
-      const item = list[index] || null;
-      if (!item) return;
-      if (item.type === "canvas") {
-        this.atCanvasData.senderNickname = item.content;
-        const query = uni.createSelectorQuery().in(this);
-        this.$nextTick(() => {
-          query
-            .select(".canvas-container-name")
-            .boundingClientRect((style) => {
-              let width = parseInt(style.width);
-              this.atCanvasData.style.width = width + "px";
-              this.atCanvasData.show = true;
-              this.$nextTick(() => {
-                const ctx = uni.createCanvasContext("atCanvas");
-                const fontSize = 16;
-                ctx.setFontSize(fontSize); //设置字体大小
-                ctx.setFillStyle("#3e44ff"); //文字颜色
-                let text = this.atCanvasData.senderNickname;
-                if (width >= 240) {
-                  text = transformContent(
-                    ctx,
-                    this.atCanvasData.senderNickname,
-                    width
-                  )[0];
-                }
-                ctx.fillText(text, 0, 16);
-                ctx.draw();
-                uni.canvasToTempFilePath({
-                  canvasId: "atCanvas",
-                  success: (res) => {
-                    this.doHideKeyboard(true);
-                    this.isInsertImage = true;
-                    editorContext.insertImage({
-                      src: res.tempFilePath,
-                      width: this.atCanvasData.style.width,
-                      height: "20px",
-                      extClass: "at-img",
-                      data: {
-                        sendID: item.userID,
-                        senderNickname: item.nickname,
-                      },
-                      complete: () => {
-                        this.doHideKeyboard();
-                        if (list[index + 1]) {
-                          this.makeEditorContent(
-                            list,
-                            index + 1,
-                            editorContext,
-                            messageItem
-                          );
-                        } else {
-                          messageItem.readOnly = true;
-                        }
-                      },
-                    });
-                  },
-                });
-              });
-            })
-            .exec();
-        });
-      } else if (item.type === "text") {
-        this.doHideKeyboard(true);
-        editorContext.insertText({
-          text: item.content,
-          complete: () => {
-            editorContext.blur();
-            this.doHideKeyboard();
-            if (list[index + 1]) {
-              this.makeEditorContent(
-                list,
-                index + 1,
-                editorContext,
-                messageItem
-              );
-            } else {
-              messageItem.readOnly = true;
-            }
-          },
-        });
-      }
-    },
     resetScrollTo(id = "messageContent-bottom") {
       this.scrollViewData.scrollIntoView = "";
       this.$nextTick(() => {
@@ -860,27 +779,38 @@ export default {
       });
     },
     markMessageAsRead() {
-      if (this.isSingleChat) {
-        this.$im.markC2CMessageAsRead(
-          this.operationID,
-          this.conversationData.userID,
-          [],
-          (r) => {
-            // console.log(r);
-            this.$store.commit("message/set_indexMessageTimes");
-          }
-        );
-      } else if (this.isGroupChat) {
-        this.$im.markGroupMessageAsRead(
-          this.operationID,
-          this.conversationData.groupID,
-          [],
-          (r) => {
-            // console.log(r);
-            this.$store.commit("message/set_indexMessageTimes");
-          }
-        );
-      }
+      const cb2 = (r) => {
+        this.$store.commit("message/set_indexMessageTimes");
+      };
+      this.$im.getHistoryMessageList(
+        this.operationID,
+        { ...this.getMessageOptions, startClientMsgID: "", count: 1 },
+        () => {
+          cb1()
+          // this.$im.markNotifyMessageHasRead(
+          //   this.operationID,
+          //   this.conversationData.conversationID,
+          //   (r) => cb2(r)
+          // );
+        }
+      );
+      const cb1 = () => {
+        if (this.isSingleChat) {
+          this.$im.markC2CMessageAsRead(
+            this.operationID,
+            this.conversationData.userID,
+            [],
+            (r) => cb2(r)
+          );
+        } else if (this.isGroupChat) {
+          this.$im.markGroupMessageAsRead(
+            this.operationID,
+            this.conversationData.groupID,
+            [],
+            (r) => cb2(r)
+          );
+        }
+      };
     },
     toInfo() {
       if (this.isSingleChat) {
@@ -1049,17 +979,6 @@ export default {
             "20px",
             { sendID, senderNickname }
           );
-          // this.doHideKeyboard(true);
-          // this.isInsertImage = true;
-          // this.editorCtx.insertImage({
-          //   src: res.tempFilePath,
-          //   width: this.atCanvasData.style.width,
-          //   height: "20px",
-          //   data: { sendID, senderNickname },
-          //   complete: () => {
-          //     this.doHideKeyboard();
-          //   },
-          // });
         },
       });
     },
@@ -1142,15 +1061,27 @@ export default {
     confirmChooseCamera(item) {
       switch (item.type) {
         case "image":
-          this.chooseImage("camera");
+          this.checkPhotoLibrary();
           break;
         case "video":
-          this.chooseVideo("camera");
+          this.checkCamera();
           break;
       }
     },
+    async checkPhotoLibrary() {
+      const status = await checkCameraPermission();
+      if (status === true) {
+        this.chooseImage("camera");
+      }
+    },
+    async checkCamera() {
+      const status = await checkCameraPermission();
+      if (status === true) {
+        this.chooseVideo("camera");
+      }
+    },
     chooseImage(sourceType) {
-      uni.chooseImage({
+      wx.chooseImage({
         count: 9,
         sourceType: [sourceType],
         success: (r) => {
@@ -1506,7 +1437,6 @@ export default {
     this.$store.commit("message/clear_newMessageList");
     this.$store.commit("message/clear_revokeMessageList");
     uni.offKeyboardHeightChange(this.keyboardHeightChange);
-    console.log("onUnload");
     this.setDraftText();
   },
   computed: {
@@ -1537,97 +1467,20 @@ export default {
       // #ifdef H5
       return [
         {
-          clientMsgID: "21c84a0427fd47f6a250d7cd8adde22d",
-          serverMsgID: "22cf1d4a4c306631f4a433555381cb45",
-          createTime: 1658304560511,
-          sendTime: 1658304560530,
-          sessionType: 1,
-          sendID: "2911830477",
-          recvID: "3138541532",
-          msgFrom: 200,
-          contentType: 1204,
-          platformID: 0,
-          content:
-            '{"detail":"CiYKCjI5MTE4MzA0NzcYsPDelgYiBkiN9rmWBjIKMjkxMTgzMDQ3NxoiCgoyOTExODMwNDc3EgZoaWhpaGkaDGljX2F2YXRhcl8wNQ==","defaultTips":"We have become friends","jsonDetail":"{\\"friend\\":{\\"ownerUserID\\":\\"2911830477\\",\\"createTime\\":1658304560,\\"friendUser\\":{\\"createTime\\":1657699085},\\"operatorUserID\\":\\"2911830477\\"},\\"opUser\\":{\\"userID\\":\\"2911830477\\",\\"nickname\\":\\"hihihi\\",\\"faceURL\\":\\"ic_avatar_05\\"}}"}',
-          seq: 1549,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {
-            detail:
-              '{"friend":{"ownerUserID":"2911830477","createTime":1658304560,"friendUser":{"createTime":1657699085},"operatorUserID":"2911830477"},"opUser":{"userID":"2911830477","nickname":"hihihi","faceURL":"ic_avatar_05"}}',
-            defaultTips: "We have become friends",
-          },
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "dd20a4a7465725285b24a297db9feaa2",
-          serverMsgID: "68e76a40288ba1354b38318bc7099bdc",
-          createTime: 1658304574787,
-          sendTime: 1658304575063,
+          clientMsgID: "eea8df8f23f1a68c372fa69ad0bc27bd",
+          serverMsgID: "8ea58ff53d0a17a91b26a693102f8d54",
+          createTime: 1658717642353,
+          sendTime: 1658717646706,
           sessionType: 1,
           sendID: "3138541532",
-          recvID: "2911830477",
+          recvID: "3798435312",
           msgFrom: 100,
           contentType: 101,
           platformID: 2,
-          senderNickname: "Jack-Chain",
+          senderNickname: "Jack",
           senderFaceUrl: "ic_avatar_03",
-          content: "1",
-          seq: 0,
+          content: "[微笑]1[哭泣]🙃[哭泣]2[哭泣]🍉[哭泣]3[哭泣]",
+          seq: 2827,
           isRead: false,
           status: 2,
           offlinePush: {},
@@ -1646,681 +1499,6 @@ export default {
               size: 0,
               width: 0,
               height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "07609c9426110bfd89c2f37fba36c943",
-          serverMsgID: "813db01e202e623a1500026cfd5c4934",
-          createTime: 1658304613785,
-          sendTime: 1658304613939,
-          sessionType: 1,
-          sendID: "2911830477",
-          recvID: "3138541532",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "hihihi",
-          senderFaceUrl: "ic_avatar_05",
-          content: "2",
-          seq: 1553,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "152f8fc72912bc5f12310f8bb8548e93",
-          serverMsgID: "9c39dd019a53d8021c438aedb96a9692",
-          createTime: 1658304881803,
-          sendTime: 1658304882091,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content: "4",
-          seq: 0,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "9895b9b504449b5cd4b30f8509ca8cea",
-          serverMsgID: "c86b354fc7b5d832daef0047c5f014b6",
-          createTime: 1658305109525,
-          sendTime: 1658305109611,
-          sessionType: 1,
-          sendID: "2911830477",
-          recvID: "3138541532",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 5,
-          senderNickname: "hihihi",
-          senderFaceUrl: "ic_avatar_05",
-          content: "5",
-          seq: 1591,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "6521a9d39d2023e173edd4e097bf0eee",
-          serverMsgID: "14b79142abc0975103f40b72018c52c3",
-          createTime: 1658305160155,
-          sendTime: 1658305160436,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content: "6",
-          seq: 0,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "ebc6724d19b516e0989309d956a06c50",
-          serverMsgID: "dd7a717ed880fe6f1096289b57769c08",
-          createTime: 1658305276636,
-          sendTime: 1658305276917,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content: "7",
-          seq: 0,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "e4b95d1f2a8f7de37df0b98bf54c7535",
-          serverMsgID: "8c01c086c3b41370a8ba653cd9f371de",
-          createTime: 1658305686395,
-          sendTime: 1658305686814,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content: "8",
-          seq: 0,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "9f61f3fff976023c59c1552bbd377357",
-          serverMsgID: "58c400805561f01c6c5d2280d137d4fb",
-          createTime: 1658307244426,
-          sendTime: 1658307244725,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 101,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content: "[吓哭]",
-          seq: 0,
-          isRead: true,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            longitude: 0,
-            latitude: 0,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "0ec963d63cf73d077c962b4c1e7b8abf",
-          serverMsgID: "cdce7838253912a090bcab5288f9d552",
-          createTime: 1658307691529,
-          sendTime: 1658307587628,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 109,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content:
-            '{"description":"乡村基(孵化园B区店)","longitude":104.085803,"latitude":30.510904}',
-          seq: 1670,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-          },
-          soundElem: {
-            dataSize: 0,
-            duration: 0,
-          },
-          videoElem: {
-            videoSize: 0,
-            duration: 0,
-            snapshotSize: 0,
-            snapshotWidth: 0,
-            snapshotHeight: 0,
-          },
-          fileElem: {
-            fileSize: 0,
-          },
-          mergeElem: {},
-          atElem: {
-            isAtSelf: false,
-          },
-          faceElem: {
-            index: 0,
-          },
-          locationElem: {
-            description: "乡村基(孵化园B区店)",
-            longitude: 104.085803,
-            latitude: 30.510904,
-          },
-          customElem: {},
-          quoteElem: {},
-          notificationElem: {},
-          messageEntityElem: {},
-          attachedInfoElem: {
-            groupHasReadInfo: {
-              hasReadCount: 0,
-              groupMemberCount: 0,
-            },
-            isPrivateChat: false,
-            hasReadTime: 0,
-            notSenderNotificationPush: false,
-          },
-        },
-        {
-          clientMsgID: "c0093369fc51fca4727d64dc899fd1c3",
-          serverMsgID: "b8aa226f51aa65ca3e162550b5254bf9",
-          createTime: 1658307829532,
-          sendTime: 1658307726449,
-          sessionType: 1,
-          sendID: "3138541532",
-          recvID: "2911830477",
-          msgFrom: 100,
-          contentType: 102,
-          platformID: 2,
-          senderNickname: "Jack-Chain",
-          senderFaceUrl: "ic_avatar_03",
-          content:
-            '{"sourcePath":"/storage/emulated/0/Android/data/com.openIm.app/apps/__UNI__EC966F0/doc/uniapp_temp/compressed/1658307829353_1658234418918.jpg","sourcePicture":{"uuid":"1658307829945248077-702731134813084759.jpg","type":"image/jpeg","size":69617,"width":744,"height":1080,"url":"https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg"},"bigPicture":{"size":0,"width":0,"height":0},"snapshotPicture":{"size":0,"width":200,"height":200,"url":"https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg?imageView2/2/w/200/h/200"}}',
-          seq: 1673,
-          isRead: false,
-          status: 2,
-          offlinePush: {},
-          pictureElem: {
-            sourcePath:
-              "/storage/emulated/0/Android/data/com.openIm.app/apps/__UNI__EC966F0/doc/uniapp_temp/compressed/1658307829353_1658234418918.jpg",
-            sourcePicture: {
-              uuid: "1658307829945248077-702731134813084759.jpg",
-              type: "image/jpeg",
-              size: 69617,
-              width: 744,
-              height: 1080,
-              url: "https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg",
-            },
-            bigPicture: {
-              size: 0,
-              width: 0,
-              height: 0,
-            },
-            snapshotPicture: {
-              size: 0,
-              width: 200,
-              height: 200,
-              url: "https://storage-online.rentsoft.cn/openim/1658307829945248077-702731134813084759.jpg?imageView2/2/w/200/h/200",
             },
           },
           soundElem: {
@@ -2446,7 +1624,7 @@ export default {
     scrollStyle() {
       const inputHeight = this.scrollViewData.sendContentTopHeight;
       let scrollHeight =
-        this.systemInfo.screenHeight -
+        this.systemInfo.windowHeight -
         inputHeight -
         44 -
         this.systemInfo.statusBarHeight -
@@ -2458,6 +1636,10 @@ export default {
       }
       if (this.showOther && !this.scrollViewData.keyboardHeight) {
         scrollHeight -= fileHeight;
+      }
+      if (this.scrollViewData.keyboardHeight) {
+        scrollHeight +=
+          this.systemInfo.screenHeight - this.systemInfo.windowHeight;
       }
       // #ifdef H5
       scrollHeight = 500;
@@ -2772,8 +1954,8 @@ export default {
         background-color: #fff;
         height: 400rpx;
         .image {
-          width: 64rpx;
-          height: 64rpx;
+          width: 80rpx;
+          height: 60rpx;
           margin-top: 44rpx;
           margin-bottom: 12rpx;
           &-del {

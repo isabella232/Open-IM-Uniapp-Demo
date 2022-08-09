@@ -225,7 +225,7 @@
       :show="changeGroupFaceurlData.actionShow"
       :actions="changeGroupFaceurlData.actionList"
       round="16"
-      @select="chooseImage"
+      @select="confirmChooseCamera"
       @close="changeGroupFaceurlData.actionShow = false"
     />
   </view>
@@ -234,6 +234,10 @@
 <script>
 import Avatar from "@/components/Avatar.vue";
 import { mapGetters } from "vuex";
+import {
+  checkPhotoLibraryPermission,
+  checkCameraPermission,
+} from "@/utils/checkPermission";
 export default {
   components: { Avatar },
   data() {
@@ -572,8 +576,30 @@ export default {
           break;
       }
     },
-    chooseImage({ sourceType }) {
-      uni.chooseImage({
+    confirmChooseCamera({ sourceType }) {
+      switch (sourceType) {
+        case "camera":
+          this.checkCamera();
+          break;
+        case "album":
+          this.checkPhotoLibrary();
+          break;
+      }
+    },
+    async checkPhotoLibrary() {
+      const status = await checkPhotoLibraryPermission();
+      if (status === true) {
+        this.chooseImage("album");
+      }
+    },
+    async checkCamera() {
+      const status = await checkCameraPermission();
+      if (status === true) {
+        this.chooseImage("camera");
+      }
+    },
+    chooseImage(sourceType) {
+      wx.chooseImage({
         count: 1,
         sourceType: [sourceType], //从相册选择
         success: (res) => {

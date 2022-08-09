@@ -73,6 +73,11 @@ export default {
     this.init();
     // #endif
   },
+  onReady() {
+    // #ifdef H5
+    this.showQrcode();
+    // #endif
+  },
   computed: {
     ...mapGetters(["operationID"]),
   },

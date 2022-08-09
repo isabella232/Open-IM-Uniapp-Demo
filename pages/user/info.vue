@@ -92,7 +92,7 @@
       :show="avatarData.actionShow"
       round="16"
       cancelText="取消"
-      @select="chooseImage"
+      @select="confirmChooseCamera"
       @close="avatarData.actionShow = false"
     />
   </view>
@@ -100,6 +100,10 @@
 
 <script>
 import { mapGetters } from "vuex";
+import {
+  checkPhotoLibraryPermission,
+  checkCameraPermission,
+} from "@/utils/checkPermission";
 export default {
   data() {
     return {
@@ -119,13 +123,13 @@ export default {
             name: "拍照",
             color: "#000",
             fontSize: "16",
-            type: "camera",
+            sourceType: "camera",
           },
           {
             name: "从相册选择",
             color: "#000",
             fontSize: "16",
-            type: "album",
+            sourceType: "album",
           },
         ],
       },
@@ -174,9 +178,30 @@ export default {
         url,
       });
     },
-    chooseImage(item) {
-      const sourceType = item.type;
-      uni.chooseImage({
+    confirmChooseCamera({ sourceType }) {
+      switch (sourceType) {
+        case "camera":
+          this.checkCamera();
+          break;
+        case "album":
+          this.checkPhotoLibrary();
+          break;
+      }
+    },
+    async checkPhotoLibrary() {
+      const status = await checkPhotoLibraryPermission();
+      if (status === true) {
+        this.chooseImage("album");
+      }
+    },
+    async checkCamera() {
+      const status = await checkCameraPermission();
+      if (status === true) {
+        this.chooseImage("camera");
+      }
+    },
+    chooseImage(sourceType) {
+      wx.chooseImage({
         count: 1,
         sourceType: [sourceType],
         success: (res) => {

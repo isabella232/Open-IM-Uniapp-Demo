@@ -1,6 +1,6 @@
 <template>
   <view class="login">
-    <view class="title">欢迎使用OpenIM</view>
+    <view class="title" @click="toSetting">欢迎使用OpenIM</view>
     <view class="loginType">
       <text
         :class="[
@@ -138,9 +138,6 @@ export default {
   },
   methods: {
     init() {
-      if (process.env.NODE_ENV === "development") {
-        this.checked = [true];
-      }
       if (this.isForgetPage && this.loginUserInfo) {
         this.userInfo.phoneNumber = this.loginUserInfo.phoneNumber;
         this.userInfo.password = this.loginUserInfo.password;
@@ -250,6 +247,11 @@ export default {
     routerGo(pageStatus) {
       uni.navigateTo({
         url: "./register?pageStatus=" + pageStatus,
+      });
+    },
+    toSetting() {
+      uni.navigateTo({
+        url: "/pages/setting/index",
       });
     },
   },

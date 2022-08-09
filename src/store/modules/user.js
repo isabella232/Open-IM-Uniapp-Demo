@@ -23,6 +23,17 @@ const state = {
   loginStatus: false, //是否登录
   loginUserInfo: null,
   connectStatus: 1, //服务器连接状态:0,:失败;1:成功;2:连接中
+  apiConfig: {
+    addr: "121.37.25.71", //服务器地址
+    // api_addr: "http://43.128.5.63:10002", //api域名地址
+    // api_addr2: "http://43.128.5.63:10004", //api域名地址
+    // ws_addr: "ws://43.128.5.63:10001", //websocket地址
+    api_addr: "http://121.37.25.71:10002", //api域名地址
+    api_addr2: "http://121.37.25.71:10004", //api域名地址
+    ws_addr: "ws://121.37.25.71:10001", //websocket地址
+    // object_storage: "cos", //选择存储
+    object_storage: "minio", //选择存储
+  },
 };
 const mutations = {
   set_systemInfo(state, systemInfo) {
@@ -52,6 +63,9 @@ const mutations = {
   },
   set_connectStatus(state, connectStatus = 0) {
     state.connectStatus = connectStatus;
+  },
+  set_apiConfig(state, config) {
+    state.apiConfig = config;
   },
 };
 const actions = {

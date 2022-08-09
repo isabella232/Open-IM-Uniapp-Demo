@@ -7,13 +7,14 @@ const event = uni.requireNativePlugin("globalEvent");
 export function init() {
   init_platform();
   createDir().then((data_dir) => {
+    const apiConfig = store.getters.apiConfig;
     const flag = im.initSDK(store.getters.operationID, {
       platform: store.getters.platform,
-      api_addr: commonConfig.api_addr,
-      ws_addr: commonConfig.ws_addr,
+      api_addr: apiConfig.api_addr,
+      ws_addr: apiConfig.ws_addr,
       data_dir, //SDK数据存放目录
       log_level: commonConfig.log_level,
-      object_storage: commonConfig.object_storage,
+      object_storage: apiConfig.object_storage,
     });
     setListener();
     addListener();
@@ -130,15 +131,15 @@ function addListener() {
   });
   // message listener
   event.addEventListener("onRecvNewMessage", (res) => {
-    console.log("onRecvNewMessage", res);
     const m = JSON.parse(res.message);
+    console.log("onRecvNewMessage", m);
     if (m.contentType !== 113) {
       store.dispatch("message/set_newMessageTimes");
       store.dispatch("message/set_newMessageList", m);
       const currentUserID = store.getters.userID;
       const userID = currentUserID === m.sendID ? m.recvID : m.sendID;
       store.dispatch("message/push_localConversationMessage", {
-        groupID: m.sessionType === 2 ? m.groupID : "",
+        groupID: m.sessionType === 2 || m.sessionType === 3 ? m.groupID : "",
         userID: m.sessionType === 1 ? userID : "",
         messageItem: m,
         currentUserID,

@@ -304,6 +304,12 @@
       "style": {
         "navigationBarTitleText": "通讯录黑名单"
       }
+    },
+    {
+      "path": "pages/setting/index",
+      "style": {
+        "navigationBarTitleText": "服务器配置"
+      }
     }
   ],
   "tabBar": {

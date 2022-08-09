@@ -13,71 +13,66 @@ import face_13 from "static/images/emoji/face_13.png";
 import face_14 from "static/images/emoji/face_14.png";
 import face_15 from "static/images/emoji/face_15.png";
 import face_16 from "static/images/emoji/face_16.png";
-import face_17 from "static/images/emoji/face_17.png";
 export const faceArr = [
   {
-    context: "[晕]",
+    context: "[微笑]",
     src: face_2,
   },
   {
-    context: "[咒骂]",
+    context: "[哭泣]",
     src: face_3,
   },
   {
-    context: "[尴尬]",
+    context: "[飞吻]",
     src: face_4,
   },
   {
-    context: "[吓哭]",
+    context: "[疑问]",
     src: face_5,
   },
   {
-    context: "[搞怪]",
+    context: "[闭嘴]",
     src: face_6,
   },
   {
-    context: "[龇牙]",
+    context: "[开心]",
     src: face_7,
   },
   {
-    context: "[无语]",
+    context: "[偷笑]",
     src: face_8,
   },
   {
-    context: "[眨眼]",
+    context: "[发呆]",
     src: face_9,
   },
   {
-    context: "[笑脸]",
+    context: "[无语]",
     src: face_10,
   },
   {
-    context: "[可怜]",
+    context: "[难过]",
     src: face_11,
   },
   {
-    context: "[暴怒]",
+    context: "[期待]",
     src: face_12,
   },
   {
-    context: "[可爱]",
+    context: "[捂脸笑]",
     src: face_13,
   },
   {
-    context: "[哭泣]",
+    context: "[愤怒]",
     src: face_14,
   },
   {
-    context: "[色]",
+    context: "[斜眼看]",
     src: face_15,
   },
   {
-    context: "[看穿]",
+    context: "[呲牙]",
     src: face_16,
-  },
-  {
-    context: "[亲亲]",
-    src: face_17,
   },
 ];
 import image from "static/images/conversation/file/image.png";

@@ -1,8 +1,9 @@
-import { commonConfig } from "@/config";
+import store from "@/src/store";
 function request(method, url, data) {
   return new Promise((resolve, reject) => {
+    const apiConfig = store.getters.apiConfig;
     uni.request({
-      url: commonConfig.api_addr2 + url,
+      url: apiConfig.api_addr2 + url,
       data,
       method,
       header: getHeader(),

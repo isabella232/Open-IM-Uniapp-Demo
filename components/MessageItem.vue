@@ -10,7 +10,7 @@
         color: color,
       }"
     >
-      <text v-if="hasDraftText && index===0" class="draftText"> [草稿] </text>
+      <text v-if="hasDraftText && index === 0" class="draftText"> [草稿] </text>
       <text v-if="contentItem.type === 'text'">
         {{ contentItem.content }}
       </text>
@@ -46,6 +46,8 @@ export default {
       default: false,
     },
   },
+  created(){
+  },
 };
 </script>
 
@@ -68,8 +70,8 @@ export default {
       color: #3e44ff;
     }
     .image {
-      width: 42rpx;
-      height: 42rpx;
+      width: 44rpx;
+      height: 34rpx;
     }
   }
 }

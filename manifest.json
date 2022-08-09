@@ -2,8 +2,8 @@
     "name" : "OpenIM-uniapp",
     "appid" : "__UNI__EC966F0",
     "description" : "",
-    "versionName" : "1.1.2",
-    "versionCode" : 112,
+    "versionName" : "1.1.7",
+    "versionCode" : 117,
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
@@ -33,6 +33,7 @@
                 "permissions" : [
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>",
@@ -41,6 +42,7 @@
                     "<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>",
+                    "<uses-permission android:name=\"android.permission.INTERNET\"/>",
                     "<uses-permission android:name=\"android.permission.LOCATION_HARDWARE\"/>",
                     "<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
@@ -49,6 +51,7 @@
                     "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
+                    "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a", "x86" ]
@@ -72,11 +75,14 @@
                 },
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "2cda082ffac6e896acd63c2ca3fa2983",
+                        "appkey_ios" : "04e2dec8d07bf0a9a655529a6313d356",
                         "appkey_android" : "2cda082ffac6e896acd63c2ca3fa2983"
                     }
                 },
-                "speech" : {}
+                "speech" : {},
+                "push" : {
+                    "unipush" : {}
+                }
             },
             "splashscreen" : {
                 "androidStyle" : "common"
@@ -115,20 +121,6 @@
             }
         },
         "nativePlugins" : {
-            "Tuoyun-OpenIMSDK" : {
-                "__plugin_info__" : {
-                    "name" : "OpenIMSDK",
-                    "description" : "IM",
-                    "platforms" : "Android,iOS",
-                    "url" : "",
-                    "android_package_name" : "",
-                    "ios_bundle_id" : "",
-                    "isCloud" : false,
-                    "bought" : -1,
-                    "pid" : "",
-                    "parameters" : {}
-                }
-            },
             "Aq-ChooseFile" : {
                 "__plugin_info__" : {
                     "name" : "文件选择，支持自定义路径，自定义筛选类型，多选",
@@ -140,6 +132,20 @@
                     "isCloud" : true,
                     "bought" : 1,
                     "pid" : "5263",
+                    "parameters" : {}
+                }
+            },
+            "Tuoyun-OpenIMSDK" : {
+                "__plugin_info__" : {
+                    "name" : "OpenIM SDK",
+                    "description" : "OpenIM：由前微信技术专家打造的基于 Go 实现的即时通讯（IM）项目，从服务端到客户端SDK开源即时通讯（IM）整体解决方案，可以轻松替代第三方IM云服务，打造具备聊天、社交功能的app。",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=6577",
+                    "android_package_name" : "com.openIm.app",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "6577",
                     "parameters" : {}
                 }
             }
